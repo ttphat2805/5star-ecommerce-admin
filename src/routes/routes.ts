@@ -1,6 +1,6 @@
 // Different Layout
 
-import NotFound from '~/layouts/NotFound';
+import NotFound from '~/pages/NotFound';
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
 

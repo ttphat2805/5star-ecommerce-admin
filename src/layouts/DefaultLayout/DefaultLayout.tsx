@@ -1,18 +1,21 @@
 import Header from '~/components/Header';
+import Sidebar from '~/components/Sidebar';
 
 interface DefaultLayoutProps {
     Children: React.ComponentType;
 }
 
-function DefaultLayout({ Children }: DefaultLayoutProps) {
+const DefaultLayout = ({ Children }: DefaultLayoutProps) => {
     return (
         <div className="dashboard">
+            <Sidebar />
             <Header />
-            <main className="mt-16">
+
+            <main className="main-dashboard bg-black">
                 <Children />
             </main>
         </div>
     );
-}
+};
 
 export default DefaultLayout;
