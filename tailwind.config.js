@@ -7,6 +7,9 @@ module.exports = {
                 primary: '#487eb0',
                 secondary: '#282f53',
             },
+            screens: {
+                tablet: { max: '991px' },
+            },
         },
     },
     plugins: [],

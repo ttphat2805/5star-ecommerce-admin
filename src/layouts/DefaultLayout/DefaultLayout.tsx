@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Header from '~/components/Header';
 import Sidebar from '~/components/Sidebar';
 
@@ -9,9 +8,9 @@ interface DefaultLayoutProps {
 const DefaultLayout = ({ Children }: DefaultLayoutProps) => {
     return (
         <div className="dashboard">
-            <Sidebar>
-                <Header />
-            </Sidebar>
+            <Sidebar />
+            <Header />
+
             <main className="main-dashboard bg-black">
                 <Children />
             </main>
