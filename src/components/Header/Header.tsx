@@ -1,7 +1,5 @@
-import React from 'react';
-import { HiMenuAlt1 } from 'react-icons/hi';
+import { HiMenuAlt2, HiMenuAlt3 } from 'react-icons/hi';
 import { useAppDispatch, useAppSelector } from '~/app/hooks';
-import { motion } from 'framer-motion';
 import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
 const Header = () => {
     const dispatch = useAppDispatch();
@@ -18,9 +16,7 @@ const Header = () => {
                     !isOpenMenu ? 'pl-[280px]' : 'pl-[80px]'
                 }`}
             >
-                <div onClick={() => toggleMenuActive()}>
-                    <HiMenuAlt1 />
-                </div>
+                <div onClick={() => toggleMenuActive()}>{isOpenMenu ? <HiMenuAlt2 /> : <HiMenuAlt3 />}</div>
             </div>
         </div>
     );
