@@ -79,14 +79,6 @@ const Sidebar = () => {
             fontWeight: isActive ? 'bold' : 'normal',
         };
     };
-    // const handleResize = () => {
-    //     let widthScreen = window.matchMedia('(min-width: 991px)').matches;
-    //     if (widthScreen) {
-    //         setResize(widthScreen);
-    //     }
-    // };
-
-    // window.addEventListener('resize', handleResize);
 
     const handleHoverSidebar = () => {
         // FALSE, SIDEBAR 270px
