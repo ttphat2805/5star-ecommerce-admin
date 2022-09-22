@@ -13,8 +13,12 @@ const RouteMenu = [
         title: true,
     },
     {
-        id: 1,
         path: '/',
+        name: 'Dashboard 2',
+        icon: <TbLayoutDashboard />,
+    },
+    {
+        path: '/2',
         name: 'Dashboard 2',
         icon: <TbLayoutDashboard />,
     },
@@ -23,8 +27,6 @@ const RouteMenu = [
         title: true,
     },
     {
-        id: 2,
-        path: '#',
         name: 'Dashboard 3',
         icon: <BiUserPin />,
         isParent: true,
@@ -39,10 +41,29 @@ const RouteMenu = [
                 name: 'Child 2',
                 icon: <BiUserPin />,
             },
+            {
+                path: '/2',
+                name: 'Child 2',
+                icon: <BiUserPin />,
+            },
+            {
+                path: '/2',
+                name: 'Child 2',
+                icon: <BiUserPin />,
+            },
+            {
+                path: '/2',
+                name: 'Child 2',
+                icon: <BiUserPin />,
+            },
+            {
+                path: '/2',
+                name: 'Child 2',
+                icon: <BiUserPin />,
+            },
         ],
     },
     {
-        id: 3,
         name: 'Dashboard 2',
         icon: <TbLayoutDashboard />,
         isParent: true,
@@ -60,7 +81,6 @@ const RouteMenu = [
         ],
     },
     {
-        id: 4,
         path: '/2',
         name: 'Dashboard 2',
         icon: <TbLayoutDashboard />,
@@ -120,7 +140,7 @@ const Sidebar = () => {
                     </motion.div>
                     <div className="side-main h-full">
                         <div className="side-menu h-full">
-                            <ul className="menu-list px-[10px] py-[10px] overflow-auto overflow-x-hidden h-full">
+                            <ul className="menu-list w-full px-[10px] py-[10px] overflow-auto overflow-x-hidden h-full">
                                 {RouteMenu.map((menu: any, index) => (
                                     <div key={index}>
                                         {/* This is Title. ex: Main */}

@@ -6,6 +6,7 @@ module.exports = {
             colors: {
                 primary: '#487eb0',
                 secondary: '#282f53',
+                tbase: '#677788',
             },
             screens: {
                 tablet: { max: '991px' },
