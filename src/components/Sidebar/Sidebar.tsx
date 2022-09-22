@@ -1,18 +1,19 @@
-import { BiUserPin } from 'react-icons/bi';
-import { RiArrowDropDownLine } from 'react-icons/ri';
-import { TbLayoutDashboard } from 'react-icons/tb';
-import { Link, NavLink } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '~/app/hooks';
 import { AnimatePresence, motion } from 'framer-motion';
-import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
 import { useState } from 'react';
+import { BiUserPin } from 'react-icons/bi';
+import { TbLayoutDashboard } from 'react-icons/tb';
+import { Link } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '~/app/hooks';
+import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
 import './sidebar.scss';
+import SidebarItem from './SidebarItem';
 const RouteMenu = [
     {
         name: 'Main',
         title: true,
     },
     {
+        id: 1,
         path: '/',
         name: 'Dashboard 2',
         icon: <TbLayoutDashboard />,
@@ -22,7 +23,8 @@ const RouteMenu = [
         title: true,
     },
     {
-        path: '/3',
+        id: 2,
+        path: '#',
         name: 'Dashboard 3',
         icon: <BiUserPin />,
         isParent: true,
@@ -40,11 +42,25 @@ const RouteMenu = [
         ],
     },
     {
-        path: '/2',
+        id: 3,
         name: 'Dashboard 2',
         icon: <TbLayoutDashboard />,
+        isParent: true,
+        children: [
+            {
+                path: '/21321312',
+                name: 'Child 3333',
+                icon: <BiUserPin />,
+            },
+            {
+                path: '/232131231',
+                name: 'Child 444',
+                icon: <BiUserPin />,
+            },
+        ],
     },
     {
+        id: 4,
         path: '/2',
         name: 'Dashboard 2',
         icon: <TbLayoutDashboard />,
@@ -69,30 +85,16 @@ const showAnimation = {
 const Sidebar = () => {
     const isOpenMenu = useAppSelector(MenuActive);
     const dispatch = useAppDispatch();
-    const [resize, setResize] = useState(false);
 
     const [hoverMenu, setHoverMenu] = useState(false);
-    console.log('reee');
-
-    const navLinkActive = ({ isActive }: any) => {
-        return {
-            fontWeight: isActive ? 'bold' : 'normal',
-        };
-    };
 
     const handleHoverSidebar = () => {
         // FALSE, SIDEBAR 270px
         // TRUE, SIDEBAR 70px
-
         if (isOpenMenu || hoverMenu) {
             dispatch(toggleMenu());
             setHoverMenu(!hoverMenu);
         }
-
-        // if (hoverMenu && !isOpenMenu) {
-        //     dispatch(toggleMenu());
-        //     setHoverMenu(false);
-        // }
     };
 
     return (
@@ -116,11 +118,12 @@ const Sidebar = () => {
                             5Star
                         </Link>
                     </motion.div>
-                    <div className="side-main">
-                        <div className="side-menu">
-                            <ul className="menu-list px-[10px] py-[10px] overflow-auto overflow-x-hidden">
+                    <div className="side-main h-full">
+                        <div className="side-menu h-full">
+                            <ul className="menu-list px-[10px] py-[10px] overflow-auto overflow-x-hidden h-full">
                                 {RouteMenu.map((menu: any, index) => (
                                     <div key={index}>
+                                        {/* This is Title. ex: Main */}
                                         {menu.title ? (
                                             <>
                                                 {!isOpenMenu && (
@@ -138,53 +141,11 @@ const Sidebar = () => {
                                                 )}
                                             </>
                                         ) : (
-                                            <li className="menu-item text-base">
-                                                <NavLink
-                                                    to={menu.path}
-                                                    style={navLinkActive}
-                                                    className="menu-item__link flex items-center my-[10px] py-[6px] px-[15px] rounded-md whitespace-nowrap text-secondary hover:bg-slate-400 hover:text-white hover:transition-all"
-                                                >
-                                                    <span className="icon mr-1 text-xl">{menu.icon}</span>
-                                                    {!isOpenMenu && (
-                                                        <>
-                                                            <AnimatePresence>
-                                                                <motion.span
-                                                                    variants={showAnimation}
-                                                                    initial="hidden"
-                                                                    animate="show"
-                                                                    exit="hidden"
-                                                                    className="flex-auto whitespace-nowrap"
-                                                                >
-                                                                    {menu.name}
-                                                                </motion.span>
-                                                            </AnimatePresence>
-
-                                                            {menu.isParent && (
-                                                                <span className="text-xl">
-                                                                    <RiArrowDropDownLine />
-                                                                </span>
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </NavLink>
-                                                {!isOpenMenu && (
-                                                    <ul className="menu-children pl-[20px]">
-                                                        {menu.children?.map((child: any, index: any) => (
-                                                            <NavLink
-                                                                key={index}
-                                                                to={child.path}
-                                                                style={navLinkActive}
-                                                                className="menu-item__link flex items-center py-[6px] px-[15px] rounded-md whitespace-nowrap text-secondary hover:bg-slate-400 hover:text-white hover:transition-all"
-                                                            >
-                                                                <span className="icon mr-1 text-xl">{child.icon}</span>
-                                                                <span className="flex-auto whitespace-nowrap">
-                                                                    {child.name}
-                                                                </span>
-                                                            </NavLink>
-                                                        ))}
-                                                    </ul>
-                                                )}
-                                            </li>
+                                            <SidebarItem
+                                                menu={menu}
+                                                isOpenMenu={isOpenMenu}
+                                                showAnimation={showAnimation}
+                                            />
                                         )}
                                     </div>
                                 ))}
