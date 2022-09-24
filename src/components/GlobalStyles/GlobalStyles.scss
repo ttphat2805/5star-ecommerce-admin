@@ -13,9 +13,10 @@ html {
 body {
     font-family: 'QuickSand';
     font-size: 1.6rem;
-    line-height: 1.6;
+    line-height: 1.6rem;
     text-rendering: optimizeSpeed;
     overflow-y: overlay;
+    overflow-x: hidden;
 }
 
 *,
@@ -67,4 +68,14 @@ a {
 
 li {
     list-style: none;
+}
+
+.box {
+    background: #ffff;
+    border-radius: 6px;
+}
+
+tr td,
+tr th {
+    white-space: nowrap;
 }

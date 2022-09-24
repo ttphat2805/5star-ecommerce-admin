@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.action-btn {
+    @apply p-2 text-white rounded-md text-lg cursor-pointer;
+}

@@ -7,3 +7,32 @@
         display: none;
     }
 }
+
+.side-menu {
+    /* width */
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        background: rgba(104, 104, 104, 0.292);
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(152, 152, 152, 0.362);
+    }
+
+    // .menu-item__link.active {
+    //     --tw-bg-opacity: 1;
+    //     color: #fff;
+    //     font-weight: 500;
+    //     background-color: rgb(148 163 184 / var(--tw-bg-opacity));
+    // }
+}
