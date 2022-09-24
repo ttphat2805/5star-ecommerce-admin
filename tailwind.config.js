@@ -4,9 +4,10 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                primary: '#487eb0',
+                primary: '#009ef7',
                 secondary: '#282f53',
                 tbase: '#677788',
+                hover: '#f5f8fa',
             },
             screens: {
                 tablet: { max: '991px' },

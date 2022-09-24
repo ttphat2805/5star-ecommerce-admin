@@ -11,16 +11,15 @@ const DefaultLayout = ({ Children }: DefaultLayoutProps) => {
     const isOpenMenu = useAppSelector(MenuActive);
 
     return (
-        <div className="dashboard">
+        <div className="dashboard overflow-x-hidden">
             <Sidebar />
             <Header />
 
             <main
-                className={`main-dashboard mt-[20px] tablet:pl-[10px] transition-all ${
-                    !isOpenMenu ? 'pl-[280px]' : 'pl-[80px]'
+                className={`main-dashboard h-full py-[20px] pt-[90px] tablet:pl-[10px] transition-all px-[15px] bg-[#f7f8f9] ${
+                    !isOpenMenu ? 'pl-[295px]' : 'pl-[95px]'
                 }`}
             >
-                <p>MAIN</p>
                 <Children />
             </main>
         </div>

@@ -14,31 +14,27 @@ const RouteMenu = [
     },
     {
         path: '/',
-        name: 'Dashboard 2',
+        name: 'Dashboard Home Page',
         icon: <TbLayoutDashboard />,
     },
+
     {
-        path: '/2',
-        name: 'Dashboard 2',
-        icon: <TbLayoutDashboard />,
-    },
-    {
-        name: 'Content',
+        name: 'Elements',
         title: true,
     },
     {
-        name: 'Dashboard 3',
+        name: 'Components',
         icon: <BiUserPin />,
         isParent: true,
         children: [
             {
                 path: '/2',
-                name: 'Child 1',
+                name: 'Form',
                 icon: <BiUserPin />,
             },
             {
                 path: '/2',
-                name: 'Child 2',
+                name: 'Table',
                 icon: <BiUserPin />,
             },
             {
@@ -123,7 +119,7 @@ const Sidebar = () => {
                 <div
                     onMouseEnter={() => handleHoverSidebar()}
                     onMouseLeave={() => handleHoverSidebar()}
-                    className={`container sidebar-menu fixed bg-white h-full z-[99] top-0 left-0 bottom-0 shadow-md border-r border-t border-[#e9edf4] tablet:top-[70px] 
+                    className={`sidebar-menu fixed bg-white h-full z-[99] top-0 left-0 bottom-0 shadow-md border-r border-t border-[#e9edf4] tablet:top-[70px] 
                     transition-all duration-500
                     ${isOpenMenu ? 'w-[70px] tablet:w-[0px]' : 'w-[270px] tablet:w-[270px]'}`}
                 >
@@ -134,7 +130,7 @@ const Sidebar = () => {
                         exit="hidden"
                         className="sidebar-header justify-center items-center h-[75px] py-[19px] px-[17px] border-b border-right border-[#e9edf4]"
                     >
-                        <Link to="/" className="branch-logo font-bold text-center">
+                        <Link to="/" className="branch-logo font-bold text-center text-primary">
                             5Star
                         </Link>
                     </motion.div>

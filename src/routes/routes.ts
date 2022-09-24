@@ -3,6 +3,7 @@
 import NotFound from '~/pages/NotFound';
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
+import Dashboard from '~/pages/Dashboard';
 
 interface Routes {
     path: string;
@@ -13,7 +14,7 @@ interface Routes {
 const privateRoutes: Routes[] = [
     {
         path: '/',
-        Component: Register,
+        Component: Dashboard,
     },
 ];
 
@@ -26,6 +27,11 @@ const publicRoutes: Routes[] = [
     {
         path: '*',
         Component: NotFound,
+        layout: null,
+    },
+    {
+        path: '/register',
+        Component: Register,
         layout: null,
     },
 ];

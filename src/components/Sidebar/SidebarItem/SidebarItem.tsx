@@ -27,13 +27,13 @@ const menuItemAnimation = {
     hidden: (index: any) => ({
         x: '-200%',
         transition: {
-            duration: (index + 1) * 0.1,
+            duration: (index + 1) * 0.2,
         },
     }),
     show: (index: any) => ({
         x: 0,
         transition: {
-            duration: (index + 1) * 0.1,
+            duration: (index + 1) * 0.2,
         },
     }),
 };
@@ -51,7 +51,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                     <div
                         onClick={(e) => handleActiveSubMenu(e)}
                         className="menu-item__link select-none cursor-pointer flex items-center my-[10px] py-[6px] px-[15px] 
-                    rounded-md whitespace-nowrap text-secondary hover:bg-slate-400 hover:text-white hover:transition-all"
+                    rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
                     >
                         <span className="icon mr-1 text-xl">{menu.icon}</span>
                         {/* isOpenMenu is a variable that when the menu closes, the item will be hidden */}
@@ -103,7 +103,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                                     <motion.div variants={menuItemAnimation} key={index} custom={index}>
                                         <NavLink
                                             to={child.path || '#'}
-                                            className="submenu-item__link flex items-center py-[6px] px-[15px] rounded-md whitespace-nowrap text-secondary hover:bg-slate-400 hover:text-white hover:transition-all"
+                                            className="submenu-item__link flex items-center py-[6px] px-[15px] rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
                                         >
                                             <span className="icon mr-1 text-xl">{child.icon}</span>
                                             <span className="flex-auto whitespace-nowrap">{child.name}</span>
@@ -119,7 +119,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                     <NavLink
                         to={menu.path || '#'}
                         className="menu-item__link w-full flex items-center my-[10px] py-[6px] px-[15px]
-                    rounded-md whitespace-nowrap text-secondary hover:bg-slate-400 hover:text-white hover:transition-all active"
+                    rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all active"
                     >
                         <span className="icon mr-1 text-xl">{menu.icon}</span>
                         {/* isOpenMenu is a variable that when the menu closes, the item will be hidden */}
