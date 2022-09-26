@@ -79,3 +79,8 @@ tr td,
 tr th {
     white-space: nowrap;
 }
+
+.form::-webkit-scrollbar {
+    border-radius: 0;
+    height: 6px;
+}

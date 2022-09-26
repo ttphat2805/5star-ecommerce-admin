@@ -4,6 +4,7 @@ import NotFound from '~/pages/NotFound';
 import Login from '~/pages/Login';
 import Register from '~/pages/Register';
 import Dashboard from '~/pages/Dashboard';
+import { AddProduct, EditProduct } from '~/pages/Product';
 
 interface Routes {
     path: string;
@@ -15,6 +16,14 @@ const privateRoutes: Routes[] = [
     {
         path: '/',
         Component: Dashboard,
+    },
+    {
+        path: '/product/add-product',
+        Component: AddProduct,
+    },
+    {
+        path: '/product/edit-product',
+        Component: EditProduct,
     },
 ];
 
