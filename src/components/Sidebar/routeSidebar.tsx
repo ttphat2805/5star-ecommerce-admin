@@ -1,6 +1,8 @@
-import { BiUserPin } from 'react-icons/bi';
+import { GiClothes } from 'react-icons/gi';
+import { IoIosAdd } from 'react-icons/io';
+import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
 import { TbLayoutDashboard } from 'react-icons/tb';
-
+import { VscTasklist } from 'react-icons/vsc';
 export const RouteSidebarMenu = [
     {
         name: 'Main',
@@ -8,7 +10,7 @@ export const RouteSidebarMenu = [
     },
     {
         path: '/',
-        name: 'Dashboard Home Page',
+        name: 'Dashboard',
         icon: <TbLayoutDashboard />,
     },
 
@@ -18,55 +20,52 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Sản phẩm',
-        icon: <BiUserPin />,
+        icon: <GiClothes />,
         isParent: true,
         children: [
             {
                 path: '/product/add-product',
                 name: 'Thêm sản phẩm',
-                icon: <BiUserPin />,
+                icon: <IoIosAdd />,
             },
             {
-                path: '/2',
-                name: 'Table',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
+                path: '/product/list-product',
+                name: 'Danh sách sản phẩm',
+                icon: <VscTasklist />,
             },
         ],
     },
     {
-        name: 'Dashboard 2',
-        icon: <TbLayoutDashboard />,
+        name: 'Danh mục',
+        icon: <MdOutlineCategory />,
         isParent: true,
         children: [
             {
-                path: '/21321312',
-                name: 'Child 3333',
-                icon: <BiUserPin />,
+                path: '/category/add-category',
+                name: 'Thêm danh mục',
+                icon: <IoIosAdd />,
             },
             {
-                path: '/232131231',
-                name: 'Child 444',
-                icon: <BiUserPin />,
+                path: '/category/list-category',
+                name: 'Danh sách danh mục',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Đa phương tiện',
+        icon: <MdOutlinePermMedia />,
+        isParent: true,
+        children: [
+            {
+                path: '/media/add-banner',
+                name: 'Thêm banner',
+                icon: <IoIosAdd />,
+            },
+            {
+                path: '/media/list-banner',
+                name: 'Danh sách banner',
+                icon: <VscTasklist />,
             },
         ],
     },

@@ -5,3 +5,15 @@
 .action-btn {
     @apply p-2 text-white rounded-md text-lg cursor-pointer;
 }
+
+.card-title {
+    @apply text-xl font-semibold text-tbase;
+}
+
+.error {
+    @apply text-sm text-red-500;
+}
+
+.is-invalid {
+    @apply !border-red-600 !shadow-[0_0_0_1px] !shadow-red-500 transition-all duration-300;
+}

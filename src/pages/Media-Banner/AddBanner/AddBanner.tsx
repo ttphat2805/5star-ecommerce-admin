@@ -13,19 +13,19 @@ const initialValues = {
     price: '',
 };
 
-const AddProduct = () => {
+const AddBanner = () => {
     const handleSubmitForm = (values: Values) => {
         console.log(values);
     };
 
     return (
         <div>
-            <Breadcrumb currentPage="Thêm sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
+            <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">
                         <div className="card-header p-3 border-b">
-                            <h3 className="card-title">Thêm sản phẩm mới</h3>
+                            <h3 className="card-title">Thêm danh mục mới</h3>
                         </div>
                         <div className="card text-base p-3">
                             <Formik
@@ -36,12 +36,12 @@ const AddProduct = () => {
                                 {(formik: FormikProps<Values>) => (
                                     <Form>
                                         <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                            <InputField type="text" name="name" label="Tên sản phẩm" />
+                                            <InputField type="text" name="name" label="Tên danh mục" />
                                             <InputField type="text" name="price" label="Giá" />
                                         </div>
                                         <div className="btn-action flex items-center justify-center mt-5">
                                             <Button isLoading={formik.isSubmitting} type="submit" colorScheme="twitter">
-                                                Thêm sản phẩm
+                                                Thêm danh mục
                                             </Button>
                                             <Button type="button" className="mx-2">
                                                 Quay lại
@@ -58,4 +58,4 @@ const AddProduct = () => {
     );
 };
 
-export default AddProduct;
+export default AddBanner;

@@ -2,8 +2,12 @@ import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { FiEdit } from 'react-icons/fi';
 import { IoCloseOutline } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
-
+import ModalConfirm from '~/components/ModalConfirm';
 const ListProduct = () => {
+    const handleDelete = (id: string | any) => {
+        console.log('delete', id);
+    };
+
     return (
         <div>
             <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
@@ -56,7 +60,9 @@ const ListProduct = () => {
                                                 <FiEdit />
                                             </span>
                                             <span className="bg-red-500 action-btn">
-                                                <IoCloseOutline />
+                                                <ModalConfirm handleDelete={() => handleDelete('1')}>
+                                                    <IoCloseOutline />
+                                                </ModalConfirm>
                                             </span>
                                         </Td>
                                     </Tr>
