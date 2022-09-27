@@ -75,7 +75,7 @@ const Header = () => {
                                         <PopoverTrigger>
                                             <Button className="!p-2 !bg-transparent hover:!bg-hover hover:text-primary">
                                                 <Tooltip label="Thông báo">
-                                                    <div className="icon relative text-xl">
+                                                    <div className="icon relative text-2xl">
                                                         <IoMdNotificationsOutline />
                                                         <span className="badge absolute w-[14px] h-[14px] top-[-3px] right-[-5px] text-[9px] bg-red-500 text-white rounded-full text-center leading-[14px]">
                                                             9

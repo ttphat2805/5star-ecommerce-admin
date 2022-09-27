@@ -1,87 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import { BiUserPin } from 'react-icons/bi';
-import { TbLayoutDashboard } from 'react-icons/tb';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '~/app/hooks';
 import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
+import { RouteSidebarMenu } from './routeSidebar';
 import './sidebar.scss';
 import SidebarItem from './SidebarItem';
-const RouteMenu = [
-    {
-        name: 'Main',
-        title: true,
-    },
-    {
-        path: '/',
-        name: 'Dashboard Home Page',
-        icon: <TbLayoutDashboard />,
-    },
-
-    {
-        name: 'Elements',
-        title: true,
-    },
-    {
-        name: 'Components',
-        icon: <BiUserPin />,
-        isParent: true,
-        children: [
-            {
-                path: '/2',
-                name: 'Form',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Table',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/2',
-                name: 'Child 2',
-                icon: <BiUserPin />,
-            },
-        ],
-    },
-    {
-        name: 'Dashboard 2',
-        icon: <TbLayoutDashboard />,
-        isParent: true,
-        children: [
-            {
-                path: '/21321312',
-                name: 'Child 3333',
-                icon: <BiUserPin />,
-            },
-            {
-                path: '/232131231',
-                name: 'Child 444',
-                icon: <BiUserPin />,
-            },
-        ],
-    },
-    {
-        path: '/2',
-        name: 'Dashboard 2',
-        icon: <TbLayoutDashboard />,
-    },
-];
 
 const showAnimation = {
     hidden: {
@@ -128,7 +52,7 @@ const Sidebar = () => {
                         initial="hidden"
                         animate="show"
                         exit="hidden"
-                        className="sidebar-header justify-center items-center h-[75px] py-[19px] px-[17px] border-b border-right border-[#e9edf4]"
+                        className="sidebar-header flex tablet:hidden justify-center items-center h-[75px] py-[19px] px-[17px] border-b border-right border-[#e9edf4]"
                     >
                         <Link to="/" className="branch-logo font-bold text-center text-primary">
                             5Star
@@ -137,7 +61,7 @@ const Sidebar = () => {
                     <div className="side-main h-full">
                         <div className="side-menu h-full">
                             <ul className="menu-list w-full px-[10px] py-[10px] overflow-auto overflow-x-hidden h-full">
-                                {RouteMenu.map((menu: any, index) => (
+                                {RouteSidebarMenu.map((menu: any, index: string | number) => (
                                     <div key={index}>
                                         {/* This is Title. ex: Main */}
                                         {menu.title ? (

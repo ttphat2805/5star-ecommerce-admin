@@ -16,7 +16,7 @@ const DefaultLayout = ({ Children }: DefaultLayoutProps) => {
             <Header />
 
             <main
-                className={`main-dashboard h-full py-[20px] pt-[90px] tablet:pl-[10px] transition-all px-[15px] bg-[#f7f8f9] ${
+                className={`main-dashboard h-[100vh] py-[20px] pt-[90px] tablet:pl-[10px] transition-all px-[15px] bg-[#f7f8f9] ${
                     !isOpenMenu ? 'pl-[295px]' : 'pl-[95px]'
                 }`}
             >
