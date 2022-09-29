@@ -5,11 +5,11 @@ const Breadcrumb = (props: any) => {
     const { currentPage, currentLink, parentPage, parentLink } = props;
     return (
         <div className="breadcrumb">
-            <div className="breadcrumb-container flex bg-white p-3 my-3 rounded-md shadow-sm">
+            <div className="breadcrumb-container flex flex-col sm:flex-row bg-white p-3 my-3 rounded-md shadow-sm justify-start">
                 <div className="title-page text-lg font-medium">{currentPage}</div>
-                <div className="title ml-auto mr-[20px]">
-                    <div className="breadcrumb-item">
-                        <ul className="flex text-base">
+                <div className="title sm:ml-auto mr-[20px]">
+                    <div className="breadcrumb-item flex-wrap">
+                        <ul className="flex sm:text-base text-sm">
                             <li className="text-primary font-medium">Dashboard</li>
                             {parentPage && (
                                 <li className="flex items-center">

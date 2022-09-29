@@ -7,6 +7,7 @@ import Dashboard from '~/pages/Dashboard';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
 import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
+import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
 
 interface Routes {
     path: string;
@@ -54,6 +55,23 @@ const privateRoutes: Routes[] = [
         Component: ListCategory,
     },
     // MEDIA
+
+    {
+        path: '/media/add-banner',
+        Component: AddBanner,
+    },
+    {
+        path: '/media/edit-banner',
+        Component: EditBanner,
+    },
+    {
+        path: '/media/list-banner',
+        Component: ListBanner,
+    },
+    {
+        path: '/media',
+        Component: ListBanner,
+    },
 ];
 
 const publicRoutes: Routes[] = [

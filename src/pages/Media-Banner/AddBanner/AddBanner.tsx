@@ -4,13 +4,13 @@ import Breadcrumb from '~/components/Breadcrumb';
 import { InputField } from '~/components/CustomField';
 import { addProductSchema } from '~/utils/validationSchema';
 type Values = {
-    name: string;
-    price: string;
+    title: string;
+    sub_title: string;
 };
 
 const initialValues = {
-    name: '',
-    price: '',
+    title: '',
+    sub_title: '',
 };
 
 const AddBanner = () => {
@@ -25,7 +25,7 @@ const AddBanner = () => {
                 <div className="card rounded-md p-2">
                     <div className="form">
                         <div className="card-header p-3 border-b">
-                            <h3 className="card-title">Thêm danh mục mới</h3>
+                            <h3 className="card-title">Thêm banner mới</h3>
                         </div>
                         <div className="card text-base p-3">
                             <Formik
@@ -36,8 +36,13 @@ const AddBanner = () => {
                                 {(formik: FormikProps<Values>) => (
                                     <Form>
                                         <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                            <InputField type="text" name="name" label="Tên danh mục" />
-                                            <InputField type="text" name="price" label="Giá" />
+                                            <InputField type="text" name="title" label="Tiêu đề chính" />
+                                            <InputField type="text" name="sub_title" label="Tiêu đề phụ" />
+                                        </div>
+                                        <div className="form-group">
+                                            <div className="upload-image">
+                                                <input type="file" />
+                                            </div>
                                         </div>
                                         <div className="btn-action flex items-center justify-center mt-5">
                                             <Button isLoading={formik.isSubmitting} type="submit" colorScheme="twitter">

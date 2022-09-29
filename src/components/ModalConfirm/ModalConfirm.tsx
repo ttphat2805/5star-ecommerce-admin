@@ -22,12 +22,14 @@ const ModalConfirm = ({ children, handleDelete }: any) => {
                     <ModalCloseButton />
                     <ModalBody>
                         <div className="modal-confirm flex">
-                            <h3 className="text-2xl m-auto font-semibold text-red-500">Bạn có chắc muốn xóa không ?</h3>
-                            <Image src={images.gifConfirmDelete} className="w-[40%] m-auto" alt="" />
+                            <h3 className="text-2xl m-auto font-semibold text-red-500 py-4">
+                                Bạn có chắc muốn xóa không ?
+                            </h3>
+                            {/* <Image src={images.gifConfirmDelete} className="w-[40%] m-auto" alt="" /> */}
                         </div>
                     </ModalBody>
 
-                    <ModalFooter className="border-t">
+                    <ModalFooter>
                         <Button mr={3} onClick={onClose}>
                             Close
                         </Button>
