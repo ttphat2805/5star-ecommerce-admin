@@ -6,6 +6,9 @@
     @apply p-2 text-white rounded-md text-lg cursor-pointer;
 }
 
+.card {
+    @apply bg-white rounded-md;
+}
 .card-title {
     @apply text-xl font-semibold text-tbase;
 }
