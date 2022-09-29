@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { DefaultLayout } from '~/layouts/';
 import { privateRoutes, publicRoutes } from '~/routes';
 import './App.css';
-import PrivateRoutes from './components/PrivateRoutes';
+import PrivateRoutes from './layouts/PrivateRoutes';
 
 interface FragmentLayoutProps {
     Children: React.ComponentType;
