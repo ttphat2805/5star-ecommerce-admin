@@ -9,7 +9,7 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import images from '~/assets/images';
-import Image from '../Image';
+import Image from '../../../components/Image';
 const ModalConfirm = ({ children, handleDelete }: any) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
