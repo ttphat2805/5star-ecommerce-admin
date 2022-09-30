@@ -1,6 +1,6 @@
 import { FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { ErrorMessage, useField } from 'formik';
-const InputField = ({ label, value = '', ...props }: any) => {
+const SelectField = ({ label, value = '', ...props }: any) => {
     const [field, meta] = useField(props);
 
     return (
@@ -12,4 +12,4 @@ const InputField = ({ label, value = '', ...props }: any) => {
     );
 };
 
-export default InputField;
+export default SelectField;

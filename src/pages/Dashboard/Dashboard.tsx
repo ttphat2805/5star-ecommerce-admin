@@ -27,10 +27,10 @@ const Dashboard = () => {
                                 <Td>millimetres (mm)</Td>
                                 <Td isNumeric>25.4</Td>
                                 <Td className="flex">
-                                    <span className="bg-primary action-btn mr-2">
+                                    <span className="bg-primary btn mr-2">
                                         <FiEdit />
                                     </span>
-                                    <span className="bg-red-500 action-btn">
+                                    <span className="bg-red-500 btn">
                                         <IoCloseOutline />
                                     </span>
                                 </Td>
@@ -40,10 +40,10 @@ const Dashboard = () => {
                                 <Td>centimetres (cm)</Td>
                                 <Td isNumeric>30.48</Td>
                                 <Td className="flex">
-                                    <span className="bg-primary action-btn mr-2">
+                                    <span className="bg-primary btn mr-2">
                                         <FiEdit />
                                     </span>
-                                    <span className="bg-red-500 action-btn">
+                                    <span className="bg-red-500 btn">
                                         <IoCloseOutline />
                                     </span>
                                 </Td>
@@ -53,10 +53,10 @@ const Dashboard = () => {
                                 <Td>metres (m)</Td>
                                 <Td isNumeric>0.91444</Td>
                                 <Td className="flex">
-                                    <span className="bg-primary action-btn mr-2">
+                                    <span className="bg-primary btn mr-2">
                                         <FiEdit />
                                     </span>
-                                    <span className="bg-red-500 action-btn">
+                                    <span className="bg-red-500 btn">
                                         <IoCloseOutline />
                                     </span>
                                 </Td>

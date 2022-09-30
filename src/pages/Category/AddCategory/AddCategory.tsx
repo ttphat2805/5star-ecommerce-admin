@@ -1,7 +1,7 @@
 import { Button } from '@chakra-ui/react';
 import { Form, Formik, FormikProps } from 'formik';
 import Breadcrumb from '~/components/Breadcrumb';
-import { InputField } from '~/components/CustomField';
+import { InputField } from '~/layouts/components/CustomField';
 import { addProductSchema } from '~/utils/validationSchema';
 type Values = {
     name: string;

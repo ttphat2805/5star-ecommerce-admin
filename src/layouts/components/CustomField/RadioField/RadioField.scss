@@ -1,0 +1,54 @@
+.radio-field {
+    display: none;
+    &:checked {
+        + label {
+            &::before {
+                background: var(--primary);
+                border: 0.2rem solid #ccc;
+            }
+            color: var(--primary);
+        }
+        &::before {
+            background: white;
+            border-color: var(--primary);
+        }
+    }
+    &:disabled {
+        + label {
+            color: rgba(0, 0, 0, 0.397);
+            cursor: not-allowed;
+            &::before {
+                border: 0.2rem solid rgba(5, 5, 5, 0.199);
+                background: white;
+            }
+        }
+    }
+}
+.radio-field-label {
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    display: block;
+    padding: 1rem 1rem 1rem 3rem;
+    position: relative;
+    background: white;
+    white-space: no-wrap;
+    transition: all 0.15s ease;
+    &:hover {
+        color: var(--primary);
+        &::before {
+            background: white;
+            border-color: var(--primary);
+        }
+    }
+    &::before {
+        content: '';
+        position: absolute;
+        left: 1rem;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        border: 0.2rem solid #ccc;
+    }
+}
