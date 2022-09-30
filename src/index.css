@@ -2,10 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.action-btn {
-    @apply p-2 text-white rounded-md text-lg cursor-pointer;
-}
-
 .card {
     @apply bg-white rounded-md;
 }
@@ -19,4 +15,8 @@
 
 .is-invalid {
     @apply !border-red-600 !shadow-[0_0_0_1px] !shadow-red-500 transition-all duration-300;
+}
+
+.btn {
+    @apply p-2 rounded-md font-semibold text-base cursor-pointer;
 }
