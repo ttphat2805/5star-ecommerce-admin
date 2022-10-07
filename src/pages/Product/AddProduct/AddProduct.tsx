@@ -1,14 +1,14 @@
-import { Button, FormLabel } from '@chakra-ui/react';
-import { ErrorMessage, FieldArray, Form, Formik } from 'formik';
+import { Button, FormLabel, Table, Th, Thead, Tr } from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import { MdDeleteOutline } from 'react-icons/md';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField } from '~/layouts/components/CustomField';
 import FieldArrayClassify from '~/layouts/components/CustomField/FieldArrayClassify';
 import ImageUpload from '~/layouts/components/CustomField/ImageUpload';
 import SelectField from '~/layouts/components/CustomField/SelectField';
 import TextareaField from '~/layouts/components/CustomField/TextareaField';
+import FieldArrayTable from '~/layouts/components/FieldArrayTable';
 import { addProductSchema } from '~/utils/validationSchema';
 import './AddProduct.scss';
 type Values = {
@@ -20,6 +20,7 @@ type Values = {
     classify_1: Array<any>;
     name_classify_2: string;
     classify_2: Array<any>;
+    variable_attribute: Array<any>;
 };
 
 const initialValuesForm: any = {
@@ -31,6 +32,7 @@ const initialValuesForm: any = {
     classify_1: [{ attribute: '' }],
     name_classify_2: '',
     classify_2: [{ attribute: '' }],
+    variable_attribute: [],
 };
 
 const valuesImageObject = {
@@ -63,7 +65,7 @@ const AddProduct = () => {
     return (
         <div>
             <Breadcrumb currentPage="Thêm sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
-            <div className="add-product m-auto pb-[500px]">
+            <div className="add-product m-auto shadow-md rounded-md">
                 <div className="card rounded-md p-12">
                     <div className="form">
                         <div className="card-header p-3 border-b">
@@ -91,7 +93,6 @@ const AddProduct = () => {
                                         <div className="form-group">
                                             <TextareaField name="desc" label="Moo tar san pham" />
                                         </div>
-
                                         {/* UPLOAD IMAGE */}
                                         <div className="upload-image-group mt-3">
                                             <FormLabel className="text-tbase !flex items-center gap-[10px]">
@@ -117,7 +118,6 @@ const AddProduct = () => {
                                             </div>
                                         </div>
                                         {/*  END UPLOAD IMAGE */}
-
                                         {/* Attribute Product (Size, Color) */}
                                         <div className="add-attribute my-5">
                                             {!activeAttribute.classify_1 && (
@@ -125,8 +125,9 @@ const AddProduct = () => {
                                                     <FormLabel>Phân loại hàng</FormLabel>
                                                     <button
                                                         type="button"
-                                                        className="btn ml-4 border-dashed border-[1px] border-primary text-primary hover:bg-slate-100 
-                                                transition-all duration-300 !px-[30px] py-[6px]"
+                                                        className="btn ml-4 border-dashed border-[1px] border-primary
+                                                         text-primary hover:bg-slate-100 
+                                                            transition-all duration-300 !px-[30px] py-[6px] !text-sm !md:text-lg"
                                                         onClick={() =>
                                                             setActiceAttribute({ ...activeAttribute, classify_1: true })
                                                         }
@@ -135,10 +136,10 @@ const AddProduct = () => {
                                                     </button>
                                                 </div>
                                             )}
+
                                             {activeAttribute.classify_1 && (
                                                 <div className="attribute-product flex items-start md:flex-row flex-col flex-wrap my-8">
                                                     {/* CLASSIFY -- 1 */}
-
                                                     <div className="classify_1 text-center flex md:flex-row flex-col flex-wrap !h-fit my-5 md:my-0">
                                                         <FormLabel className="text-xl">Nhóm phân loại 1</FormLabel>
                                                         <div className="box relative w-[100%] bg-white px-5 py-5 rounded-md shadow-md border-t">
@@ -168,9 +169,7 @@ const AddProduct = () => {
                                                                 <FormLabel className="text-sm">
                                                                     Phân loại hàng
                                                                 </FormLabel>
-                                                                {/* FIELD ARRAY --- START */}
                                                                 <FieldArrayClassify formik={formik} name="classify_1" />
-                                                                {/* FIELD ARRAY --- END */}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -193,7 +192,6 @@ const AddProduct = () => {
                                                     {activeAttribute.classify_2 && (
                                                         <div className="classify_2 text-center md:mx-5 my-3 md:my-0 flex md:flex-row flex-col flex-wrap !h-fit ">
                                                             <FormLabel className="text-xl">Nhóm phân loại 2</FormLabel>
-
                                                             <div className="box relative  w-[100%] bg-white px-5 py-5 rounded-md shadow-md border-t">
                                                                 <div
                                                                     className="hide-attribute absolute top-0 right-0 cursor-pointer p-1 rounded-md"
@@ -234,13 +232,64 @@ const AddProduct = () => {
                                                 </div>
                                             )}
                                         </div>
+                                        {activeAttribute.classify_1 && (
+                                            <div className="variable-table">
+                                                <div className="form card md:w-[75%] w-full text-base overflow-x-auto shadow-xl p-5 my-5 border-t-[5px]">
+                                                    <Table colorScheme="gray" size="sm" className="table-fixed !w-auto">
+                                                        <Thead>
+                                                            <Tr>
+                                                                <Th className="!text-base !text-center">
+                                                                    {formik.values.name_classify_1 || 'Tên'}
+                                                                </Th>
+                                                                <Th className="!text-base !text-center">
+                                                                    {formik.values.name_classify_2 || 'Loai'}
+                                                                </Th>
+                                                                <Th className="!text-base !text-center !w-[200px]">
+                                                                    Giá sản phẩm
+                                                                </Th>
+                                                                <Th className="!text-base !text-center">Kho hàng</Th>
+                                                            </Tr>
+                                                        </Thead>
+                                                        <FieldArrayTable
+                                                            formik={formik}
+                                                            activeAttribute={activeAttribute}
+                                                        />
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        )}
 
-                                        <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                            <InputField type="number" name="price" label="Giá" />
-                                            <InputField type="number" name="warehouse" label="Kho hàng" />
+                                        {/* IMAGE UPLOAD FOLLOW CLASSIFY */}
+                                        <div className="image-upload-attribute flex gap-6 items-center flex-wrap mt-10">
+                                            {activeAttribute.classify_1 && (
+                                                <>
+                                                    <FormLabel> {formik.values.name_classify_1 || 'Tên'}</FormLabel>
+                                                    {formik.values.classify_1.length > 1 &&
+                                                        formik.values.classify_1?.map((item1: any, index: any) => (
+                                                            <>
+                                                                <ImageUpload
+                                                                    key={index}
+                                                                    image={image}
+                                                                    setImage={setImage}
+                                                                    imagePreview={imagePreview}
+                                                                    setImagePreview={setImagePreview}
+                                                                    name={`image_${item1.attribute}`}
+                                                                    label={item1.attribute}
+                                                                />
+                                                            </>
+                                                        ))}
+                                                </>
+                                            )}
                                         </div>
-                                        {/* End --- Price & Warehouse */}
+                                        {/* FIELD PRICE & WAREHOUSE WHEN NO ATTR */}
+                                        {!activeAttribute.classify_1 && (
+                                            <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                                <InputField type="number" name="price" label="Giá" />
+                                                <InputField type="number" name="warehouse" label="Kho hàng" />
+                                            </div>
+                                        )}
 
+                                        {/* End --- Price & Warehouse */}
                                         <div className="btn-action flex items-center justify-center mt-5">
                                             {/* isLoading={formik.isSubmitting} */}
                                             <Button type="submit" colorScheme="twitter">
