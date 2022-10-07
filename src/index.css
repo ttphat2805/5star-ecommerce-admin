@@ -20,3 +20,7 @@
 .btn {
     @apply p-2 rounded-md font-semibold text-base cursor-pointer;
 }
+
+.add-image.active {
+    @apply bg-slate-200 transition-all duration-300;
+}

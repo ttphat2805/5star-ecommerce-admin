@@ -16,9 +16,9 @@ const Header = () => {
     };
 
     return (
-        <div className="header fixed left-0 right-0">
+        <div className="header fixed left-0 right-0 z-30">
             <div
-                className={`bg-[#fff] header-container w-full shadow-md border-b border-[#e9edf4] z-[1] h-[75px]  tablet:shadow-none tablet:pl-[10px] transition-all ${
+                className={`bg-[#fff] relative header-container w-full shadow-md border-b border-[#e9edf4]  h-[75px]  tablet:shadow-none tablet:pl-[10px] transition-all ${
                     !isOpenMenu ? 'pl-[295px]' : 'pl-[95px]'
                 }`}
             >
@@ -36,7 +36,7 @@ const Header = () => {
                         <ul className="nav-list flex gap-[10px] items-center text-2xl text-tbase">
                             {/* SEARCH */}
                             <li className="cursor-pointer rounded-full">
-                                <div className="search">
+                                <div className="search z-20">
                                     <Popover>
                                         <PopoverTrigger>
                                             <Button className="!p-2 !bg-transparent hover:!bg-hover hover:text-primary">
@@ -70,7 +70,7 @@ const Header = () => {
                             </li>
                             {/* NOTIFICATION */}
                             <li className="cursor-pointer">
-                                <div className="notification relative">
+                                <div className="notification relative z-20">
                                     <Popover>
                                         <PopoverTrigger>
                                             <Button className="!p-2 !bg-transparent hover:!bg-hover hover:text-primary">
@@ -91,7 +91,7 @@ const Header = () => {
                                                 <div className="dropdown-header-title p-3 border-b">
                                                     <h3 className="text-base font-medium">Thông báo</h3>
                                                 </div>
-                                                <ul className="list-menu p-2 py-3">
+                                                <ul className="list-menu p-2 py-3 z-50">
                                                     {[1, 2, 3].map((menu, index) => (
                                                         <li key={index}>
                                                             <Link
@@ -115,7 +115,7 @@ const Header = () => {
                             </li>
                             {/* AVATAR */}
                             <li className="cursor-pointer">
-                                <div className="avatar w-9 h-9 relative">
+                                <div className="avatar w-9 h-9 relative z-20">
                                     <Popover>
                                         <PopoverTrigger>
                                             <Button className="!w-full !p-0 !bg-transparent">

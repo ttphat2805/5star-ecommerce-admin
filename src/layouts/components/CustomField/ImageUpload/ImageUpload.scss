@@ -1,0 +1,8 @@
+.add-image {
+    &:hover .icon-close {
+        opacity: 1;
+        right: 0;
+        visibility: visible;
+        cursor: pointer;
+    }
+}
