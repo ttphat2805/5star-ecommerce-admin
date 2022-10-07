@@ -54,8 +54,6 @@ const AddBanner = () => {
         const file: any = event.target.files;
         const dataImageUrl = URL?.createObjectURL(file[0]);
 
-        dragUploadRef.current?.classList.remove('border-red-500');
-
         setFileBanner(file);
         setImageURL(dataImageUrl);
     };

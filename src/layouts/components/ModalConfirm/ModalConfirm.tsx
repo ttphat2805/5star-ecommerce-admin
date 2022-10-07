@@ -1,44 +1,49 @@
 import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
     Button,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalOverlay,
     useDisclosure,
 } from '@chakra-ui/react';
-import images from '~/assets/images';
-import Image from '../../../components/Image';
-const ModalConfirm = ({ children, handleDelete }: any) => {
+import { useRef } from 'react';
+const ModalConfirm = ({ title = 'Xác nhận', children, handleDelete }: any) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
-
+    const cancelRef: any = useRef();
     return (
         <div>
             <span onClick={onOpen}>{children}</span>
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <div className="modal-confirm flex">
-                            <h3 className="text-2xl m-auto font-semibold text-red-500 py-4">
-                                Bạn có chắc muốn xóa không ?
-                            </h3>
-                            {/* <Image src={images.gifConfirmDelete} className="w-[40%] m-auto" alt="" /> */}
-                        </div>
-                    </ModalBody>
+            <AlertDialog isOpen={isOpen} leastDestructiveRef={cancelRef} onClose={onClose}>
+                <AlertDialogOverlay>
+                    <AlertDialogContent>
+                        <AlertDialogHeader fontSize="lg" fontWeight="bold">
+                            {title}
+                        </AlertDialogHeader>
 
-                    <ModalFooter>
-                        <Button mr={3} onClick={onClose}>
-                            Close
-                        </Button>
-                        <Button colorScheme="twitter" onClick={handleDelete}>
-                            Đồng ý
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
+                        <AlertDialogBody>
+                            Bạn có chắc chắn không? Bạn không thể hoàn tác hành động này sau đó..
+                        </AlertDialogBody>
+
+                        <AlertDialogFooter>
+                            <Button ref={cancelRef} onClick={onClose}>
+                                Hủy
+                            </Button>
+                            <Button
+                                colorScheme="red"
+                                onClick={() => {
+                                    handleDelete();
+                                    onClose();
+                                }}
+                                ml={3}
+                            >
+                                Xóa
+                            </Button>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialogOverlay>
+            </AlertDialog>
         </div>
     );
 };
