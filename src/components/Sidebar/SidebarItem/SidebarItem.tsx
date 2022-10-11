@@ -100,7 +100,14 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                                 className="menu-children pl-[20px]"
                             >
                                 {menu.children?.map((child: any, index: any) => (
-                                    <motion.div variants={menuItemAnimation} key={index} custom={index}>
+                                    <motion.div
+                                        variants={menuItemAnimation}
+                                        key={index}
+                                        custom={index}
+                                        initial="hidden"
+                                        animate="show"
+                                        exit="exit"
+                                    >
                                         <NavLink
                                             to={child.path || '#'}
                                             className="submenu-item__link flex items-center py-[6px] px-[15px] rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"

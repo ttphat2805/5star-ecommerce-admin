@@ -15,7 +15,6 @@ const FieldArrayClassify = ({ formik, name, label }: any) => {
                             {formik.values?.[name].map((classify: any, index: any) => (
                                 <div className="form-group flex my-3 text-left" key={index}>
                                     <InputField type="text" label={label} name={`${name}.${index}.attribute`} />
-
                                     {lengthValue > 1 && (
                                         <>
                                             <div
@@ -28,6 +27,8 @@ const FieldArrayClassify = ({ formik, name, label }: any) => {
                                     )}
                                 </div>
                             ))}
+
+                            {/*  */}
                             <button
                                 type="button"
                                 className="btn !text-sm !md:text-base  ml-4 border-dashed border-[1px] border-primary

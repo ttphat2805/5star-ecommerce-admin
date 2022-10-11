@@ -1,21 +1,24 @@
 import * as Yup from 'yup';
 
-export const addProductSchema = () => {
+export const addBannerSchema = () => {
     return Yup.object({
-        name: Yup.string().max(15, 'Must be 15 characters or less').required('Required'),
-        classify_1: Yup.array()
-            .of(
-                Yup.object().shape({
-                    attribute: Yup.string().required('Required'),
-                }),
-            )
-            .required('Must have friends'),
+        title: Yup.string().min(6, 'Tiêu đề chính phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề chính'),
+        sub_title: Yup.string().min(6, 'Tiêu đề phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề phụ'),
+        status: Yup.string().required('Vui lòng điền trạng thái'),
     });
 };
 
-export const addBannerSchema = () => {
+export const addCategorySchema = () => {
     return Yup.object({
-        title: Yup.string().required('Vui lòng nhập tiêu đề chính'),
-        sub_title: Yup.string().required('Vui lòng nhập tiêu đề phụ'),
+        name: Yup.string().min(6, 'Danh mục phải lớn hơn 6 kí tự').required('Vui lòng nhập danh mục'),
+        status: Yup.string().required('Vui lòng điền trạng thái'),
+    });
+};
+
+export const addSubCategorySchema = () => {
+    return Yup.object({
+        category: Yup.string().required('Vui lòng nhập danh mục chính'),
+        sub_category: Yup.string().min(6, 'Danh mục phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập Danh mục phụ'),
+        status_sub: Yup.string().required('Vui lòng điền trạng thái'),
     });
 };
