@@ -1,7 +1,6 @@
 import { FormControl, FormLabel, Input } from '@chakra-ui/react';
 import { ErrorMessage, FastField } from 'formik';
-const InputField = ({ label, className = '', name }: any) => {
-    // const [field, meta] = useField(props);
+const InputField = ({ label, className = '', name, ...props2 }: any) => {
     return (
         <FormControl>
             {label && <FormLabel className="text-tbase">{label}</FormLabel>}
@@ -12,10 +11,10 @@ const InputField = ({ label, className = '', name }: any) => {
                         <>
                             <Input
                                 {...field}
-                                required
+                                {...props2}
                                 className={`${className} ${meta.touched && meta.error && 'is-invalid'}`}
                             />
-                            <ErrorMessage component="span" name={field.name} className="error" />
+                            <ErrorMessage component="div" name={field.name} className="error w-full text-left" />
                         </>
                     );
                 }}

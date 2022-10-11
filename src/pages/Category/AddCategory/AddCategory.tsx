@@ -2,31 +2,30 @@ import { Button, FormLabel, Tab, TabList, TabPanel, TabPanels, Tabs } from '@cha
 import { Form, Formik, FormikProps } from 'formik';
 import { useState } from 'react';
 import Breadcrumb from '~/components/Breadcrumb';
-import Loading from '~/components/Loading';
 import { InputField } from '~/layouts/components/CustomField';
 import RadioField from '~/layouts/components/CustomField/RadioField';
 import SelectField from '~/layouts/components/CustomField/SelectField';
 import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchema';
 type Values = {
     name: string;
-    status: number;
+    status: string;
 };
 
 type ValuesSubCate = {
     category: string;
     sub_category: string;
-    status_sub: number;
+    status_sub: string;
 };
 
 const initialValuesForm_Category = {
     name: '',
-    status: 0,
+    status: '0',
 };
 
 const initialValuesForm_SubCategory = {
     category: '',
     sub_category: '',
-    status_sub: 0,
+    status_sub: '0',
 };
 const options: any = [
     { value: 'chocolate', label: 'Chocolate' },
@@ -39,10 +38,13 @@ const AddCategory = () => {
         return 1;
     });
 
-    const handleSubmitForm = (values: Values | ValuesSubCate) => {
+    const handleSubmitCategory = (values: Values | ValuesSubCate) => {
         console.log(values);
     };
 
+    const handleSubmitSubCategory = (values: Values | ValuesSubCate) => {
+        console.log(values);
+    };
     return (
         <div>
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
@@ -66,7 +68,7 @@ const AddCategory = () => {
                                         <Formik
                                             initialValues={initialValuesForm_Category}
                                             validationSchema={addCategorySchema}
-                                            onSubmit={(values) => console.log(values)}
+                                            onSubmit={(values: Values) => handleSubmitCategory(values)}
                                         >
                                             {(formik: FormikProps<Values>) => (
                                                 <Form>
@@ -91,11 +93,7 @@ const AddCategory = () => {
                                                         </div>
                                                     </div>
                                                     <div className="btn-action flex items-center justify-center mt-5">
-                                                        <Button
-                                                            isLoading={formik.isSubmitting}
-                                                            type="submit"
-                                                            colorScheme="twitter"
-                                                        >
+                                                        <Button type="submit" colorScheme="twitter">
                                                             Thêm danh mục
                                                         </Button>
                                                         <Button type="button" className="mx-2">
@@ -112,7 +110,7 @@ const AddCategory = () => {
                                         <Formik
                                             initialValues={initialValuesForm_SubCategory}
                                             validationSchema={addSubCategorySchema}
-                                            onSubmit={(values: ValuesSubCate) => handleSubmitForm(values)}
+                                            onSubmit={(values: ValuesSubCate) => handleSubmitSubCategory(values)}
                                         >
                                             {(formik: FormikProps<ValuesSubCate>) => (
                                                 <Form>
@@ -149,11 +147,7 @@ const AddCategory = () => {
                                                         </div>
                                                     </div>
                                                     <div className="btn-action flex items-center justify-center mt-5">
-                                                        <Button
-                                                            isLoading={formik.isSubmitting}
-                                                            type="submit"
-                                                            colorScheme="twitter"
-                                                        >
+                                                        <Button type="submit" colorScheme="twitter">
                                                             Thêm danh mục
                                                         </Button>
                                                         <Button type="button" className="mx-2">
