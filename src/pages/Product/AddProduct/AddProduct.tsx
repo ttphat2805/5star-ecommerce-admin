@@ -2,14 +2,15 @@ import { Button, FormLabel, Table, Th, Thead, Tr } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
+import * as Yup from 'yup';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField } from '~/layouts/components/CustomField';
 import FieldArrayClassify from '~/layouts/components/CustomField/FieldArrayClassify';
+import FieldArrayTable from '~/layouts/components/CustomField/FieldArrayTable';
 import ImageUpload from '~/layouts/components/CustomField/ImageUpload';
 import SelectField from '~/layouts/components/CustomField/SelectField';
 import TextareaField from '~/layouts/components/CustomField/TextareaField';
-import FieldArrayTable from '~/layouts/components/FieldArrayTable';
-import { addProductSchema } from '~/utils/validationSchema';
+
 import './AddProduct.scss';
 type Values = {
     name: string;
@@ -49,17 +50,23 @@ const options: any = [
     { value: 'vanilla', label: 'Vanilla' },
 ];
 
+export const addBannerSchema = () => {};
+
 const AddProduct = () => {
     const [image, setImage] = useState<Object | any>(valuesImageObject);
     const [imagePreview, setImagePreview] = useState<Object | any>(valuesImageObject);
+    const [imageAttrbute, setImageAttrbute] = useState<Object | any>();
     const [activeAttribute, setActiceAttribute] = useState<any>({
         classify_1: false,
         classify_2: false,
     });
+
     const handleSubmitForm = (values: Values) => {
         console.log(values);
+        console.log(image);
+        console.log('imageAttrbute: ', imageAttrbute);
+
         // console.log('imagePreview: ', imagePreview);
-        // console.log('image: ', image);
     };
 
     return (
@@ -69,7 +76,7 @@ const AddProduct = () => {
                 <div className="card rounded-md p-12">
                     <div className="form">
                         <div className="card-header p-3 border-b">
-                            <h3 className="card-title text-black">Thông tin sản phẩm của bạn</h3>
+                            <h3 className="card-title !text-black">Thông tin sản phẩm của bạn</h3>
                         </div>
                         <div className="card text-base p-3">
                             <Formik
@@ -122,7 +129,7 @@ const AddProduct = () => {
                                         <div className="add-attribute my-5">
                                             {!activeAttribute.classify_1 && (
                                                 <div className="flex mt-3 items-center">
-                                                    <FormLabel>Phân loại hàng</FormLabel>
+                                                    <FormLabel className="text-tbase">Phân loại hàng</FormLabel>
                                                     <button
                                                         type="button"
                                                         className="btn ml-4 border-dashed border-[1px] border-primary
@@ -234,8 +241,8 @@ const AddProduct = () => {
                                         </div>
                                         {activeAttribute.classify_1 && (
                                             <div className="variable-table">
-                                                <div className="form card md:w-[75%] w-full text-base overflow-x-auto shadow-xl p-5 my-5 border-t-[5px]">
-                                                    <Table colorScheme="gray" size="sm" className="table-fixed !w-auto">
+                                                <div className="form card md:w-[53.5%] w-full text-base overflow-x-auto shadow-xl p-5 my-5 border-t-[5px]">
+                                                    <Table colorScheme="gray" size="md" className="table-fixed !w-auto">
                                                         <Thead>
                                                             <Tr>
                                                                 <Th className="!text-base !text-center">
@@ -266,17 +273,15 @@ const AddProduct = () => {
                                                     <FormLabel> {formik.values.name_classify_1 || 'Tên'}</FormLabel>
                                                     {formik.values.classify_1.length > 1 &&
                                                         formik.values.classify_1?.map((item1: any, index: any) => (
-                                                            <>
-                                                                <ImageUpload
-                                                                    key={index}
-                                                                    image={image}
-                                                                    setImage={setImage}
-                                                                    imagePreview={imagePreview}
-                                                                    setImagePreview={setImagePreview}
-                                                                    name={`image_${item1.attribute}`}
-                                                                    label={item1.attribute}
-                                                                />
-                                                            </>
+                                                            <ImageUpload
+                                                                key={index}
+                                                                image={imageAttrbute}
+                                                                setImage={setImageAttrbute}
+                                                                imagePreview={imagePreview}
+                                                                setImagePreview={setImagePreview}
+                                                                name={`image_attribute_${index}`}
+                                                                label={item1.attribute}
+                                                            />
                                                         ))}
                                                 </>
                                             )}
@@ -285,7 +290,7 @@ const AddProduct = () => {
                                         {!activeAttribute.classify_1 && (
                                             <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
                                                 <InputField type="number" name="price" label="Giá" />
-                                                <InputField type="number" name="warehouse" label="Kho hàng" />
+                                                <InputField type="number" name="quantity" label="Kho hàng" />
                                             </div>
                                         )}
 
@@ -311,3 +316,18 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
+
+const addProductSchema = (ok = true) => {
+    if (ok) {
+        return Yup.object({
+            name: Yup.string()
+                .min(10, 'Tên sản phẩm phải lớn hơn 10 kí tự')
+                .required('Vui lòng điền tên sản phẩm')
+                .trim(),
+        });
+    } else {
+        return Yup.object({
+            category: Yup.string().required('Required'),
+        });
+    }
+};

@@ -6,7 +6,7 @@ const SelectField = ({ label, options, defaultValue, placeholder, ...props }: an
 
     return (
         <FormControl>
-            {label && <FormLabel>{label}</FormLabel>}
+            {label && <FormLabel className="text-tbase">{label}</FormLabel>}
             <Select {...field} {...props} className={`${meta.touched && meta.error && 'is-invalid'}`}>
                 <option hidden>{placeholder}</option>
                 {options?.map((category: string | any, index: number) => (
