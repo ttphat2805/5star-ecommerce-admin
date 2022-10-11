@@ -2,7 +2,6 @@ import { Button, FormLabel, Table, Th, Thead, Tr } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
-import * as Yup from 'yup';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField } from '~/layouts/components/CustomField';
 import FieldArrayClassify from '~/layouts/components/CustomField/FieldArrayClassify';
@@ -10,11 +9,13 @@ import FieldArrayTable from '~/layouts/components/CustomField/FieldArrayTable';
 import ImageUpload from '~/layouts/components/CustomField/ImageUpload';
 import SelectField from '~/layouts/components/CustomField/SelectField';
 import TextareaField from '~/layouts/components/CustomField/TextareaField';
+import { addProductSchema } from '~/utils/validationSchema';
 
 import './AddProduct.scss';
 type Values = {
     name: string;
-    price: string;
+    price: number;
+    quantity: number;
     category: string;
     description: string;
     name_classify_1: string;
@@ -27,13 +28,16 @@ type Values = {
 const initialValuesForm: any = {
     name: '',
     price: '',
+    quantity: '',
     category: '',
     description: '',
     name_classify_1: '',
     classify_1: [{ attribute: '' }],
     name_classify_2: '',
     classify_2: [{ attribute: '' }],
-    variable_attribute: [],
+    variable_attribute: [{ price: '' }, { quantity: '' }],
+    isClassify_1: false,
+    isClassify_2: false,
 };
 
 const valuesImageObject = {
@@ -63,10 +67,6 @@ const AddProduct = () => {
 
     const handleSubmitForm = (values: Values) => {
         console.log(values);
-        console.log(image);
-        console.log('imageAttrbute: ', imageAttrbute);
-
-        // console.log('imagePreview: ', imagePreview);
     };
 
     return (
@@ -87,7 +87,7 @@ const AddProduct = () => {
                                 {(formik: any) => (
                                     <Form>
                                         <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                            <InputField type="text" name="name" label="Tên sản phẩm" />
+                                            <InputField name="name" label="Tên sản phẩm" />
                                         </div>
                                         <div className="form-group">
                                             <SelectField
@@ -98,7 +98,7 @@ const AddProduct = () => {
                                             />
                                         </div>
                                         <div className="form-group">
-                                            <TextareaField name="desc" label="Moo tar san pham" />
+                                            <TextareaField name="description" label="Mô tả sản phẩm" />
                                         </div>
                                         {/* UPLOAD IMAGE */}
                                         <div className="upload-image-group mt-3">
@@ -135,9 +135,13 @@ const AddProduct = () => {
                                                         className="btn ml-4 border-dashed border-[1px] border-primary
                                                          text-primary hover:bg-slate-100 
                                                             transition-all duration-300 !px-[30px] py-[6px] !text-sm !md:text-lg"
-                                                        onClick={() =>
-                                                            setActiceAttribute({ ...activeAttribute, classify_1: true })
-                                                        }
+                                                        onClick={() => {
+                                                            setActiceAttribute({
+                                                                ...activeAttribute,
+                                                                classify_1: true,
+                                                            });
+                                                            formik.setFieldValue('isClassify_1', true);
+                                                        }}
                                                     >
                                                         Thêm nhóm phân loại
                                                     </button>
@@ -145,19 +149,20 @@ const AddProduct = () => {
                                             )}
 
                                             {activeAttribute.classify_1 && (
-                                                <div className="attribute-product flex items-start md:flex-row flex-col flex-wrap my-8">
+                                                <div className="attribute-product flex items-start md:flex-row flex-col flex-wrap my-8 grid-cols-2">
                                                     {/* CLASSIFY -- 1 */}
-                                                    <div className="classify_1 text-center flex md:flex-row flex-col flex-wrap !h-fit my-5 md:my-0">
+                                                    <div className="classify_1 text-center flex md:flex-row flex-col flex-wrap !h-fit my-5 md:my-0 col-span-1">
                                                         <FormLabel className="text-xl">Nhóm phân loại 1</FormLabel>
                                                         <div className="box relative w-[100%] bg-white px-5 py-5 rounded-md shadow-md border-t">
                                                             <div
                                                                 className="hide-attribute absolute top-0 right-0 cursor-pointer p-1 rounded-md"
-                                                                onClick={() =>
+                                                                onClick={() => {
                                                                     setActiceAttribute({
                                                                         ...activeAttribute,
                                                                         classify_1: false,
-                                                                    })
-                                                                }
+                                                                    });
+                                                                    formik.setFieldValue('isClassify_1', false);
+                                                                }}
                                                             >
                                                                 <IoCloseOutline className="text-lg" />
                                                             </div>
@@ -185,29 +190,31 @@ const AddProduct = () => {
                                                             type="button"
                                                             className="btn ml-4 border-dashed border-[1px] border-primary
                                                         text-primary hover:bg-slate-100 transition-all duration-300 !px-[30px] py-[6px]"
-                                                            onClick={() =>
+                                                            onClick={() => {
                                                                 setActiceAttribute({
                                                                     ...activeAttribute,
                                                                     classify_2: true,
-                                                                })
-                                                            }
+                                                                });
+                                                                formik.setFieldValue('isClassify_2', true);
+                                                            }}
                                                         >
                                                             Thêm nhóm phân loại hàng 2
                                                         </button>
                                                     )}
                                                     {/* CLASSIFY -- 2 */}
                                                     {activeAttribute.classify_2 && (
-                                                        <div className="classify_2 text-center md:mx-5 my-3 md:my-0 flex md:flex-row flex-col flex-wrap !h-fit ">
+                                                        <div className="classify_2 text-center lg:mx-5 my-5 lg:my-0 flex md:flex-row flex-col flex-wrap !h-fit col-span-1">
                                                             <FormLabel className="text-xl">Nhóm phân loại 2</FormLabel>
                                                             <div className="box relative  w-[100%] bg-white px-5 py-5 rounded-md shadow-md border-t">
                                                                 <div
                                                                     className="hide-attribute absolute top-0 right-0 cursor-pointer p-1 rounded-md"
-                                                                    onClick={() =>
+                                                                    onClick={() => {
                                                                         setActiceAttribute({
                                                                             ...activeAttribute,
                                                                             classify_2: false,
-                                                                        })
-                                                                    }
+                                                                        });
+                                                                        formik.setFieldValue('isClassify_2', false);
+                                                                    }}
                                                                 >
                                                                     <IoCloseOutline className="text-lg" />
                                                                 </div>
@@ -226,12 +233,11 @@ const AddProduct = () => {
                                                                     <FormLabel className="text-sm">
                                                                         Phân loại hàng
                                                                     </FormLabel>
-                                                                    {/* FIELD ARRAY --- START */}
+
                                                                     <FieldArrayClassify
                                                                         formik={formik}
                                                                         name="classify_2"
                                                                     />
-                                                                    {/* FIELD ARRAY --- END */}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -240,8 +246,8 @@ const AddProduct = () => {
                                             )}
                                         </div>
                                         {activeAttribute.classify_1 && (
-                                            <div className="variable-table">
-                                                <div className="form card md:w-[53.5%] w-full text-base overflow-x-auto shadow-xl p-5 my-5 border-t-[5px]">
+                                            <div className="variable-table grid lg:grid-cols-2 grid-cols-1">
+                                                <div className="form card !w-full text-base overflow-x-auto shadow-xl p-5 my-5 border-t-[5px]">
                                                     <Table colorScheme="gray" size="md" className="table-fixed !w-auto">
                                                         <Thead>
                                                             <Tr>
@@ -249,7 +255,7 @@ const AddProduct = () => {
                                                                     {formik.values.name_classify_1 || 'Tên'}
                                                                 </Th>
                                                                 <Th className="!text-base !text-center">
-                                                                    {formik.values.name_classify_2 || 'Loai'}
+                                                                    {formik.values.name_classify_2 || 'Loại'}
                                                                 </Th>
                                                                 <Th className="!text-base !text-center !w-[200px]">
                                                                     Giá sản phẩm
@@ -271,7 +277,7 @@ const AddProduct = () => {
                                             {activeAttribute.classify_1 && (
                                                 <>
                                                     <FormLabel> {formik.values.name_classify_1 || 'Tên'}</FormLabel>
-                                                    {formik.values.classify_1.length > 1 &&
+                                                    {formik.values.classify_1.length >= 1 &&
                                                         formik.values.classify_1?.map((item1: any, index: any) => (
                                                             <ImageUpload
                                                                 key={index}
@@ -316,18 +322,3 @@ const AddProduct = () => {
 };
 
 export default AddProduct;
-
-const addProductSchema = (ok = true) => {
-    if (ok) {
-        return Yup.object({
-            name: Yup.string()
-                .min(10, 'Tên sản phẩm phải lớn hơn 10 kí tự')
-                .required('Vui lòng điền tên sản phẩm')
-                .trim(),
-        });
-    } else {
-        return Yup.object({
-            category: Yup.string().required('Required'),
-        });
-    }
-};

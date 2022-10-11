@@ -2,7 +2,7 @@ import { Tbody, Td, Tr } from '@chakra-ui/react';
 import { FieldArray } from 'formik';
 import React from 'react';
 import InputField from '../InputField';
-const FieldArrayTable = ({ formik, activeAttribute }: any) => {
+const FieldArrayTable = ({ formik }: any) => {
     return (
         <FieldArray
             name="variable_attribute"
@@ -25,12 +25,14 @@ const FieldArrayTable = ({ formik, activeAttribute }: any) => {
                                             <Td className="!text-center">
                                                 <InputField
                                                     type="text"
+                                                    required
                                                     name={`variable_attribute.${index}.price.${item1.attribute}`}
                                                 />
                                             </Td>
                                             <Td className="!text-center">
                                                 <InputField
                                                     type="text"
+                                                    required
                                                     name={`variable_attribute.${index}.quantity.${item1.attribute}`}
                                                 />
                                             </Td>
