@@ -2,6 +2,7 @@ import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { FiEdit } from 'react-icons/fi';
 import { IoCloseOutline } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
+import Image from '~/components/Image';
 
 const ListProduct = () => {
     return (
@@ -14,52 +15,37 @@ const ListProduct = () => {
                             <Table className="w-full">
                                 <Thead>
                                     <Tr>
-                                        <Th>To convert</Th>
-                                        <Th>into</Th>
-                                        <Th isNumeric>multiply by</Th>
-                                        <Th>Hành động</Th>
+                                        <Th>#</Th>
+                                        <Th>Tên sản phẩm</Th>
+                                        <Th>Danh mục</Th>
+                                        <Th>Giá</Th>
+                                        <Th>Hình ảnh</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    <Tr>
-                                        <Td>inches</Td>
-                                        <Td>millimetres (mm)</Td>
-                                        <Td isNumeric>25.4</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>feet</Td>
-                                        <Td>centimetres (cm)</Td>
-                                        <Td isNumeric>30.48</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>yards</Td>
-                                        <Td>metres (m)</Td>
-                                        <Td isNumeric>0.91444</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
-                                        </Td>
-                                    </Tr>
+                                    {[1, 2, 3, 4, 5].map((data, index: any) => (
+                                        <Tr>
+                                            <Td>{index + 1}</Td>
+                                            <Td>Áo khoác mùa đông</Td>
+                                            <Td>Áo khoác</Td>
+                                            <Td>299.000 VNĐ</Td>
+                                            <Td>
+                                                <Image
+                                                    src="https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTPU5FJd5J9DPzYnlDdyDy5XoBtlmFARTn2fFoiBHOBk4y-WemUEx4SJWBuAdy4DRvZ_Nmj8Ylm8BK-_yRT-ttPb2XLOur9QeV0ril5djz3t4LqBfGrlDkpa-0KwJwdceUr9ywqnI4y&usqp=CAc"
+                                                    alt=""
+                                                    className="w-[30%] h-[30%]"
+                                                />
+                                            </Td>
+                                            <Td className="flex">
+                                                <span className="bg-primary btn mr-2">
+                                                    <FiEdit />
+                                                </span>
+                                                <span className="bg-red-500 btn">
+                                                    <IoCloseOutline />
+                                                </span>
+                                            </Td>
+                                        </Tr>
+                                    ))}
                                 </Tbody>
                             </Table>
                         </div>

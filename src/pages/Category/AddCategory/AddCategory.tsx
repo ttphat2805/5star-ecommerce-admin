@@ -2,9 +2,7 @@ import { Button, FormLabel, Tab, TabList, TabPanel, TabPanels, Tabs } from '@cha
 import { Form, Formik, FormikProps } from 'formik';
 import { useState } from 'react';
 import Breadcrumb from '~/components/Breadcrumb';
-import { InputField } from '~/layouts/components/CustomField';
-import RadioField from '~/layouts/components/CustomField/RadioField';
-import SelectField from '~/layouts/components/CustomField/SelectField';
+import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
 import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchema';
 type Values = {
     name: string;

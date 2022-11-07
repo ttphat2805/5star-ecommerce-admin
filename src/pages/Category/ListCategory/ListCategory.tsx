@@ -18,54 +18,30 @@ const ListProduct = () => {
                             <Table className="w-full">
                                 <Thead>
                                     <Tr>
-                                        <Th>To convert</Th>
-                                        <Th>into</Th>
-                                        <Th isNumeric>multiply by</Th>
+                                        <Th>#</Th>
+                                        <Th>Tên danh mục</Th>
+                                        <Th>Danh mục phụ</Th>
+                                        <Th>Trạng thái</Th>
                                         <Th>Hành động</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    <Tr>
-                                        <Td>inches</Td>
-                                        <Td>millimetres (mm)</Td>
-                                        <Td isNumeric>25.4</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>feet</Td>
-                                        <Td>centimetres (cm)</Td>
-                                        <Td isNumeric>30.48</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
-                                        </Td>
-                                    </Tr>
-                                    <Tr>
-                                        <Td>yards</Td>
-                                        <Td>metres (m)</Td>
-                                        <Td isNumeric>0.91444</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <ModalConfirm handleDelete={() => handleDelete('1')}>
+                                    {[1, 2, 3, 4].map((data, index: any) => (
+                                        <Tr>
+                                            <Td>{index + 1}</Td>
+                                            <Td>Áo</Td>
+                                            <Td>Áo khoác</Td>
+                                            <Td>Hiển thị</Td>
+                                            <Td className="flex">
+                                                <span className="bg-primary btn mr-2">
+                                                    <FiEdit />
+                                                </span>
+                                                <span className="bg-red-500 btn">
                                                     <IoCloseOutline />
-                                                </ModalConfirm>
-                                            </span>
-                                        </Td>
-                                    </Tr>
+                                                </span>
+                                            </Td>
+                                        </Tr>
+                                    ))}
                                 </Tbody>
                             </Table>
                         </div>

@@ -92,7 +92,7 @@ const Header = () => {
                                                     <h3 className="text-base font-medium">Thông báo</h3>
                                                 </div>
                                                 <ul className="list-menu p-2 py-3 z-50">
-                                                    {[1, 2, 3].map((menu, index) => (
+                                                    {[1].map((menu, index) => (
                                                         <li key={index}>
                                                             <Link
                                                                 to=""
@@ -146,7 +146,7 @@ const Header = () => {
                                                     </div>
                                                 </div>
                                                 <ul className="list-menu p-2 py-3">
-                                                    {[1, 2, 3].map((menu, index) => (
+                                                    {[1].map((menu, index) => (
                                                         <li key={index}>
                                                             <Link
                                                                 to=""

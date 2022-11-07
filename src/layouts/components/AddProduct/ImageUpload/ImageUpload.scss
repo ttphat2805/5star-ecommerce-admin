@@ -1,0 +1,13 @@
+.add-image {
+    &:hover .icon-close {
+        opacity: 1;
+        right: 2px;
+        visibility: visible;
+        cursor: pointer;
+        &:hover {
+            color: red;
+            background: rgba(65, 65, 65, 0.527);
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }
+    }
+}
