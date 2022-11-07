@@ -66,8 +66,13 @@ export const addProductSchema = () => {
             .min(30, 'Mô tả sản phẩm phải lớn hơn 30 kí tự')
             .required('Vui lòng nhập mô tả sản phẩm'),
 
-        name_classify_1: Yup.string().required('Vui lòng nhập tên nhóm phân loại'),
-
-        name_classify_2: Yup.string().required('Vui lòng nhập tên nhóm phân loại'),
+        name_classify_1: Yup.string().when('isClassify_1', {
+            is: true,
+            then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
+        }),
+        name_classify_2: Yup.string().when('isClassify_1', {
+            is: true,
+            then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
+        }),
     });
 };

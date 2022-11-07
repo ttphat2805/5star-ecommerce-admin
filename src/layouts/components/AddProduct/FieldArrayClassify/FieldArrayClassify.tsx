@@ -1,7 +1,7 @@
 import { FieldArray } from 'formik';
 import React from 'react';
 import { MdDeleteOutline } from 'react-icons/md';
-import InputField from '../InputField';
+import { InputField } from '../../CustomField';
 
 const FieldArrayClassify = ({ formik, name, label }: any) => {
     let lengthValue = formik.values?.[name].length;

@@ -3,8 +3,7 @@ import { Form, Formik, FormikProps } from 'formik';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Breadcrumb from '~/components/Breadcrumb';
 import Image from '~/components/Image';
-import { InputField } from '~/layouts/components/CustomField';
-import RadioField from '~/layouts/components/CustomField/RadioField';
+import { InputField, RadioField } from '~/layouts/components/CustomField';
 import { addBannerSchema } from '~/utils/validationSchema';
 import './AddBanner.scss';
 type Values = {

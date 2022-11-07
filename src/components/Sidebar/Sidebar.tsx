@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '~/app/hooks';
 import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
+import Logo from '../Logo';
 import { RouteSidebarMenu } from './routeSidebar';
 import './sidebar.scss';
 import SidebarItem from './SidebarItem';
@@ -55,7 +56,8 @@ const Sidebar = () => {
                         className="sidebar-header flex tablet:hidden justify-center items-center h-[75px] py-[19px] px-[17px] border-b border-right border-[#e9edf4]"
                     >
                         <Link to="/" className="branch-logo font-bold text-center text-primary">
-                            5Star
+                            {/* LOGO */}
+                            <Logo className="w-3/4 m-auto" />
                         </Link>
                     </motion.div>
                     <div className="side-main h-full">

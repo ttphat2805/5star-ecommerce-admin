@@ -1,7 +1,7 @@
 import { Tbody, Td, Tr } from '@chakra-ui/react';
 import { FieldArray } from 'formik';
 import React from 'react';
-import InputField from '../InputField';
+import { InputField } from '../../CustomField';
 const FieldArrayTable = ({ formik }: any) => {
     return (
         <FieldArray
