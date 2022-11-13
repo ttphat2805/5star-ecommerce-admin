@@ -76,3 +76,12 @@ export const addProductSchema = () => {
         }),
     });
 };
+
+// AUTH SCHEMA
+
+export const LoginSchema = () => {
+    return Yup.object({
+        username: Yup.string().required('Vui lòng điền tên đăng nhập'),
+        password: Yup.string().min(6, 'Mật khẩu phải lớn hơn 6 kí tự').required('Vui lòng điền mật khẩu'),
+    });
+};

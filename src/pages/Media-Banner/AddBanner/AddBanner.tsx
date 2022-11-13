@@ -4,18 +4,17 @@ import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import Breadcrumb from '~/components/Breadcrumb';
 import Image from '~/components/Image';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
+import MediaService from '~/services/MediaService';
+import UploadService from '~/services/UploadService';
+import { BannerType } from '~/utils/Types';
 import { addBannerSchema } from '~/utils/validationSchema';
 import './AddBanner.scss';
-type Values = {
-    title: string;
-    sub_title: string;
-    status: string;
-};
 
 const initialValues = {
     title: '',
     sub_title: '',
-    status: '0',
+    image: '',
+    status: 0,
 };
 
 const AddBanner = () => {
@@ -35,7 +34,7 @@ const AddBanner = () => {
         };
     }, [imageURL]);
 
-    const handleSubmitForm = (values: Values) => {
+    const handleSubmitForm = (values: BannerType) => {
         console.log(values);
         if (!fileBanner) {
             toast({
@@ -47,10 +46,25 @@ const AddBanner = () => {
                 isClosable: true,
             });
         }
+
+        const typeImage = fileBanner[0]?.type;
+        UploadService.UploadImage(typeImage, fileBanner[0]).then((resUpload) => {
+            if (resUpload.statusCode === 201) {
+                let dataSendRequest = {
+                    ...values,
+                    status: +values.status,
+                    image: resUpload.data.key,
+                };
+                MediaService.AddBanner(dataSendRequest).then((res) => {
+                    console.log('------ REQ BANNER', res);
+                });
+            }
+        });
     };
 
     const handleUploadFile = (event: ChangeEvent<HTMLInputElement>) => {
         const file: any = event.target.files;
+
         const dataImageUrl = URL?.createObjectURL(file[0]);
 
         setFileBanner(file);
@@ -72,7 +86,7 @@ const AddBanner = () => {
                                 validationSchema={addBannerSchema}
                                 onSubmit={(values) => handleSubmitForm(values)}
                             >
-                                {(formik: FormikProps<Values>) => (
+                                {(formik: FormikProps<BannerType>) => (
                                     <Form>
                                         <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
                                             <InputField type="text" name="title" label="Tiêu đề chính" />

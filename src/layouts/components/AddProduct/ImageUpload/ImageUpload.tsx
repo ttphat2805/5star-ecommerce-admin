@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { RiDeleteBin3Line } from 'react-icons/ri';
 import './ImageUpload.scss';
@@ -14,11 +14,16 @@ const ImageUpload = ({ image, setImage, imagePreview, setImagePreview, label, na
         setImage({ ...image, [name]: '' });
         setImagePreview({ ...imagePreview, [name]: '' });
     };
-    const dragUploadRef = useRef<HTMLHeadingElement>(null);
+    const dragUploadRef = useRef<HTMLDivElement>(null);
 
     const onDragEnter = () => dragUploadRef.current?.classList.add('active');
     const onDragLeave = () => dragUploadRef.current?.classList.remove('active');
     const onDrop = () => dragUploadRef.current?.classList.remove('active');
+
+    // handle remove Image URL old avoid memory leak
+    useEffect(() => {
+        return () => {};
+    }, []);
 
     return (
         <div className="upload-image-product text-center ">

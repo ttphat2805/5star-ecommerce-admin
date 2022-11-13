@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <input type="file" accept="image/*" id="file" />
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+        <script>
+            let file = document.querySelector('#file');
+            let image;
+            file.addEventListener('change', async (event) => {
+                image = event.target.files[0];
+                let res = await axios.post('http://localhost:4000/file', JSON.stringify({ type: image.type }), {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                console.log(res);
+                let url = res.data.data.url;
+                let key = res.data.data.key;
+                let arr = url.split('?');
+                console.log(image);
+                axios
+                    .put(url, image, {
+                        headers: {
+                            'Content-Type': image.type,
+                        },
+                    })
+                    .then((data) => {
+                        console.log(data);
+                        // axios.post("http://localhost:3000/file/destroy",JSON.stringify({key:key}),{
+                        //     headers: {
+                        //         "Content-Type": "application/json"
+                        //     }
+                        // }).then(data => {
+                        //     console.log(data);
+                        // })
+                    })
+                    .catch((err) => {
+                        console.log(2);
+                        console.log(err);
+                    });
+            });
+        </script>
+    </body>
+</html>
