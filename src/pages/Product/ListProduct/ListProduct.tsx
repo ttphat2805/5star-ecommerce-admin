@@ -1,10 +1,15 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { IoCloseOutline } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
 import Image from '~/components/Image';
 
 const ListProduct = () => {
+    const [product, setProduct] = useState();
+
+    const getAllProduct = () => {};
+
     return (
         <div>
             <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />

@@ -1,12 +1,12 @@
+import axios from 'axios';
 import Config from '~/config';
-import AxiosInstance from './AxiosInstance';
 
 let url: string = '';
 
-const UploadImage = async (typeImage: string, image: File) => {
-    let resDataImage: any = await AxiosInstance.post(
+const UploadImage = async (image: File) => {
+    let resDataImage: any = await axios.post(
         Config.apiUrl + 'file',
-        { type: typeImage },
+        { type: image.type },
         {
             headers: {
                 'Content-Type': 'application/json',
@@ -14,19 +14,17 @@ const UploadImage = async (typeImage: string, image: File) => {
         },
     );
 
-    if (resDataImage.statusCode === 201) {
-        const URL_UPLOAD = resDataImage.data.url;
-        console.log(URL_UPLOAD);
-        console.log(image);
+    if (resDataImage.data.statusCode === 201) {
+        const URL_UPLOAD = resDataImage.data.data.url;
 
-        let dataUpload = await AxiosInstance.put(URL_UPLOAD, image, {
+        await axios.put(URL_UPLOAD, image, {
             headers: {
                 'Content-Type': image.type,
             },
         });
     }
 
-    return resDataImage;
+    return resDataImage.data;
 };
 
 const UploadService = {

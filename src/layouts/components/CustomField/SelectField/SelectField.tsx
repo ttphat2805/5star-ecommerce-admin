@@ -11,11 +11,11 @@ const SelectField = ({ label, options, defaultValue, placeholder, ...props }: an
                 <option hidden>{placeholder}</option>
                 {options?.map((category: string | any, index: number) => (
                     <option key={index} value={category.value}>
-                        {category.value}
+                        {category.label}
                     </option>
                 ))}
             </Select>
-            <ErrorMessage component="span" name={field.name} className="error" />
+            <ErrorMessage component="span" name={field.name} className="error-validate" />
         </FormControl>
     );
 };

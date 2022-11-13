@@ -1,11 +1,27 @@
-import { Button, FormLabel, Tab, Table, TabList, TabPanel, TabPanels, Tabs, Th, Thead, Tr } from '@chakra-ui/react';
-import { FieldArray, Form, Formik } from 'formik';
-import { useState } from 'react';
+import {
+    Button,
+    FormLabel,
+    Tab,
+    Table,
+    TabList,
+    TabPanel,
+    TabPanels,
+    Tabs,
+    Th,
+    Thead,
+    Tr,
+    useToast,
+} from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import { useEffect, useState } from 'react';
 import { IoCloseOutline } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
 import { FieldArrayClassify, FieldArrayTable, ImageUpload } from '~/layouts/components/AddProduct';
 import InfoDetail from '~/layouts/components/AddProduct/InfoDetail';
 import { InputField, SelectField, TextareaField } from '~/layouts/components/CustomField';
+import CategoryService from '~/services/CategoryService';
+import ProductService from '~/services/ProductService';
+import UploadService from '~/services/UploadService';
 
 import { addProductSchema } from '~/utils/validationSchema';
 
@@ -15,6 +31,7 @@ type Values = {
     price: number;
     quantity: number;
     category: string;
+    subCategory: string;
     description: string;
     name_classify_1: string;
     classify_1: Array<any>;
@@ -23,7 +40,7 @@ type Values = {
     variable_attribute: Array<any>;
     isClassify_1: boolean;
     isClassify_2: boolean;
-    infoDetail: Array<any>;
+    info_detail: Array<any>;
 };
 
 const initialValuesForm: Values = {
@@ -31,6 +48,7 @@ const initialValuesForm: Values = {
     price: 0,
     quantity: 0,
     category: '',
+    subCategory: '',
     description: '',
     name_classify_1: '',
     classify_1: [{ attribute: '' }],
@@ -39,7 +57,7 @@ const initialValuesForm: Values = {
     variable_attribute: [{ price: '' }, { quantity: '' }],
     isClassify_1: false,
     isClassify_2: false,
-    infoDetail: [''],
+    info_detail: [''],
 };
 
 const valuesImageObject = {
@@ -49,12 +67,6 @@ const valuesImageObject = {
     image_4: '',
     image_5: '',
 };
-
-const options: any = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-];
 
 export const addBannerSchema = () => {};
 
@@ -68,8 +80,76 @@ const AddProduct = () => {
         classify_2: false,
     });
 
-    const handleSubmitForm = (values: Values) => {
-        console.log(values);
+    const [category, setCategory] = useState();
+    const [subCategory, setSubCategory] = useState();
+    // END STATE
+
+    const toast = useToast();
+
+    const getAllCategory = () => {
+        let category: any = [];
+        let subCategory: any = [];
+        CategoryService.getAllCategory().then((res: any) => {
+            if (res.statusCode === 200) {
+                res.data[0].forEach((itemCat: any) => {
+                    if (!itemCat.parent_id) {
+                        category.push({ label: itemCat.name, value: itemCat.id });
+                    } else {
+                        subCategory.push({ label: itemCat.name, value: itemCat.id });
+                    }
+                });
+
+                setCategory(category);
+                setSubCategory(subCategory);
+            }
+        });
+    };
+
+    useEffect(() => {
+        getAllCategory();
+    }, []);
+
+    const handleSubmitForm = async (values: Values) => {
+        let imageSendRequest: any = [];
+        const tempArray = Object.values(image);
+        const imageArray: any = [];
+        for (let image of tempArray) {
+            if (image) {
+                imageArray.push(image);
+            }
+        }
+
+        console.log('imageArray: ', imageArray);
+        // console.log(values);
+        imageArray.forEach((imageItem: any, index: number) => {
+            if (imageItem) {
+                UploadService.UploadImage(imageItem).then((res: any) => {
+                    if (res.statusCode === 201) {
+                        imageSendRequest.push(res.data.linkBucket + res.data.key);
+                        if (index === imageArray.length - 1) {
+                            let dataSendRequest = {
+                                ...values,
+                                image: imageSendRequest,
+                                slug: 'ok-hahahah-pooooo',
+                                id_category: values.subCategory ? +values.subCategory : +values.category,
+                            };
+
+                            ProductService.addProduct(dataSendRequest).then((res: any) => {
+                                console.log(res);
+                                if (res.statusCode === 201) {
+                                    toast({
+                                        position: 'top-right',
+                                        title: 'Tạo sản phẩm mới thành công',
+                                        duration: 2000,
+                                        status: 'success',
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
     };
 
     return (
@@ -84,7 +164,7 @@ const AddProduct = () => {
                         <div className="card text-base p-3">
                             <Formik
                                 initialValues={initialValuesForm}
-                                validationSchema={addProductSchema}
+                                // validationSchema={addProductSchema}
                                 onSubmit={(values: Values) => handleSubmitForm(values)}
                             >
                                 {(formik: any) => (
@@ -113,15 +193,15 @@ const AddProduct = () => {
                                                                 name="category"
                                                                 placeholder="Chọn danh mục chính"
                                                                 label="Danh mục chính"
-                                                                options={options}
+                                                                options={category}
                                                             />
                                                         </div>
                                                         <div className="form-group">
                                                             <SelectField
-                                                                name="category"
+                                                                name="subCategory"
                                                                 placeholder="Chọn danh mục phụ"
                                                                 label="Danh mục phụ"
-                                                                options={options}
+                                                                options={subCategory}
                                                             />
                                                         </div>
                                                     </div>
@@ -131,7 +211,7 @@ const AddProduct = () => {
 
                                                     <div className="info-detail">
                                                         <FormLabel className="text-sm">Thông tin chi tiết</FormLabel>
-                                                        <InfoDetail formik={formik} name="infoDetail" />
+                                                        <InfoDetail formik={formik} name="info_detail" />
                                                     </div>
                                                 </TabPanel>
                                                 <TabPanel>
