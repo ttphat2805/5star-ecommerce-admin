@@ -14,7 +14,7 @@ const InputField = ({ label, className = '', name, ...props2 }: any) => {
                                 {...props2}
                                 className={`${className} ${meta.touched && meta.error && 'is-invalid'}`}
                             />
-                            <ErrorMessage component="div" name={field.name} className="error w-full text-left" />
+                            <ErrorMessage component="div" name={field.name} className="error-validate" />
                         </>
                     );
                 }}

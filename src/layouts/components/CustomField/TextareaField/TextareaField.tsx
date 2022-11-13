@@ -14,7 +14,7 @@ const TextareaField = ({ label, name, ...props }: any) => {
                                 {...field}
                                 className={`${meta.touched && meta.error && 'is-invalid'}`}
                             />
-                            <ErrorMessage component="span" name={field.name} className="error" />
+                            <ErrorMessage component="span" name={field.name} className="error-validate" />
                         </>
                     );
                 }}

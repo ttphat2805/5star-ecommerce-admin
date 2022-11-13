@@ -15,7 +15,7 @@ const RadioField = ({ label, id, ...props }: any) => {
             <label className="radio-field-label" htmlFor={id}>
                 {label}
             </label>
-            <ErrorMessage component="span" name={field.name} className="error" />
+            <ErrorMessage component="span" name={field.name} className="error-validate" />
         </>
     );
 };

@@ -1,8 +1,10 @@
-import { Button, FormLabel, Tab, TabList, TabPanel, TabPanels, Tabs } from '@chakra-ui/react';
+import { Button, FormLabel, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from '@chakra-ui/react';
 import { Form, Formik, FormikProps } from 'formik';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
+import CategoryService from '~/services/CategoryService';
+import { toSlug } from '~/utils/Slug';
 import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchema';
 type Values = {
     name: string;
@@ -25,23 +27,69 @@ const initialValuesForm_SubCategory = {
     sub_category: '',
     status_sub: '0',
 };
-const options: any = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' },
-];
 
 const AddCategory = () => {
     const [defaultTab, setDefaultTab] = useState(() => {
         return 1;
     });
 
-    const handleSubmitCategory = (values: Values | ValuesSubCate) => {
+    const [category, setCategory] = useState();
+    // END STATE
+    const toast = useToast();
+
+    const handleSubmitCategory = (values: any) => {
         console.log(values);
+        let dataSendRequest = {
+            ...values,
+            slug: toSlug(values.name),
+            status: +values.status,
+        };
+        requestAddCategory(dataSendRequest);
     };
 
-    const handleSubmitSubCategory = (values: Values | ValuesSubCate) => {
+    const requestAddCategory = (data: any) => {
+        CategoryService.addCategory(data).then((res: any) => {
+            console.log(res);
+            if (res.statusCode === 201) {
+                toast({
+                    position: 'top-right',
+                    title: 'Tạo sản phẩm mới thành công',
+                    duration: 2000,
+                    status: 'success',
+                });
+            }
+        });
+    };
+
+    const getAllCategory = () => {
+        let category: any = [];
+        CategoryService.getAllCategory().then((res: any) => {
+            if (res.statusCode === 200) {
+                res.data[0].forEach((itemCat: any) => {
+                    if (!itemCat.parent_id) {
+                        category.push({ label: itemCat.name, value: itemCat.id });
+                    }
+                });
+
+                setCategory(category);
+            }
+        });
+    };
+
+    useEffect(() => {
+        getAllCategory();
+    }, []);
+
+    const handleSubmitSubCategory = (values: any) => {
         console.log(values);
+        let dataSendRequest = {
+            name: values.sub_category,
+            parent_id: +values.category,
+            slug: toSlug(values.sub_category),
+            status: +values.status_sub,
+        };
+        console.log('dataSendRequest: ', dataSendRequest);
+        requestAddCategory(dataSendRequest);
     };
     return (
         <div>
@@ -117,7 +165,7 @@ const AddCategory = () => {
                                                             name="category"
                                                             placeholder="Chọn danh mục chính..."
                                                             label="Danh mục chính"
-                                                            options={options}
+                                                            options={category}
                                                         />
                                                     </div>
                                                     <div className=" my-3 form-group grid gird-cols-1 md:grid-cols-2 gap-2">

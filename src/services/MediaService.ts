@@ -1,5 +1,5 @@
 import Config from '~/config';
-import { BannerType, LoginType } from '~/utils/Types';
+import { BannerType } from '~/utils/Types';
 import AxiosInstance from './AxiosInstance';
 
 let url: string = 'banner';

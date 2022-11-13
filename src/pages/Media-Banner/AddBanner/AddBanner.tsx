@@ -35,29 +35,46 @@ const AddBanner = () => {
     }, [imageURL]);
 
     const handleSubmitForm = (values: BannerType) => {
-        console.log(values);
         if (!fileBanner) {
             toast({
                 title: 'Cảnh báo',
-                position: 'top',
+                position: 'top-right',
                 description: 'Vui lòng chọn file ảnh',
                 status: 'warning',
-                duration: 1000,
-                isClosable: true,
+                duration: 2000,
             });
         }
 
-        const typeImage = fileBanner[0]?.type;
-        UploadService.UploadImage(typeImage, fileBanner[0]).then((resUpload) => {
+        UploadService.UploadImage(fileBanner[0]).then((resUpload) => {
             if (resUpload.statusCode === 201) {
+                let image = resUpload.data.linkBucket + resUpload.data.key;
                 let dataSendRequest = {
                     ...values,
                     status: +values.status,
-                    image: resUpload.data.key,
+                    image,
                 };
-                MediaService.AddBanner(dataSendRequest).then((res) => {
-                    console.log('------ REQ BANNER', res);
-                });
+                MediaService.AddBanner(dataSendRequest).then(
+                    (res: any) => {
+                        if (res.statusCode === 201) {
+                            toast({
+                                position: 'top-right',
+                                title: 'Tạo banner mới thành công',
+                                duration: 2000,
+                                status: 'success',
+                            });
+                        }
+                    },
+                    // ERROR ADD BANNER
+                    (err) => {
+                        console.log(err);
+                        toast({
+                            position: 'top-right',
+                            title: 'Tạo banner thất bại',
+                            duration: 2000,
+                            status: 'error',
+                        });
+                    },
+                );
             }
         });
     };
