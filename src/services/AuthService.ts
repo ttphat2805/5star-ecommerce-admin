@@ -1,14 +1,15 @@
 import Config from '~/config';
+import { LoginType } from '~/utils/Types';
 import AxiosInstance from './AxiosInstance';
 
-let url: string = 'api/auth/user';
+let url: string = 'auth';
 
-const signUp = (data: any) => {
-    return AxiosInstance.post(Config.apiUrl + url + '/sigup', data);
+const signIn = (data: LoginType) => {
+    return AxiosInstance.post(Config.apiUrl + url + '/login', data);
 };
 
 const AuthService = {
-    signUp,
+    signIn,
 };
 
 export default AuthService;

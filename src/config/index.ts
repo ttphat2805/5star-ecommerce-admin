@@ -1,4 +1,4 @@
 const Config = {
-    apiUrl: 'http://localhost:4001/',
+    apiUrl: 'http://localhost:4000/',
 };
 export default Config;

@@ -1,0 +1,34 @@
+.shape-animations {
+    position: relative;
+    height: 100vh;
+
+    .shape-1 {
+        position: absolute;
+        top: 100px;
+        left: 50px;
+        z-index: 0;
+        filter: blur(30px);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-image: linear-gradient(to top, #0c3483 0%, #a2b6df 100%, #6b8cce 100%, #a2b6df 100%);
+        animation: radiusFancy 5s ease-in-out infinite;
+    }
+}
+
+@keyframes radiusFancy {
+    0% {
+        transform: translateY(-20px);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-size: 100% 100%;
+    }
+    50% {
+        transform: translateY(-50px);
+
+        border-radius: 30% 60% 70% 40% / 50% 60% 70% 40%;
+        background-size: 300% 150%;
+    }
+    100% {
+        transform: translateY(-20px);
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        background-size: 100% 100%;
+    }
+}

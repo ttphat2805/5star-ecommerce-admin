@@ -9,10 +9,6 @@
     @apply text-xl font-semibold text-tbase;
 }
 
-.error {
-    @apply text-sm text-red-500;
-}
-
 .is-invalid {
     @apply !border-red-600 !shadow-[0_0_0_1px] !shadow-red-500 transition-all duration-300;
 }
@@ -23,4 +19,8 @@
 
 .add-image.active {
     @apply bg-slate-200 transition-all duration-300;
+}
+
+.error-validate {
+    @apply text-sm text-red-500 text-left w-full;
 }
