@@ -5,27 +5,28 @@ import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
 import CategoryService from '~/services/CategoryService';
 import { toSlug } from '~/utils/Slug';
+import { Category, OptionsSelect } from '~/utils/Types';
 import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchema';
 type Values = {
     name: string;
-    status: string;
+    status: number;
 };
 
 type ValuesSubCate = {
     category: string;
     sub_category: string;
-    status_sub: string;
+    status_sub: number;
 };
 
 const initialValuesForm_Category = {
     name: '',
-    status: '0',
+    status: 0,
 };
 
 const initialValuesForm_SubCategory = {
     category: '',
     sub_category: '',
-    status_sub: '0',
+    status_sub: 0,
 };
 
 const AddCategory = () => {
@@ -33,21 +34,11 @@ const AddCategory = () => {
         return 1;
     });
 
-    const [category, setCategory] = useState();
+    const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
     // END STATE
     const toast = useToast();
 
-    const handleSubmitCategory = (values: any) => {
-        console.log(values);
-        let dataSendRequest = {
-            ...values,
-            slug: toSlug(values.name),
-            status: +values.status,
-        };
-        requestAddCategory(dataSendRequest);
-    };
-
-    const requestAddCategory = (data: any) => {
+    const requestAddCategory = (data: Category) => {
         CategoryService.addCategory(data).then((res: any) => {
             console.log(res);
             if (res.statusCode === 201) {
@@ -62,16 +53,16 @@ const AddCategory = () => {
     };
 
     const getAllCategory = () => {
-        let category: any = [];
+        let category: OptionsSelect = [];
         CategoryService.getAllCategory().then((res: any) => {
             if (res.statusCode === 200) {
-                res.data[0].forEach((itemCat: any) => {
+                res.data[0].forEach((itemCat: Category) => {
                     if (!itemCat.parent_id) {
                         category.push({ label: itemCat.name, value: itemCat.id });
                     }
                 });
 
-                setCategory(category);
+                setOptionsCategory(category);
             }
         });
     };
@@ -80,17 +71,25 @@ const AddCategory = () => {
         getAllCategory();
     }, []);
 
-    const handleSubmitSubCategory = (values: any) => {
-        console.log(values);
-        let dataSendRequest = {
+    const handleSubmitSubCategory = (values: ValuesSubCate) => {
+        let dataSendRequest: Category = {
             name: values.sub_category,
             parent_id: +values.category,
             slug: toSlug(values.sub_category),
             status: +values.status_sub,
         };
-        console.log('dataSendRequest: ', dataSendRequest);
         requestAddCategory(dataSendRequest);
     };
+
+    const handleSubmitCategory = (values: Values) => {
+        let dataSendRequest = {
+            ...values,
+            slug: toSlug(values.name),
+            status: +values.status,
+        };
+        requestAddCategory(dataSendRequest);
+    };
+
     return (
         <div>
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
@@ -165,7 +164,7 @@ const AddCategory = () => {
                                                             name="category"
                                                             placeholder="Chọn danh mục chính..."
                                                             label="Danh mục chính"
-                                                            options={category}
+                                                            options={optionsCategory}
                                                         />
                                                     </div>
                                                     <div className=" my-3 form-group grid gird-cols-1 md:grid-cols-2 gap-2">

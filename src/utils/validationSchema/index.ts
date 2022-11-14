@@ -21,8 +21,10 @@ export const addCategorySchema = () => {
 
 export const addSubCategorySchema = () => {
     return Yup.object({
-        category: Yup.string().required('Vui lòng nhập danh mục chính'),
-        sub_category: Yup.string().min(6, 'Danh mục phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập Danh mục phụ'),
+        category: Yup.string().required('Vui lòng chọn danh mục chính'),
+        sub_category: Yup.string()
+            .min(6, 'Danh mục phụ phải lớn hơn 6 kí tự')
+            .required('Vui lòng nhập tên danh mục phụ'),
         status_sub: Yup.string().required('Vui lòng điền trạng thái'),
     });
 };

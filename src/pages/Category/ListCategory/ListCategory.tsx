@@ -1,16 +1,34 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { FiEdit } from 'react-icons/fi';
-import { IoCloseOutline } from 'react-icons/io5';
+import { useEffect, useState } from 'react';
+import { AiFillEdit } from 'react-icons/ai';
+import { IoClose } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
+import CategoryService from '~/services/CategoryService';
+
 const ListProduct = () => {
+    const [category, setCategory] = useState();
+    // END STATE
     const handleDelete = (id: string | any) => {
         console.log('delete', id);
     };
 
+    const getAllCategory = () => {
+        CategoryService.getAllCategory().then((res: any) => {
+            if (res.statusCode === 200) {
+                setCategory(res.data);
+            }
+        });
+    };
+
+    useEffect(() => {
+        getAllCategory();
+    }, []);
+
     return (
         <div>
-            <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
+            <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
+
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">
@@ -27,17 +45,19 @@ const ListProduct = () => {
                                 </Thead>
                                 <Tbody>
                                     {[1, 2, 3, 4].map((data, index: any) => (
-                                        <Tr>
+                                        <Tr key={index}>
                                             <Td>{index + 1}</Td>
                                             <Td>Áo</Td>
                                             <Td>Áo khoác</Td>
                                             <Td>Hiển thị</Td>
                                             <Td className="flex">
-                                                <span className="bg-primary btn mr-2">
-                                                    <FiEdit />
+                                                <span className="bg-primary btn mr-2 text-white">
+                                                    <AiFillEdit className="text-lg" />
                                                 </span>
-                                                <span className="bg-red-500 btn">
-                                                    <IoCloseOutline />
+                                                <span className="bg-red-500 btn text-white ">
+                                                    <ModalConfirm handleConfirm={handleDelete}>
+                                                        <IoClose className="text-lg" />
+                                                    </ModalConfirm>
                                                 </span>
                                             </Td>
                                         </Tr>
