@@ -165,7 +165,7 @@ const AddProduct = () => {
                         <div className="card text-base p-3">
                             <Formik
                                 initialValues={initialValuesForm}
-                                validationSchema={addProductSchema}
+                                // validationSchema={addProductSchema}
                                 onSubmit={(values: Values) => handleSubmitForm(values)}
                             >
                                 {(formik: any) => (

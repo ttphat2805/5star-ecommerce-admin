@@ -44,7 +44,7 @@ const AddCategory = () => {
             if (res.statusCode === 201) {
                 toast({
                     position: 'top-right',
-                    title: 'Tạo sản phẩm mới thành công',
+                    title: 'Tạo danh mục mới thành công',
                     duration: 2000,
                     status: 'success',
                 });

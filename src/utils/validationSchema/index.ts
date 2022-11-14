@@ -13,7 +13,7 @@ export const addCategorySchema = () => {
         name: Yup.string()
             .strict(false)
             .trim()
-            .min(6, 'Danh mục phải lớn hơn 6 kí tự')
+            .min(1, 'Danh mục phải lớn hơn 6 kí tự')
             .required('Vui lòng nhập danh mục'),
         status: Yup.string().required('Vui lòng điền trạng thái'),
     });
@@ -23,7 +23,7 @@ export const addSubCategorySchema = () => {
     return Yup.object({
         category: Yup.string().required('Vui lòng chọn danh mục chính'),
         sub_category: Yup.string()
-            .min(6, 'Danh mục phụ phải lớn hơn 6 kí tự')
+            .min(1, 'Danh mục phụ phải lớn hơn 6 kí tự')
             .required('Vui lòng nhập tên danh mục phụ'),
         status_sub: Yup.string().required('Vui lòng điền trạng thái'),
     });
@@ -34,7 +34,7 @@ export const addProductSchema = () => {
         name: Yup.string().min(10, 'Tên sản phẩm phải lớn hơn 10 kí tự').required('Vui lòng điền tên sản phẩm'),
 
         classify_1: Yup.array().when('isClassify_1', {
-            is: true,
+            is: false,
             then: Yup.array().of(
                 Yup.object().shape({
                     attribute: Yup.string().required('Phân loại hàng không được bỏ trống'),
@@ -44,7 +44,7 @@ export const addProductSchema = () => {
         }),
 
         classify_2: Yup.array().when('isClassify_2', {
-            is: true,
+            is: false,
             then: Yup.array().of(
                 Yup.object().shape({
                     attribute: Yup.string().required('Phân loại hàng không được bỏ trống'),
