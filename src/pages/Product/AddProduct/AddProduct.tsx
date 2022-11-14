@@ -22,6 +22,8 @@ import { InputField, SelectField, TextareaField } from '~/layouts/components/Cus
 import CategoryService from '~/services/CategoryService';
 import ProductService from '~/services/ProductService';
 import UploadService from '~/services/UploadService';
+import { toSlug } from '~/utils/Slug';
+import { Category, OptionsSelect } from '~/utils/Types';
 
 import { addProductSchema } from '~/utils/validationSchema';
 
@@ -79,19 +81,18 @@ const AddProduct = () => {
         classify_1: false,
         classify_2: false,
     });
-
-    const [category, setCategory] = useState();
-    const [subCategory, setSubCategory] = useState();
+    const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
+    const [optionsSubCategory, setOptionsSubCategory] = useState<OptionsSelect>();
     // END STATE
 
     const toast = useToast();
 
     const getAllCategory = () => {
-        let category: any = [];
-        let subCategory: any = [];
+        let category: OptionsSelect = [];
+        let subCategory: OptionsSelect = [];
         CategoryService.getAllCategory().then((res: any) => {
             if (res.statusCode === 200) {
-                res.data[0].forEach((itemCat: any) => {
+                res.data[0].forEach((itemCat: Category) => {
                     if (!itemCat.parent_id) {
                         category.push({ label: itemCat.name, value: itemCat.id });
                     } else {
@@ -99,8 +100,8 @@ const AddProduct = () => {
                     }
                 });
 
-                setCategory(category);
-                setSubCategory(subCategory);
+                setOptionsCategory(category);
+                setOptionsSubCategory(subCategory);
             }
         });
     };
@@ -110,17 +111,17 @@ const AddProduct = () => {
     }, []);
 
     const handleSubmitForm = async (values: Values) => {
-        let imageSendRequest: any = [];
+        let imageSendRequest: string[] = [];
         const tempArray = Object.values(image);
         const imageArray: any = [];
         for (let image of tempArray) {
+            console.log(image);
+
             if (image) {
                 imageArray.push(image);
             }
         }
-
-        console.log('imageArray: ', imageArray);
-        // console.log(values);
+        console.log(values);
         imageArray.forEach((imageItem: any, index: number) => {
             if (imageItem) {
                 UploadService.UploadImage(imageItem).then((res: any) => {
@@ -130,7 +131,7 @@ const AddProduct = () => {
                             let dataSendRequest = {
                                 ...values,
                                 image: imageSendRequest,
-                                slug: 'ok-hahahah-pooooo',
+                                slug: toSlug(values.name),
                                 id_category: values.subCategory ? +values.subCategory : +values.category,
                             };
 
@@ -164,7 +165,7 @@ const AddProduct = () => {
                         <div className="card text-base p-3">
                             <Formik
                                 initialValues={initialValuesForm}
-                                // validationSchema={addProductSchema}
+                                validationSchema={addProductSchema}
                                 onSubmit={(values: Values) => handleSubmitForm(values)}
                             >
                                 {(formik: any) => (
@@ -193,7 +194,7 @@ const AddProduct = () => {
                                                                 name="category"
                                                                 placeholder="Chọn danh mục chính"
                                                                 label="Danh mục chính"
-                                                                options={category}
+                                                                options={optionsCategory}
                                                             />
                                                         </div>
                                                         <div className="form-group">
@@ -201,7 +202,7 @@ const AddProduct = () => {
                                                                 name="subCategory"
                                                                 placeholder="Chọn danh mục phụ"
                                                                 label="Danh mục phụ"
-                                                                options={subCategory}
+                                                                options={optionsSubCategory}
                                                             />
                                                         </div>
                                                     </div>

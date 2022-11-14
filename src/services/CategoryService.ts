@@ -1,9 +1,10 @@
 import Config from '~/config';
+import { Category } from '~/utils/Types';
 import AxiosInstance from './AxiosInstance';
 
 let url: string = 'category';
 
-const addCategory = (data: any) => {
+const addCategory = (data: Category) => {
     return AxiosInstance.post(Config.apiUrl + url, data);
 };
 
