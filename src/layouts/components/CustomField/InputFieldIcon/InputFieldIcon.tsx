@@ -1,20 +1,24 @@
 import { FormControl, FormLabel, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
-import { ErrorMessage, FastField } from 'formik';
+import { Controller } from 'react-hook-form';
+
 const InputFieldIcon = ({
     label,
     className = '',
     icon,
     fontSize = '20px',
     color = '#636e72',
+    error,
+    control,
     name,
-    ...props2
+    ...propFieldInput
 }: any) => {
     return (
         <FormControl>
             {label && <FormLabel className="text-tbase">{label}</FormLabel>}
-            <FastField name={name}>
-                {(props: any) => {
-                    const { field, meta } = props;
+            <Controller
+                name={name}
+                control={control}
+                render={({ field }) => {
                     return (
                         <>
                             <InputGroup>
@@ -29,17 +33,16 @@ const InputFieldIcon = ({
                                 />
                                 <Input
                                     {...field}
-                                    {...props2}
+                                    {...propFieldInput}
                                     borderRight="2px solid var(--primary)"
-                                    className={`${className} ${meta.touched && meta.error && 'is-invalid'}`}
+                                    className={`${className} ${error && name && error[name]?.message && 'is-invalid'}`}
                                 />
                             </InputGroup>
-
-                            <ErrorMessage component="div" name={field.name} className="error-validate" />
+                            <p className="error-validate">{error && name && error[name]?.message}</p>
                         </>
                     );
                 }}
-            </FastField>
+            />
         </FormControl>
     );
 };

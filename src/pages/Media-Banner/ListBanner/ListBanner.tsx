@@ -1,7 +1,9 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import { FiEdit } from 'react-icons/fi';
-import { IoCloseOutline } from 'react-icons/io5';
+import { AiFillEdit } from 'react-icons/ai';
+import { IoClose } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
+import Image from '~/components/Image';
+import ModalConfirm from '~/layouts/components/ModalConfirm';
 
 const ListProduct = () => {
     return (
@@ -14,50 +16,81 @@ const ListProduct = () => {
                             <Table className="w-full">
                                 <Thead>
                                     <Tr>
-                                        <Th>To convert</Th>
-                                        <Th>into</Th>
-                                        <Th isNumeric>multiply by</Th>
+                                        <Th>#</Th>
+                                        <Th>Tiêu đề</Th>
+                                        <Th>Tiêu đề phụ</Th>
+                                        <Th>Ảnh</Th>
                                         <Th>Hành động</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
                                     <Tr>
-                                        <Td>inches</Td>
-                                        <Td>millimetres (mm)</Td>
-                                        <Td isNumeric>25.4</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
+                                        <Td>1</Td>
+                                        <Td>Ưu đãi lớn</Td>
+                                        <Td>Trong mùa hè này</Td>
+                                        <Td width="200px">
+                                            <Image
+                                                src="http://localhost:3001/static/media/hero3.cb4660d930692248be75.png"
+                                                alt=""
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <div className="flex">
+                                                <span className="bg-primary btn mr-2 text-white">
+                                                    <AiFillEdit className="text-lg" />
+                                                </span>
+                                                <span className="bg-red-500 btn text-white ">
+                                                    <ModalConfirm>
+                                                        <IoClose className="text-lg" />
+                                                    </ModalConfirm>
+                                                </span>
+                                            </div>
                                         </Td>
                                     </Tr>
                                     <Tr>
-                                        <Td>feet</Td>
-                                        <Td>centimetres (cm)</Td>
-                                        <Td isNumeric>30.48</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
+                                        <Td>2</Td>
+                                        <Td>Nhiều ưu đãi hấp dẫn</Td>
+                                        <Td>Trong mùa hè này</Td>
+                                        <Td width="200px">
+                                            <Image
+                                                src="http://localhost:3001/static/media/hero2.e5d2705b7e98564ab738.png"
+                                                alt=""
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <div className="flex">
+                                                <span className="bg-primary btn mr-2 text-white">
+                                                    <AiFillEdit className="text-lg" />
+                                                </span>
+                                                <span className="bg-red-500 btn text-white ">
+                                                    <ModalConfirm>
+                                                        <IoClose className="text-lg" />
+                                                    </ModalConfirm>
+                                                </span>
+                                            </div>
                                         </Td>
                                     </Tr>
                                     <Tr>
-                                        <Td>yards</Td>
-                                        <Td>metres (m)</Td>
-                                        <Td isNumeric>0.91444</Td>
-                                        <Td className="flex">
-                                            <span className="bg-primary btn mr-2">
-                                                <FiEdit />
-                                            </span>
-                                            <span className="bg-red-500 btn">
-                                                <IoCloseOutline />
-                                            </span>
+                                        <Td>3</Td>
+                                        <Td>Sản phẩm độc đáo</Td>
+                                        <Td>Trong mùa hè này</Td>
+                                        <Td width="200px">
+                                            <Image
+                                                src="http://localhost:3001/static/media/hero1.3563ead7c7be2a32eb30.png"
+                                                alt=""
+                                            />
+                                        </Td>
+                                        <Td>
+                                            <div className="flex">
+                                                <span className="bg-primary btn mr-2 text-white">
+                                                    <AiFillEdit className="text-lg" />
+                                                </span>
+                                                <span className="bg-red-500 btn text-white ">
+                                                    <ModalConfirm>
+                                                        <IoClose className="text-lg" />
+                                                    </ModalConfirm>
+                                                </span>
+                                            </div>
                                         </Td>
                                     </Tr>
                                 </Tbody>

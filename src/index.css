@@ -22,5 +22,5 @@
 }
 
 .error-validate {
-    @apply text-sm text-red-500 text-left w-full;
+    @apply text-sm text-red-500 text-left;
 }

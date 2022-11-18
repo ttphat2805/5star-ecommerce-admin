@@ -1,13 +1,14 @@
 // Different Layout
 
-import NotFound from '~/pages/NotFound';
-import Login from '~/pages/Login';
-import Register from '~/pages/Register';
+import { AddAttribute, ListAttribute } from '~/pages/Attribute';
+import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
 import Dashboard from '~/pages/Dashboard';
+import Login from '~/pages/Login';
+import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
+import NotFound from '~/pages/NotFound';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
-import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
-import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
+import Register from '~/pages/Register';
 
 interface Routes {
     path: string;
@@ -49,6 +50,20 @@ const privateRoutes: Routes[] = [
     {
         path: '/category/list-category',
         Component: ListCategory,
+    },
+    {
+        path: '/category',
+        Component: ListCategory,
+    },
+    // ATTRIBUTE
+
+    {
+        path: '/attribute/add-attribute',
+        Component: AddAttribute,
+    },
+    {
+        path: '/attribute/list-attribute',
+        Component: ListAttribute,
     },
     {
         path: '/category',

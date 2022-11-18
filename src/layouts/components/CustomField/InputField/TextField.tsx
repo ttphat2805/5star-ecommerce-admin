@@ -1,24 +1,31 @@
 import { FormControl, FormLabel, Input } from '@chakra-ui/react';
-import { ErrorMessage, FastField } from 'formik';
-const InputField = ({ label, className = '', name, ...props2 }: any) => {
+import { Controller } from 'react-hook-form';
+import { ErrorMessage } from '@hookform/error-message';
+
+const InputField = ({ label, error, control, name, className = '', ...propFieldInput }: any) => {
     return (
         <FormControl>
             {label && <FormLabel className="text-tbase">{label}</FormLabel>}
-            <FastField name={name}>
-                {(props: any) => {
-                    const { field, meta } = props;
+            <Controller
+                name={name}
+                control={control}
+                render={({ field }) => {
                     return (
                         <>
                             <Input
                                 {...field}
-                                {...props2}
-                                className={`${className} ${meta.touched && meta.error && 'is-invalid'}`}
+                                {...propFieldInput}
+                                className={`${className} ${error && name && error[name]?.message && 'is-invalid'}`}
                             />
-                            <ErrorMessage component="div" name={field.name} className="error-validate" />
+                            <ErrorMessage
+                                errors={error}
+                                name={name}
+                                render={({ message }) => <p className="error-validate">{message}</p>}
+                            />
                         </>
                     );
                 }}
-            </FastField>
+            />
         </FormControl>
     );
 };

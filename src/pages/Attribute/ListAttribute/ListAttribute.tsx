@@ -6,7 +6,7 @@ import Breadcrumb from '~/components/Breadcrumb';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import CategoryService from '~/services/CategoryService';
 
-const ListCategory = () => {
+const ListAttribute = () => {
     const [category, setCategory] = useState([]);
     // END STATE
     const handleDelete = (id: string | any) => {
@@ -49,17 +49,15 @@ const ListCategory = () => {
                                             <Td>{item.name}</Td>
                                             <Td>{item.parent_id ? item.name : 'Không có'}</Td>
                                             <Td>{item.status === 1 ? 'Hiển thị' : 'Ẩn'}</Td>
-                                            <Td>
-                                                <div className="flex">
-                                                    <span className="bg-primary btn mr-2 text-white">
-                                                        <AiFillEdit className="text-lg" />
-                                                    </span>
-                                                    <span className="bg-red-500 btn text-white ">
-                                                        <ModalConfirm handleConfirm={handleDelete}>
-                                                            <IoClose className="text-lg" />
-                                                        </ModalConfirm>
-                                                    </span>
-                                                </div>
+                                            <Td className="flex">
+                                                <span className="bg-primary btn mr-2 text-white">
+                                                    <AiFillEdit className="text-lg" />
+                                                </span>
+                                                <span className="bg-red-500 btn text-white ">
+                                                    <ModalConfirm handleConfirm={handleDelete}>
+                                                        <IoClose className="text-lg" />
+                                                    </ModalConfirm>
+                                                </span>
                                             </Td>
                                         </Tr>
                                     ))}
@@ -73,4 +71,4 @@ const ListCategory = () => {
     );
 };
 
-export default ListCategory;
+export default ListAttribute;

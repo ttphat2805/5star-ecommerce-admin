@@ -1,50 +1,90 @@
-import { Tbody, Td, Tr } from '@chakra-ui/react';
-import { FieldArray } from 'formik';
+import { Button, Input, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import React from 'react';
+import { useWatch } from 'react-hook-form';
 import { InputField } from '../../CustomField';
-const FieldArrayTable = ({ formik }: any) => {
+const FieldArrayTable = ({ control, error, getValues }: any) => {
+    const classify_1 = useWatch({
+        control,
+        name: 'classify_1',
+    });
+
+    const classify_2 = useWatch({
+        control,
+        name: 'classify_2',
+    });
+    const name_classify_1 = useWatch({
+        control,
+        name: 'name_classify_1',
+    });
+    const name_classify_2 = useWatch({
+        control,
+        name: 'name_classify_2',
+    });
+
     return (
-        <FieldArray
-            name="variable_attribute"
-            render={(arrayHelpers) => {
-                return (
-                    <Tbody>
-                        {formik.values.classify_1?.map((item1: any, index: any) => {
-                            const lengthOfClassify_2 = formik.values.classify_2.length || 2;
-                            return (
-                                <React.Fragment key={index}>
-                                    {formik.values.classify_2?.map((item2: any, index: any) => (
-                                        <Tr key={index}>
-                                            {/* CHECK AVOID RENDER MULTIPLE && DATA HAVE TO EXIST*/}
-                                            {index === 0 && (
-                                                <Td className="!text-center" rowSpan={lengthOfClassify_2}>
-                                                    {item1.attribute || 'Tên'}
-                                                </Td>
-                                            )}
-                                            <Td className="!text-center"> {item2.attribute || 'Loại'}</Td>
-                                            <Td className="!text-center">
-                                                <InputField
-                                                    type="text"
-                                                    required
-                                                    name={`variable_attribute.${index}.price.${item1.attribute}`}
-                                                />
+        <>
+            <Table colorScheme="gray" size="md" className="table-fixed !w-auto">
+                <Tbody>
+                    <Tr>
+                        <Td width="300px">
+                            <Input name="name" />
+                        </Td>
+                        <Td width="300px">
+                            <Input name="name" />
+                        </Td>
+                        <Td>
+                            <Button colorScheme="teal">Áp dụng cho tất cả</Button>
+                        </Td>
+                    </Tr>
+                </Tbody>
+            </Table>
+            <Table colorScheme="gray" size="md" className="table-fixed !w-auto">
+                <Thead>
+                    <Tr>
+                        <Th className="!text-base !text-center">{name_classify_1 || 'Tên'}</Th>
+                        <Th className="!text-base !text-center">{name_classify_2 || 'Loại'}</Th>
+                        <Th className="!text-base !text-center !w-[200px]">Giá sản phẩm</Th>
+                        <Th className="!text-base !text-center">Kho hàng</Th>
+                    </Tr>
+                </Thead>
+                <Tbody>
+                    {classify_1?.map((item1: any, index: any) => {
+                        const lengthOfClassify_2 = classify_2.length || 2;
+                        return (
+                            <React.Fragment key={index}>
+                                {classify_2?.map((item2: any, index: any) => (
+                                    <Tr key={index}>
+                                        {/* CHECK AVOID RENDER MULTIPLE && DATA HAVE TO EXIST*/}
+                                        {index === 0 && (
+                                            <Td className="!text-center" rowSpan={lengthOfClassify_2}>
+                                                {item1.attribute || 'Tên'}
                                             </Td>
-                                            <Td className="!text-center">
-                                                <InputField
-                                                    type="text"
-                                                    required
-                                                    name={`variable_attribute.${index}.quantity.${item1.attribute}`}
-                                                />
-                                            </Td>
-                                        </Tr>
-                                    ))}
-                                </React.Fragment>
-                            );
-                        })}
-                    </Tbody>
-                );
-            }}
-        />
+                                        )}
+                                        <Td className="!text-center"> {item2.attribute || 'Loại'}</Td>
+                                        <Td className="!text-center">
+                                            <InputField
+                                                required
+                                                control={control}
+                                                error={error}
+                                                name={`variable_attribute.${index}.price.${item1.attribute}`}
+                                            />
+                                        </Td>
+                                        <Td className="!text-center">
+                                            <InputField
+                                                required
+                                                control={control}
+                                                error={error}
+                                                name={`variable_attribute.${index}.quantity.${item1.attribute}`}
+                                            />
+                                        </Td>
+                                    </Tr>
+                                ))}
+                            </React.Fragment>
+                        );
+                    })}
+                </Tbody>
+            </Table>
+        </>
     );
 };
 

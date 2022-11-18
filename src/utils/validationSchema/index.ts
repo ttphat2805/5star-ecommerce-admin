@@ -1,89 +1,72 @@
 import * as Yup from 'yup';
 
-export const addBannerSchema = () => {
-    return Yup.object({
-        title: Yup.string().trim().min(6, 'Tiêu đề chính phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề chính'),
-        sub_title: Yup.string().min(6, 'Tiêu đề phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề phụ'),
-        status: Yup.string().required('Vui lòng điền trạng thái'),
-    });
-};
+export const addBannerSchema = Yup.object({
+    title: Yup.string().trim().min(6, 'Tiêu đề chính phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề chính'),
+    sub_title: Yup.string().min(6, 'Tiêu đề phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề phụ'),
+    status: Yup.string().required('Vui lòng điền trạng thái'),
+});
 
-export const addCategorySchema = () => {
-    return Yup.object({
-        name: Yup.string()
-            .strict(false)
-            .trim()
-            .min(1, 'Danh mục phải lớn hơn 6 kí tự')
-            .required('Vui lòng nhập danh mục'),
-        status: Yup.string().required('Vui lòng điền trạng thái'),
-    });
-};
+export const addCategorySchema = Yup.object().shape({
+    name: Yup.string().strict(false).trim().min(1, 'Danh mục phải lớn hơn 6 kí tự').required('Vui lòng nhập danh mục'),
+    status: Yup.string().required('Vui lòng điền trạng thái'),
+});
+export const addSubCategorySchema = Yup.object({
+    category: Yup.string().required('Vui lòng chọn danh mục chính'),
+    sub_category: Yup.string().min(1, 'Danh mục phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tên danh mục phụ'),
+    status_sub: Yup.string().required('Vui lòng điền trạng thái'),
+});
 
-export const addSubCategorySchema = () => {
-    return Yup.object({
-        category: Yup.string().required('Vui lòng chọn danh mục chính'),
-        sub_category: Yup.string()
-            .min(1, 'Danh mục phụ phải lớn hơn 6 kí tự')
-            .required('Vui lòng nhập tên danh mục phụ'),
-        status_sub: Yup.string().required('Vui lòng điền trạng thái'),
-    });
-};
+export const addProductSchema = Yup.object({
+    isClassify_1: Yup.boolean(),
+    isClassify_2: Yup.boolean(),
+    category: Yup.string().required('Vui lòng chọn danh mục chính'),
+    name: Yup.string().trim().min(10, 'Tên sản phẩm phải lớn hơn 10 kí tự').required('Vui lòng điền tên sản phẩm'),
+    info_detail: Yup.array(
+        Yup.string().required('Vui lòng nhập thông tin vào ô này').min(20, 'Thông tin chi tiết phải lớn hơn 20 kí tự'),
+    ),
+    classify_1: Yup.array().when('isClassify_1', {
+        is: true,
+        then: Yup.array(
+            Yup.object({
+                attribute: Yup.string().required('Phân loại hàng không được bỏ trống'),
+            }),
+        ),
+    }),
 
-export const addProductSchema = () => {
-    return Yup.object({
-        name: Yup.string().min(10, 'Tên sản phẩm phải lớn hơn 10 kí tự').required('Vui lòng điền tên sản phẩm'),
+    classify_2: Yup.array().when('isClassify_2', {
+        is: true,
+        then: Yup.array().of(
+            Yup.object().shape({
+                attribute: Yup.string().required('Phân loại hàng không được bỏ trống'),
+            }),
+        ),
+    }),
 
-        classify_1: Yup.array().when('isClassify_1', {
-            is: false,
-            then: Yup.array().of(
-                Yup.object().shape({
-                    attribute: Yup.string().required('Phân loại hàng không được bỏ trống'),
-                }),
-            ),
-            otherwise: Yup.array().nullable(),
-        }),
+    price: Yup.number().when('isClassify_1', {
+        is: false,
+        then: (schema) => schema.min(1001, 'Sản phẩm phải lớn hơn 1000 VNĐ').required('Vui lòng nhập giá sản phẩm'),
+    }),
 
-        classify_2: Yup.array().when('isClassify_2', {
-            is: false,
-            then: Yup.array().of(
-                Yup.object().shape({
-                    attribute: Yup.string().required('Phân loại hàng không được bỏ trống'),
-                }),
-            ),
-            otherwise: Yup.array().nullable(),
-        }),
+    quantity: Yup.number().when('isClassify_1', {
+        is: false,
+        then: (schema) => schema.min(1, 'Số lượng sản phẩm phải lớn hơn 1').required('Vui lòng nhập số lượng sản phẩm'),
+    }),
 
-        price: Yup.number().when('isClassify_1', {
-            is: false,
-            then: (schema) => schema.min(1001, 'Sản phẩm phải lớn hơn 1000 VNĐ').required('Vui lòng nhập giá sản phẩm'),
-        }),
+    description: Yup.string().min(30, 'Mô tả sản phẩm phải lớn hơn 30 kí tự').required('Vui lòng nhập mô tả sản phẩm'),
 
-        quantity: Yup.number().when('isClassify_1', {
-            is: false,
-            then: (schema) =>
-                schema.min(1, 'Số lượng sản phẩm phải lớn hơn 1').required('Vui lòng nhập số lượng sản phẩm'),
-        }),
-
-        description: Yup.string()
-            .min(30, 'Mô tả sản phẩm phải lớn hơn 30 kí tự')
-            .required('Vui lòng nhập mô tả sản phẩm'),
-
-        name_classify_1: Yup.string().when('isClassify_1', {
-            is: true,
-            then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
-        }),
-        name_classify_2: Yup.string().when('isClassify_1', {
-            is: true,
-            then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
-        }),
-    });
-};
+    name_classify_1: Yup.string().when('isClassify_1', {
+        is: true,
+        then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
+    }),
+    name_classify_2: Yup.string().when('isClassify_1', {
+        is: true,
+        then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
+    }),
+});
 
 // AUTH SCHEMA
 
-export const LoginSchema = () => {
-    return Yup.object({
-        username: Yup.string().required('Vui lòng điền tên đăng nhập'),
-        password: Yup.string().min(6, 'Mật khẩu phải lớn hơn 6 kí tự').required('Vui lòng điền mật khẩu'),
-    });
-};
+export const LoginSchema = Yup.object({
+    username: Yup.string().required('Vui lòng điền tên đăng nhập'),
+    password: Yup.string().min(6, 'Mật khẩu phải lớn hơn 6 kí tự').required('Vui lòng điền mật khẩu'),
+});
