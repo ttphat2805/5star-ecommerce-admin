@@ -1,24 +1,25 @@
 import { FormControl, FormLabel, Textarea } from '@chakra-ui/react';
-import { ErrorMessage, FastField } from 'formik';
-const TextareaField = ({ label, name, ...props }: any) => {
+import { Controller } from 'react-hook-form';
+const TextareaField = ({ label, error, control, name, className = '', ...propFieldInput }: any) => {
     return (
         <FormControl>
             {label && <FormLabel className="text-tbase">{label}</FormLabel>}
-            <FastField name={name}>
-                {(props: any) => {
-                    const { field, meta } = props;
+            <Controller
+                name={name}
+                control={control}
+                render={({ field }) => {
                     return (
                         <>
                             <Textarea
-                                {...props}
+                                {...propFieldInput}
                                 {...field}
-                                className={`${meta.touched && meta.error && 'is-invalid'}`}
+                                className={`${error && name && error[name]?.message && 'is-invalid'}`}
                             />
-                            <ErrorMessage component="span" name={field.name} className="error-validate" />
+                            <p className="error-validate">{error && name && error[name]?.message}</p>
                         </>
                     );
                 }}
-            </FastField>
+            />
         </FormControl>
     );
 };

@@ -1,11 +1,12 @@
 import { Button, FormLabel, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from '@chakra-ui/react';
-import { Form, Formik, FormikProps } from 'formik';
 import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
 import CategoryService from '~/services/CategoryService';
 import { toSlug } from '~/utils/Slug';
 import { Category, OptionsSelect } from '~/utils/Types';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchema';
 type Values = {
     name: string;
@@ -31,11 +32,29 @@ const initialValuesForm_SubCategory = {
 
 const AddCategory = () => {
     const [defaultTab, setDefaultTab] = useState(() => {
-        return 1;
+        return 0;
+    });
+    const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
+
+    // INIT FORM
+    const {
+        handleSubmit,
+        control,
+        formState: { errors },
+    } = useForm<Values>({ defaultValues: initialValuesForm_Category, resolver: yupResolver(addCategorySchema) });
+
+    const {
+        handleSubmit: handleSubmitSub,
+        control: controlSub,
+        formState: { errors: errorsSub },
+    } = useForm<ValuesSubCate>({
+        defaultValues: initialValuesForm_SubCategory,
+        resolver: yupResolver(addSubCategorySchema),
     });
 
-    const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
+    // ==== END INIT FORM
     // END STATE
+
     const toast = useToast();
 
     const requestAddCategory = (data: Category) => {
@@ -110,98 +129,99 @@ const AddCategory = () => {
                             <TabPanels>
                                 <TabPanel>
                                     <div className="card text-base p-3">
-                                        <Formik
-                                            initialValues={initialValuesForm_Category}
-                                            validationSchema={addCategorySchema}
-                                            onSubmit={(values: Values) => handleSubmitCategory(values)}
-                                        >
-                                            {(formik: FormikProps<Values>) => (
-                                                <Form>
-                                                    <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                                        <InputField type="text" name="name" label="Tên danh mục" />
-                                                    </div>
-                                                    <div className="form-group mt-3">
-                                                        <FormLabel>Trạng thái</FormLabel>
-                                                        <div className=" flex gap-2">
-                                                            <RadioField
-                                                                label="Hiện"
-                                                                name="status"
-                                                                value="1"
-                                                                id="status-1"
-                                                            />
-                                                            <RadioField
-                                                                label="Ẩn"
-                                                                name="status"
-                                                                value="0"
-                                                                id="status-2"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="btn-action flex items-center justify-center mt-5">
-                                                        <Button type="submit" colorScheme="twitter">
-                                                            Thêm danh mục
-                                                        </Button>
-                                                        <Button type="button" className="mx-2">
-                                                            Quay lại
-                                                        </Button>
-                                                    </div>
-                                                </Form>
-                                            )}
-                                        </Formik>
+                                        <form onSubmit={handleSubmit(handleSubmitCategory)}>
+                                            <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                                <InputField
+                                                    name="name"
+                                                    label="Tên danh mục"
+                                                    control={control}
+                                                    error={errors}
+                                                />
+                                            </div>
+                                            <div className="form-group mt-3">
+                                                <FormLabel>Trạng thái</FormLabel>
+                                                <div className=" flex gap-2">
+                                                    <RadioField
+                                                        label="Hiện"
+                                                        name="status"
+                                                        value={1}
+                                                        id="status-1"
+                                                        control={control}
+                                                        error={errors}
+                                                    />
+                                                    <RadioField
+                                                        label="Ẩn"
+                                                        name="status"
+                                                        value={0}
+                                                        id="status-2"
+                                                        control={control}
+                                                        error={errors}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="btn-action flex items-center justify-center mt-5">
+                                                <Button type="submit" colorScheme="twitter">
+                                                    Thêm danh mục
+                                                </Button>
+                                                <Button type="button" className="mx-2">
+                                                    Quay lại
+                                                </Button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </TabPanel>
                                 <TabPanel>
                                     <div className="card text-base p-3">
-                                        <Formik
-                                            initialValues={initialValuesForm_SubCategory}
-                                            validationSchema={addSubCategorySchema}
-                                            onSubmit={(values: ValuesSubCate) => handleSubmitSubCategory(values)}
-                                        >
-                                            {(formik: FormikProps<ValuesSubCate>) => (
-                                                <Form>
-                                                    <div className="form-group grid gird-cols-1 md:grid-cols-2">
-                                                        <SelectField
-                                                            name="category"
-                                                            placeholder="Chọn danh mục chính..."
-                                                            label="Danh mục chính"
-                                                            options={optionsCategory}
-                                                        />
-                                                    </div>
-                                                    <div className=" my-3 form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                                        <InputField
-                                                            type="text"
-                                                            name="sub_category"
-                                                            label="Tên danh mục phụ"
-                                                        />
-                                                    </div>
-                                                    <div className="form-group mt-3">
-                                                        <FormLabel>Trạng thái</FormLabel>
-                                                        <div className=" flex gap-2">
-                                                            <RadioField
-                                                                label="Hiện"
-                                                                name="status_sub"
-                                                                value="1"
-                                                                id="status-3"
-                                                            />
-                                                            <RadioField
-                                                                label="Ẩn"
-                                                                name="status_sub"
-                                                                value="0"
-                                                                id="status-4"
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                    <div className="btn-action flex items-center justify-center mt-5">
-                                                        <Button type="submit" colorScheme="twitter">
-                                                            Thêm danh mục
-                                                        </Button>
-                                                        <Button type="button" className="mx-2">
-                                                            Quay lại
-                                                        </Button>
-                                                    </div>
-                                                </Form>
-                                            )}
-                                        </Formik>
+                                        <form onSubmit={handleSubmitSub(handleSubmitSubCategory)}>
+                                            <div className="form-group grid gird-cols-1 md:grid-cols-2">
+                                                <SelectField
+                                                    name="category"
+                                                    placeholder="Chọn danh mục chính..."
+                                                    label="Danh mục chính"
+                                                    options={optionsCategory}
+                                                    control={controlSub}
+                                                    error={errorsSub}
+                                                />
+                                            </div>
+                                            <div className=" my-3 form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                                <InputField
+                                                    type="text"
+                                                    name="sub_category"
+                                                    label="Tên danh mục phụ"
+                                                    control={controlSub}
+                                                    error={errorsSub}
+                                                />
+                                            </div>
+                                            <div className="form-group mt-3">
+                                                <FormLabel>Trạng thái</FormLabel>
+                                                <div className=" flex gap-2">
+                                                    <RadioField
+                                                        label="Hiện"
+                                                        name="status_sub"
+                                                        value={1}
+                                                        id="status-3"
+                                                        control={controlSub}
+                                                        error={errorsSub}
+                                                    />
+                                                    <RadioField
+                                                        label="Ẩn"
+                                                        name="status_sub"
+                                                        value={0}
+                                                        id="status-4"
+                                                        control={controlSub}
+                                                        error={errorsSub}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="btn-action flex items-center justify-center mt-5">
+                                                <Button type="submit" colorScheme="twitter">
+                                                    Thêm danh mục
+                                                </Button>
+                                                <Button type="button" className="mx-2">
+                                                    Quay lại
+                                                </Button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </TabPanel>
                             </TabPanels>

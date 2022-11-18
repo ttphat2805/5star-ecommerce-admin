@@ -1,3 +1,4 @@
+import { AiOutlineBgColors } from 'react-icons/ai';
 import { GiClothes } from 'react-icons/gi';
 import { IoIosAdd } from 'react-icons/io';
 import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
@@ -70,8 +71,20 @@ export const RouteSidebarMenu = [
         ],
     },
     {
-        path: '/2',
-        name: 'Dashboard 2',
-        icon: <TbLayoutDashboard />,
+        name: 'Thuộc tính',
+        icon: <AiOutlineBgColors />,
+        isParent: true,
+        children: [
+            {
+                path: '/attribute/add-attribute',
+                name: 'Thêm thuộc tính',
+                icon: <IoIosAdd />,
+            },
+            {
+                path: '/attribute/list-attribute',
+                name: 'Danh sách thuộc tính',
+                icon: <VscTasklist />,
+            },
+        ],
     },
 ];

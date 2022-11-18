@@ -1,22 +1,29 @@
-import { ErrorMessage, useField } from 'formik';
+import { Controller } from 'react-hook-form';
 import './RadioField.scss';
-const RadioField = ({ label, id, ...props }: any) => {
-    const [field, meta] = useField(props);
+const RadioField = ({ label, error, id, control, name, ...propFieldInput }: any) => {
     return (
-        <>
-            <input
-                type="radio"
-                id={id}
-                {...field}
-                {...props}
-                checked={field.value === props.value}
-                className={`radio-field ${meta.touched && meta.error && 'is-invalid'}`}
-            />
-            <label className="radio-field-label" htmlFor={id}>
-                {label}
-            </label>
-            <ErrorMessage component="span" name={field.name} className="error-validate" />
-        </>
+        <Controller
+            name={name}
+            control={control}
+            render={({ field }) => {
+                return (
+                    <>
+                        <input
+                            type="radio"
+                            id={id}
+                            {...field}
+                            {...propFieldInput}
+                            checked={+field.value === +propFieldInput.value}
+                            className={`radio-field ${error && name && error[name]?.message && 'is-invalid'}`}
+                        />
+                        <label className="radio-field-label" htmlFor={id}>
+                            {label}
+                        </label>
+                        <span className="error-validate">{error && name && error[name]?.message}</span>
+                    </>
+                );
+            }}
+        />
     );
 };
 
