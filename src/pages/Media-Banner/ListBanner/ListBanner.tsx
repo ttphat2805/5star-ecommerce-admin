@@ -7,7 +7,7 @@ import ModalConfirm from '~/layouts/components/ModalConfirm';
 
 const ListProduct = () => {
     return (
-        <div>
+        <div className="fade-up">
             <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
             <div className="list-product">
                 <div className="card rounded-md p-2">

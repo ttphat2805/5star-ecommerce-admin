@@ -1,7 +1,7 @@
 import { useFieldArray } from 'react-hook-form';
 import { MdDeleteOutline } from 'react-icons/md';
 import { InputField } from '../../CustomField';
-const FieldArrayClassify = ({ control, name, label, error }: any) => {
+const FieldArrayClassify = ({ control, name, label, error, ...propsField }: any) => {
     const { fields, append, remove } = useFieldArray({
         control,
         name,
@@ -11,11 +11,17 @@ const FieldArrayClassify = ({ control, name, label, error }: any) => {
             <div>
                 {fields.map((item: any, index: any) => (
                     <div className="form-group flex my-3 text-left" key={item.id}>
-                        <InputField label={label} error={error} control={control} name={`${name}.${index}.attribute`} />
+                        <InputField
+                            label={label}
+                            error={error}
+                            control={control}
+                            name={`${name}.${index}.attribute`}
+                            {...propsField}
+                        />
                         {fields.length > 1 && (
                             <>
                                 <div className="close_classify mx-2 cursor-pointer" onClick={() => remove(index)}>
-                                    <MdDeleteOutline className="text-2xl hover:opacity-75 hover:text-red-500  transition-all duration-300 mt-2" />
+                                    <MdDeleteOutline className="text-2xl hover:opacity-75 hover:text-red-600  transition-all duration-300 mt-2" />
                                 </div>
                             </>
                         )}

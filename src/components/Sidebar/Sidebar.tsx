@@ -72,6 +72,7 @@ const Sidebar = () => {
                                                     <AnimatePresence>
                                                         <motion.li
                                                             variants={showAnimation}
+                                                            whileTap={{ scale: 0.9 }}
                                                             initial="hidden"
                                                             animate="show"
                                                             exit="hidden"
