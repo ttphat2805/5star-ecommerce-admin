@@ -96,7 +96,7 @@ const AddBanner = () => {
     };
 
     return (
-        <div>
+        <div className="fade-up">
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
@@ -128,7 +128,7 @@ const AddBanner = () => {
                                         onDragLeave={onDragLeave}
                                         onDrop={onDrop}
                                         ref={dragUploadRef}
-                                        className="drop-wrapper relative block cursor-pointer overflow-hidden max-w-full w-[80%] m-auto border-[2px] 
+                                        className="drop-wrapper relative block cursor-pointer overflow-hidden max-w-full w-2/4 m-auto border-[2px] 
                                                 border-gray-300 border-dashed text-center rounded-md h-[250px]"
                                     >
                                         <div className="drop-container absolute inset-0 left-[-46px] w-full h-full" />
@@ -155,7 +155,7 @@ const AddBanner = () => {
                                         />
                                         <div className="loading"></div>
                                         <div className="drop-preview absolute inset-0 w-full h-full overflow-hidden text-center">
-                                            <div className="image-preview w-full h-full relative z-[2]">
+                                            <div className="image-preview w-full h-full relative z-[2] object-contain">
                                                 <img
                                                     src={imageURL}
                                                     alt=""

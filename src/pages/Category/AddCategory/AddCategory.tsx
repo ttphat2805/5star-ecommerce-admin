@@ -110,7 +110,7 @@ const AddCategory = () => {
     };
 
     return (
-        <div>
+        <div className="fade-up">
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">

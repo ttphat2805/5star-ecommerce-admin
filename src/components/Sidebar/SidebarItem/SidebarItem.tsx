@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { NavLink } from 'react-router-dom';
-
+import './SidebarItem.scss';
 const menuAnimation = {
     hidden: {
         opacity: 0,
@@ -47,7 +47,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
     return (
         <>
             {menu.isParent ? (
-                <li className="menu-item text-base">
+                <li className="sidebar-item menu-item text-base">
                     <div
                         onClick={(e) => handleActiveSubMenu(e)}
                         className="menu-item__link select-none cursor-pointer flex items-center my-[10px] py-[6px] px-[15px] 
@@ -60,7 +60,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                                 <AnimatePresence>
                                     <motion.span
                                         variants={showAnimation}
-                                        initial="hidden"
+                                        whileTap={{ scale: 0.95 }}
                                         animate="show"
                                         exit="hidden"
                                         className="flex-auto whitespace-nowrap"
@@ -92,32 +92,36 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                     {/* This is SubMenu - Menu Child */}
                     <AnimatePresence>
                         {!isOpenMenu && activeSubMenu ? (
-                            <motion.ul
-                                variants={menuAnimation}
-                                initial="hidden"
-                                animate="show"
-                                exit="exit"
-                                className="menu-children pl-[20px]"
-                            >
-                                {menu.children?.map((child: any, index: any) => (
-                                    <motion.div
-                                        variants={menuItemAnimation}
-                                        key={index}
-                                        custom={index}
-                                        initial="hidden"
-                                        animate="show"
-                                        exit="exit"
-                                    >
-                                        <NavLink
-                                            to={child.path || '#'}
-                                            className="submenu-item__link flex items-center py-[6px] px-[15px] rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
+                            <AnimatePresence>
+                                <motion.ul
+                                    variants={menuAnimation}
+                                    initial="hidden"
+                                    animate="show"
+                                    exit="exit"
+                                    className="menu-children pl-[20px]"
+                                >
+                                    {menu.children?.map((child: any, index: any) => (
+                                        <motion.div
+                                            variants={menuItemAnimation}
+                                            whileTap={{ scale: 0.95 }}
+                                            key={index}
+                                            custom={index}
+                                            animate="show"
+                                            exit="exit"
                                         >
-                                            <span className="icon mr-1 text-xl">{child.icon}</span>
-                                            <span className="flex-auto whitespace-nowrap">{child.name}</span>
-                                        </NavLink>
-                                    </motion.div>
-                                ))}
-                            </motion.ul>
+                                            <NavLink
+                                                to={child.path || '#'}
+                                                className="submenu-item__link flex items-center py-[6px] px-[15px] rounded-md 
+                                            whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all
+                                            "
+                                            >
+                                                <span className="icon mr-1 text-xl">{child.icon}</span>
+                                                <span className="flex-auto whitespace-nowrap">{child.name}</span>
+                                            </NavLink>
+                                        </motion.div>
+                                    ))}
+                                </motion.ul>
+                            </AnimatePresence>
                         ) : null}
                     </AnimatePresence>
                 </li>
@@ -126,7 +130,9 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                     <NavLink
                         to={menu.path || '#'}
                         className="menu-item__link w-full flex items-center my-[10px] py-[6px] px-[15px]
-                    rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all active"
+                    rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all
+                    active:text-primary
+                    "
                     >
                         <span className="icon mr-1 text-xl">{menu.icon}</span>
                         {/* isOpenMenu is a variable that when the menu closes, the item will be hidden */}
@@ -135,7 +141,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                                 <AnimatePresence>
                                     <motion.span
                                         variants={showAnimation}
-                                        initial="hidden"
+                                        whileTap={{ scale: 0.95 }}
                                         animate="show"
                                         exit="hidden"
                                         className="flex-auto whitespace-nowrap"

@@ -26,7 +26,7 @@ const ListCategory = () => {
     }, []);
 
     return (
-        <div>
+        <div className="fade-up">
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
