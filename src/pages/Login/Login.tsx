@@ -40,7 +40,7 @@ const Login = () => {
     const handleSubmitLogin = (values: LoginType) => {
         AuthService.signIn(values).then(
             (res: any) => {
-                if (res.statusCode === 201) {
+                if (res.statusCode === 200) {
                     let accessToken = res?.data?.accessToken;
                     if (accessToken) {
                         localStorage.setItem('access_token', accessToken);
@@ -84,7 +84,7 @@ const Login = () => {
                             <div className="login-text my-5 m-auto">
                                 <h1 className="title font-bold text-3xl text-center my-5">Đăng nhập</h1>
                                 <p className="text-primary font-semibold text-center text-lg">
-                                    Chào mừng bạn đến với 5Star
+                                    Chào mừng bạn đến với 5Star <b>Admin</b>
                                 </p>
                             </div>
                         </div>
@@ -119,37 +119,14 @@ const Login = () => {
                                                 return <Checkbox {...field}>Nhớ mật khẩu</Checkbox>;
                                             }}
                                         </Field> */}
-                                <div className="forgot text-primary text-base font-semibold">
+                                {/* <div className="forgot text-primary text-base font-semibold">
                                     <Link to="">Quên mật khẩu ?</Link>
-                                </div>
+                                </div> */}
                             </div>
                             <div className="button-action w-full mt-5">
                                 <Button type="submit" colorScheme="twitter" className="w-full py-6">
                                     Đăng nhập
                                 </Button>
-                            </div>
-                            <div className="login-other mt-3">
-                                <p className="text-base text-tbase">Hoặc đăng nhập với :</p>
-                                <div className="login-social flex gap-2 grid-cols-2 w-full flex-wrap md:flex-nowrap">
-                                    <div className="facebook w-full">
-                                        <Button colorScheme="facebook" width="100%">
-                                            <MdOutlineFacebook className="text-xl mx-1" /> Facebook
-                                        </Button>
-                                    </div>
-                                    <div className="google w-full">
-                                        <Button colorScheme="red" width="100%">
-                                            <AiOutlineGooglePlus className="text-xl mx-1" /> Google
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="sign-up mt-3 text-right">
-                                <p className="text-base">
-                                    Nếu bạn chưa có tài khoản ? <br />
-                                    <Link to="/register" className="text-primary font-semibold underline ml-2">
-                                        Hãy đăng ký
-                                    </Link>
-                                </p>
                             </div>
                         </form>
                     </div>

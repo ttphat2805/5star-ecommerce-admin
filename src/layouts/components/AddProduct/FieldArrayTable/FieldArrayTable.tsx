@@ -19,6 +19,7 @@ const FieldArrayTable = ({ control, error, setValue }: any) => {
         control,
         name: 'classify_2',
     });
+    console.log('classify_2: ', classify_2);
     const name_classify_1 = useWatch({
         control,
         name: 'name_classify_1',
@@ -27,6 +28,15 @@ const FieldArrayTable = ({ control, error, setValue }: any) => {
         control,
         name: 'name_classify_2',
     });
+
+    // const isClassify_1 = useWatch({
+    //     control,
+    //     name: 'isClassify_1',
+    // });
+    // const isClassify_2 = useWatch({
+    //     control,
+    //     name: 'isClassify_2',
+    // });
 
     const handleChangeApply = (e: React.ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target;
@@ -90,6 +100,7 @@ const FieldArrayTable = ({ control, error, setValue }: any) => {
                     </Tr>
                 </Thead>
                 <Tbody>
+                    {/* CLASSIFY 1 */}
                     {classify_1?.map((item1: any, index1: any) => {
                         const lengthOfClassify_2 = classify_2.length || 2;
                         return (

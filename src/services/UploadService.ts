@@ -1,30 +1,13 @@
-import axios from 'axios';
 import Config from '~/config';
+import AxiosInstance from './AxiosInstance';
 
-let url: string = '';
-
-const UploadImage = async (image: File) => {
-    let resDataImage: any = await axios.post(
-        Config.apiUrl + 'file',
-        { type: image.type },
-        {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        },
-    );
-
-    if (resDataImage.data.statusCode === 201) {
-        const URL_UPLOAD = resDataImage.data.data.url;
-
-        await axios.put(URL_UPLOAD, image, {
-            headers: {
-                'Content-Type': image.type,
-            },
-        });
+const UploadImage = async (image: FormData) => {
+    let resDataImage: any = await AxiosInstance.post(Config.apiUrl + 'file/upload', image);
+    let idImageUpload: number = 0;
+    if (resDataImage.statusCode === 201) {
+        idImageUpload = resDataImage?.data?.id;
     }
-
-    return resDataImage.data;
+    return idImageUpload;
 };
 
 const UploadService = {

@@ -52,38 +52,38 @@ const AddBanner = () => {
             });
         }
 
-        UploadService.UploadImage(fileBanner[0]).then((resUpload) => {
-            if (resUpload.statusCode === 201) {
-                let image = resUpload.data.linkBucket + resUpload.data.key;
-                let dataSendRequest = {
-                    ...values,
-                    status: +values.status,
-                    image,
-                };
-                MediaService.AddBanner(dataSendRequest).then(
-                    (res: any) => {
-                        if (res.statusCode === 201) {
-                            toast({
-                                position: 'top-right',
-                                title: 'Tạo banner mới thành công',
-                                duration: 2000,
-                                status: 'success',
-                            });
-                        }
-                    },
-                    // ERROR ADD BANNER
-                    (err) => {
-                        console.log(err);
-                        toast({
-                            position: 'top-right',
-                            title: 'Tạo banner thất bại',
-                            duration: 2000,
-                            status: 'error',
-                        });
-                    },
-                );
-            }
-        });
+        // UploadService.UploadImage(fileBanner[0]).then((resUpload) => {
+        //     if (resUpload.statusCode === 201) {
+        //         let image = resUpload.data.linkBucket + resUpload.data.key;
+        //         let dataSendRequest = {
+        //             ...values,
+        //             status: +values.status,
+        //             image,
+        //         };
+        //         MediaService.AddBanner(dataSendRequest).then(
+        //             (res: any) => {
+        //                 if (res.statusCode === 201) {
+        //                     toast({
+        //                         position: 'top-right',
+        //                         title: 'Tạo banner mới thành công',
+        //                         duration: 2000,
+        //                         status: 'success',
+        //                     });
+        //                 }
+        //             },
+        //             // ERROR ADD BANNER
+        //             (err) => {
+        //                 console.log(err);
+        //                 toast({
+        //                     position: 'top-right',
+        //                     title: 'Tạo banner thất bại',
+        //                     duration: 2000,
+        //                     status: 'error',
+        //                 });
+        //             },
+        //         );
+        //     }
+        // });
     };
 
     const handleUploadFile = (event: ChangeEvent<HTMLInputElement>) => {
