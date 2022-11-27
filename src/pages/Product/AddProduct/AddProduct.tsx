@@ -1,5 +1,6 @@
 import { Button, FormLabel, useToast } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { IoCloseOutline } from 'react-icons/io5';
@@ -10,7 +11,6 @@ import { FieldArrayClassify, FieldArrayTable, ImageUpload } from '~/layouts/comp
 import InfoDetail from '~/layouts/components/AddProduct/InfoDetail';
 import { InputField, SelectField } from '~/layouts/components/CustomField';
 import CategoryService from '~/services/CategoryService';
-import { motion } from 'framer-motion';
 import ProductService from '~/services/ProductService';
 import UploadService from '~/services/UploadService';
 import { toSlug } from '~/utils/Slug';
@@ -28,7 +28,7 @@ type Values = {
     classify_1: Array<any>;
     name_classify_2: string;
     classify_2: Array<any>;
-    variable_attribute: { [key: string]: any }[];
+    variable_attribute: any;
     isClassify_1: boolean;
     isClassify_2: boolean;
     info_detail: Array<any>;
@@ -80,6 +80,7 @@ const AddProduct = () => {
     });
     const [description, setDescription] = useState<ReactQuill.Value | undefined>();
     const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
+    const [dataSubCategory, setDataSubCategory] = useState<OptionsSelect>();
     const [optionsSubCategory, setOptionsSubCategory] = useState<OptionsSelect>();
 
     // INIT FORM
@@ -87,8 +88,17 @@ const AddProduct = () => {
         handleSubmit,
         control,
         setValue,
+        watch,
         formState: { errors, isSubmitting },
     } = useForm<Values>({ defaultValues: initialValuesForm, resolver: yupResolver(addProductSchema) });
+
+    const categoryParentValue: number = +watch('category');
+    useEffect(() => {
+        const optionsSubCategoryNew = dataSubCategory?.filter((item: any) => item.parent === categoryParentValue);
+        setOptionsSubCategory(optionsSubCategoryNew);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [categoryParentValue]);
+
     // END STATE
     const toast = useToast();
 
@@ -101,12 +111,12 @@ const AddProduct = () => {
                     if (!itemCat.parent_id) {
                         category.push({ label: itemCat.name, value: itemCat.id });
                     } else {
-                        subCategory.push({ label: itemCat.name, value: itemCat.id });
+                        subCategory.push({ label: itemCat.name, value: itemCat.id, parent: itemCat.parent_id });
                     }
                 });
 
                 setOptionsCategory(category);
-                setOptionsSubCategory(subCategory);
+                setDataSubCategory(subCategory);
             }
         });
     };
@@ -116,20 +126,19 @@ const AddProduct = () => {
     }, []);
 
     const handleSubmitForm = async (values: Values) => {
-        let imageSendRequest: string[] = [];
-        const tempArray = Object.values(image);
         const imageArray: any = [];
-        for (let image of tempArray) {
-            if (image) {
-                imageArray.push(image);
+        for (let imageItem of Object.values(image)) {
+            if (imageItem) {
+                imageArray.push(imageItem);
             }
         }
 
         const imageUploadRes = await handleUploadImages(imageArray);
+        console.log('imageUploadRes: ', imageUploadRes);
 
         let dataSendRequest = {
             ...values,
-            image: imageSendRequest,
+            image: imageUploadRes,
             slug: toSlug(values.name),
             description: description,
             id_category: values.subCategory ? +values.subCategory : +values.category,
@@ -142,18 +151,6 @@ const AddProduct = () => {
                     title: 'Tạo sản phẩm mới thành công',
                     duration: 2000,
                     status: 'success',
-                });
-            }
-        });
-
-        imageArray.forEach((imageItem: any, index: number) => {
-            if (imageItem) {
-                UploadService.UploadImage(imageItem).then((res: any) => {
-                    if (res.statusCode === 201) {
-                        imageSendRequest.push(res.data.linkBucket + res.data.key);
-                        if (index === imageArray.length - 1) {
-                        }
-                    }
                 });
             }
         });
@@ -174,6 +171,10 @@ const AddProduct = () => {
         formData.append('file', fileImage);
         try {
             // CALL SERVICES UPLOAD
+            let idImage = await UploadService.UploadImage(formData);
+            if (idImage) {
+                return idImage;
+            }
         } catch (error) {}
     };
 

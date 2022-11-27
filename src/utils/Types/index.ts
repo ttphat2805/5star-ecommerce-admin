@@ -22,4 +22,5 @@ export type Category = {
 export type OptionsSelect = {
     value: string | number | undefined;
     label: string;
+    parent?: number | undefined;
 }[];

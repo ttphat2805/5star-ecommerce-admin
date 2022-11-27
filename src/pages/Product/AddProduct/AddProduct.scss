@@ -5,11 +5,9 @@
     border: none;
     cursor: pointer;
     &::-webkit-color-swatch {
-        border: 5px solid rgba(0, 0, 0, 0.548);
         border-radius: 15px;
     }
     &::-moz-color-swatch {
-        border: 5px solid rgba(0, 0, 0, 0.548);
         border-radius: 15px;
     }
 }
