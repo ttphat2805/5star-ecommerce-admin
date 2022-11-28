@@ -52,7 +52,7 @@ AxiosInstance.interceptors.response.use(
 const refreshToken = async () => {
     const resAccess: any = await AxiosInstance.post(Config.apiUrl + 'auth/resettoken');
     let accessToken = null;
-    if (resAccess.status === 200) {
+    if (resAccess.statusCode === 200) {
         accessToken = resAccess.data.accessToken;
     }
     return accessToken;

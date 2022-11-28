@@ -1,5 +1,6 @@
 import { Button, FormLabel, useToast } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { motion } from 'framer-motion';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Breadcrumb from '~/components/Breadcrumb';
@@ -14,7 +15,7 @@ import './AddBanner.scss';
 const initialValues = {
     title: '',
     sub_title: '',
-    image: '',
+    image: 0,
     status: 0,
 };
 
@@ -41,7 +42,7 @@ const AddBanner = () => {
         };
     }, [imageURL]);
 
-    const handleSubmitForm = (values: BannerType) => {
+    const handleSubmitForm = async (values: BannerType) => {
         if (!fileBanner) {
             toast({
                 title: 'Cảnh báo',
@@ -52,38 +53,35 @@ const AddBanner = () => {
             });
         }
 
-        // UploadService.UploadImage(fileBanner[0]).then((resUpload) => {
-        //     if (resUpload.statusCode === 201) {
-        //         let image = resUpload.data.linkBucket + resUpload.data.key;
-        //         let dataSendRequest = {
-        //             ...values,
-        //             status: +values.status,
-        //             image,
-        //         };
-        //         MediaService.AddBanner(dataSendRequest).then(
-        //             (res: any) => {
-        //                 if (res.statusCode === 201) {
-        //                     toast({
-        //                         position: 'top-right',
-        //                         title: 'Tạo banner mới thành công',
-        //                         duration: 2000,
-        //                         status: 'success',
-        //                     });
-        //                 }
-        //             },
-        //             // ERROR ADD BANNER
-        //             (err) => {
-        //                 console.log(err);
-        //                 toast({
-        //                     position: 'top-right',
-        //                     title: 'Tạo banner thất bại',
-        //                     duration: 2000,
-        //                     status: 'error',
-        //                 });
-        //             },
-        //         );
-        //     }
-        // });
+        let imageResUpload: number | any = await UploadService.requestUploadImage(fileBanner[0]);
+
+        let dataSendRequest = {
+            ...values,
+            status: +values.status,
+            image: imageResUpload,
+        };
+        MediaService.AddBanner(dataSendRequest).then(
+            (res: any) => {
+                if (res.statusCode === 201) {
+                    toast({
+                        position: 'top-right',
+                        title: 'Tạo banner mới thành công',
+                        duration: 2000,
+                        status: 'success',
+                    });
+                }
+            },
+            // ERROR ADD BANNER
+            (err) => {
+                console.log(err);
+                toast({
+                    position: 'top-right',
+                    title: 'Tạo banner thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+            },
+        );
     };
 
     const handleUploadFile = (event: ChangeEvent<HTMLInputElement>) => {
@@ -96,7 +94,11 @@ const AddBanner = () => {
     };
 
     return (
-        <div className="fade-up">
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
@@ -223,7 +225,7 @@ const AddBanner = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

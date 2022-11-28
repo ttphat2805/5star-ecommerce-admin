@@ -14,7 +14,7 @@ import CategoryService from '~/services/CategoryService';
 import ProductService from '~/services/ProductService';
 import UploadService from '~/services/UploadService';
 import { toSlug } from '~/utils/Slug';
-import { Category, OptionsSelect } from '~/utils/Types';
+import { CategoryType, OptionsSelect } from '~/utils/Types';
 import { addProductSchema } from '~/utils/validationSchema';
 import './AddProduct.scss';
 type Values = {
@@ -107,7 +107,7 @@ const AddProduct = () => {
         let subCategory: OptionsSelect = [];
         CategoryService.getAllCategory().then((res: any) => {
             if (res.statusCode === 200) {
-                res.data[0].forEach((itemCat: Category) => {
+                res.data[0].forEach((itemCat: CategoryType) => {
                     if (!itemCat.parent_id) {
                         category.push({ label: itemCat.name, value: itemCat.id });
                     } else {
@@ -133,7 +133,7 @@ const AddProduct = () => {
             }
         }
 
-        const imageUploadRes = await handleUploadImages(imageArray);
+        const imageUploadRes = await UploadService.handleUploadImages(imageArray);
         console.log('imageUploadRes: ', imageUploadRes);
 
         let dataSendRequest = {
@@ -154,28 +154,6 @@ const AddProduct = () => {
                 });
             }
         });
-    };
-
-    const handleUploadImages = async (arrImage: any) => {
-        let arrImageNew = [];
-        for (let img of arrImage) {
-            const imageRes = await requestUploadImage(img);
-            arrImageNew.push(imageRes);
-        }
-
-        return arrImageNew;
-    };
-
-    const requestUploadImage = async (fileImage: any) => {
-        const formData = new FormData();
-        formData.append('file', fileImage);
-        try {
-            // CALL SERVICES UPLOAD
-            let idImage = await UploadService.UploadImage(formData);
-            if (idImage) {
-                return idImage;
-            }
-        } catch (error) {}
     };
 
     return (

@@ -3,16 +3,24 @@ import { BiMessageSquareCheck } from 'react-icons/bi';
 import { BsSearch } from 'react-icons/bs';
 import { HiMenuAlt2, HiMenuAlt3 } from 'react-icons/hi';
 import { IoMdLogOut, IoMdNotificationsOutline } from 'react-icons/io';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '~/app/hooks';
 import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
 import './Header.scss';
 const Header = () => {
+    const Navigate = useNavigate();
     const dispatch = useAppDispatch();
     const isOpenMenu = useAppSelector(MenuActive);
 
     const toggleMenuActive = () => {
         dispatch(toggleMenu());
+    };
+
+    const handleLogout = () => {
+        console.log('vo day');
+
+        localStorage.removeItem('access_token');
+        Navigate('/login');
     };
 
     return (
@@ -147,7 +155,7 @@ const Header = () => {
                                                 </div>
                                                 <ul className="list-menu p-2 py-3">
                                                     {[1].map((menu, index) => (
-                                                        <li key={index}>
+                                                        <li key={index} onClick={handleLogout}>
                                                             <Link
                                                                 to=""
                                                                 className="flex items-center hover:bg-hover hover:text-primary hover:transition-all hover:duration-300 rounded-md px-3 py-1"

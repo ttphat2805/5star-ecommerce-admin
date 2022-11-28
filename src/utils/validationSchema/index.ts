@@ -11,8 +11,8 @@ export const addCategorySchema = Yup.object().shape({
     status: Yup.string().required('Vui lòng điền trạng thái'),
 });
 export const addSubCategorySchema = Yup.object({
-    category: Yup.string().required('Vui lòng chọn danh mục chính'),
-    sub_category: Yup.string().min(1, 'Danh mục phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tên danh mục phụ'),
+    parent_id: Yup.string().required('Vui lòng chọn danh mục chính'),
+    name_sub: Yup.string().min(1, 'Danh mục phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tên danh mục phụ'),
     status_sub: Yup.string().required('Vui lòng điền trạng thái'),
 });
 

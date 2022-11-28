@@ -44,7 +44,7 @@ const privateRoutes: Routes[] = [
         Component: AddCategory,
     },
     {
-        path: '/category/edit-category',
+        path: '/category/edit-category/:slug',
         Component: EditCategory,
     },
     {

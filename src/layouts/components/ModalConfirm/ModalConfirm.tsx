@@ -9,7 +9,7 @@ import {
     useDisclosure,
 } from '@chakra-ui/react';
 import { useRef } from 'react';
-const ModalConfirm = ({ title = 'Xác nhận', children, handleDelete }: any) => {
+const ModalConfirm = ({ title = 'Xác nhận', children, handleConfirm }: any) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const cancelRef: any = useRef();
     return (
@@ -33,7 +33,7 @@ const ModalConfirm = ({ title = 'Xác nhận', children, handleDelete }: any) =>
                             <Button
                                 colorScheme="red"
                                 onClick={() => {
-                                    handleDelete();
+                                    handleConfirm();
                                     onClose();
                                 }}
                                 ml={3}
