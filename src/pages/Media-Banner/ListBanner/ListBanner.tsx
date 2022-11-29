@@ -1,4 +1,5 @@
 import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { AiFillEdit } from 'react-icons/ai';
 import { IoClose } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
@@ -7,7 +8,11 @@ import ModalConfirm from '~/layouts/components/ModalConfirm';
 
 const ListProduct = () => {
     return (
-        <div className="fade-up">
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
@@ -99,7 +104,7 @@ const ListProduct = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

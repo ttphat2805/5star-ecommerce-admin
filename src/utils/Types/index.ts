@@ -6,17 +6,22 @@ export type LoginType = {
 export type BannerType = {
     title: string;
     sub_title: string;
-    image: string;
+    image: number;
     status: number;
 };
 
-export type Category = {
+export type CategoryType = {
     id?: number;
     name: string;
     slug: string;
     status: number;
-    parent_id?: number | null;
-    sub_category?: Category[];
+    parent_id?: number | undefined;
+    sub_category?: CategoryType[] | any;
+};
+export type SubCategoryType = {
+    parent_id?: string | undefined;
+    name_sub: string;
+    status_sub: number;
 };
 
 export type OptionsSelect = {
@@ -24,3 +29,8 @@ export type OptionsSelect = {
     label: string;
     parent?: number | undefined;
 }[];
+
+export type ResponseType = {
+    statusCode?: number;
+    data?: any;
+};

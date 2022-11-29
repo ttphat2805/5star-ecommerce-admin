@@ -1,6 +1,6 @@
 // Different Layout
 
-import { AddAttribute, ListAttribute } from '~/pages/Attribute';
+import { AddBrand, ListBrand } from '~/pages/Brand';
 import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
 import Dashboard from '~/pages/Dashboard';
 import Login from '~/pages/Login';
@@ -9,6 +9,7 @@ import NotFound from '~/pages/NotFound';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
 import Register from '~/pages/Register';
+import { ListUser } from '~/pages/Users';
 
 interface Routes {
     path: string;
@@ -21,6 +22,13 @@ const privateRoutes: Routes[] = [
         path: '/',
         Component: Dashboard,
     },
+
+    // MEMBER
+    {
+        path: '/member/list-member',
+        Component: ListUser,
+    },
+
     // PRODUCT
     {
         path: '/product/add-product',
@@ -44,7 +52,7 @@ const privateRoutes: Routes[] = [
         Component: AddCategory,
     },
     {
-        path: '/category/edit-category',
+        path: '/category/edit-category/:slug',
         Component: EditCategory,
     },
     {
@@ -55,20 +63,17 @@ const privateRoutes: Routes[] = [
         path: '/category',
         Component: ListCategory,
     },
-    // ATTRIBUTE
+    // BRAND
 
     {
-        path: '/attribute/add-attribute',
-        Component: AddAttribute,
+        path: '/brand/add-brand',
+        Component: AddBrand,
     },
     {
-        path: '/attribute/list-attribute',
-        Component: ListAttribute,
+        path: '/brand/list-brand',
+        Component: ListBrand,
     },
-    {
-        path: '/category',
-        Component: ListCategory,
-    },
+
     // MEDIA
 
     {

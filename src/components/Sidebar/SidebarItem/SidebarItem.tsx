@@ -53,7 +53,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                         className="menu-item__link select-none cursor-pointer flex items-center my-[10px] py-[6px] px-[15px] 
                     rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
                     >
-                        <span className="icon mr-1 text-xl">{menu.icon}</span>
+                        <span className={`icon mr-1 text-xl ${menu.color}`}>{menu.icon}</span>
                         {/* isOpenMenu is a variable that when the menu closes, the item will be hidden */}
                         {!isOpenMenu && (
                             <>
@@ -115,7 +115,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                                             whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all
                                             "
                                             >
-                                                <span className="icon mr-1 text-xl">{child.icon}</span>
+                                                <span className={`icon mr-1 text-xl `}>{child.icon}</span>
                                                 <span className="flex-auto whitespace-nowrap">{child.name}</span>
                                             </NavLink>
                                         </motion.div>

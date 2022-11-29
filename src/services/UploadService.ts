@@ -10,8 +10,32 @@ const UploadImage = async (image: FormData) => {
     return idImageUpload;
 };
 
+const handleUploadImages = async (arrImage: any) => {
+    let arrImageNew = [];
+    for (let img of arrImage) {
+        const imageRes = await requestUploadImage(img);
+        arrImageNew.push(imageRes);
+    }
+
+    return arrImageNew;
+};
+
+const requestUploadImage = async (fileImage: any) => {
+    const formData = new FormData();
+    formData.append('file', fileImage);
+    try {
+        // CALL SERVICES UPLOAD
+        let idImage = await UploadImage(formData);
+        return idImage ? idImage : 0;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const UploadService = {
     UploadImage,
+    handleUploadImages,
+    requestUploadImage,
 };
 
 export default UploadService;

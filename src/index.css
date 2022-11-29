@@ -24,3 +24,7 @@
 .error-validate {
     @apply text-sm text-red-500 text-left;
 }
+
+.badge-status {
+    @apply text-base p-2 rounded-lg text-white font-semibold bg-green-700;
+}

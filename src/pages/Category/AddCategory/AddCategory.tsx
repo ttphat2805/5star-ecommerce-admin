@@ -1,53 +1,51 @@
 import { Button, FormLabel, Tab, TabList, TabPanel, TabPanels, Tabs, useToast } from '@chakra-ui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
 import CategoryService from '~/services/CategoryService';
 import { toSlug } from '~/utils/Slug';
-import { Category, OptionsSelect } from '~/utils/Types';
-import { yupResolver } from '@hookform/resolvers/yup';
+import { CategoryType, OptionsSelect, SubCategoryType } from '~/utils/Types';
 import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchema';
 type Values = {
     name: string;
     status: number;
 };
 
-type ValuesSubCate = {
-    category: string;
-    sub_category: string;
-    status_sub: number;
-};
-
 const initialValuesForm_Category = {
     name: '',
-    status: 0,
+    status: 2,
 };
 
 const initialValuesForm_SubCategory = {
-    category: '',
-    sub_category: '',
-    status_sub: 0,
+    parent_id: '',
+    name_sub: '',
+    status_sub: 2,
 };
 
 const AddCategory = () => {
-    const [defaultTab, setDefaultTab] = useState(() => {
-        return 0;
-    });
     const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
+
+    const toast = useToast();
+    const Navigate = useNavigate();
 
     // INIT FORM
     const {
         handleSubmit,
         control,
+        reset,
         formState: { errors },
     } = useForm<Values>({ defaultValues: initialValuesForm_Category, resolver: yupResolver(addCategorySchema) });
 
     const {
         handleSubmit: handleSubmitSub,
         control: controlSub,
+        reset: resetSub,
         formState: { errors: errorsSub },
-    } = useForm<ValuesSubCate>({
+    } = useForm<SubCategoryType>({
         defaultValues: initialValuesForm_SubCategory,
         resolver: yupResolver(addSubCategorySchema),
     });
@@ -55,9 +53,7 @@ const AddCategory = () => {
     // ==== END INIT FORM
     // END STATE
 
-    const toast = useToast();
-
-    const requestAddCategory = (data: Category) => {
+    const requestAddCategory = (data: CategoryType, type: string) => {
         CategoryService.addCategory(data).then((res: any) => {
             console.log(res);
             if (res.statusCode === 201) {
@@ -67,20 +63,24 @@ const AddCategory = () => {
                     duration: 2000,
                     status: 'success',
                 });
+                if (type === 'category') {
+                    reset(initialValuesForm_Category);
+                } else {
+                    resetSub(initialValuesForm_SubCategory);
+                    Navigate('/category/list-category');
+                }
+                getAllCategory();
             }
         });
     };
 
     const getAllCategory = () => {
         let category: OptionsSelect = [];
-        CategoryService.getAllCategory().then((res: any) => {
-            if (res.statusCode === 200) {
-                res.data[0].forEach((itemCat: Category) => {
-                    if (!itemCat.parent_id) {
-                        category.push({ label: itemCat.name, value: itemCat.id });
-                    }
+        CategoryService.getCategoryParent().then((res: any) => {
+            if (res) {
+                res.forEach((itemCat: CategoryType) => {
+                    category.push({ label: itemCat.name, value: itemCat.id });
                 });
-
                 setOptionsCategory(category);
             }
         });
@@ -90,14 +90,14 @@ const AddCategory = () => {
         getAllCategory();
     }, []);
 
-    const handleSubmitSubCategory = (values: ValuesSubCate) => {
-        let dataSendRequest: Category = {
-            name: values.sub_category,
-            parent_id: +values.category,
-            slug: toSlug(values.sub_category),
-            status: +values.status_sub,
+    const handleSubmitSubCategory = (values: SubCategoryType) => {
+        let dataSendRequest: CategoryType = {
+            name: values.name_sub,
+            parent_id: Number(values.parent_id),
+            slug: toSlug(values.name_sub),
+            status: +Number(values.status_sub),
         };
-        requestAddCategory(dataSendRequest);
+        requestAddCategory(dataSendRequest, 'subCategory');
     };
 
     const handleSubmitCategory = (values: Values) => {
@@ -106,21 +106,23 @@ const AddCategory = () => {
             slug: toSlug(values.name),
             status: +values.status,
         };
-        requestAddCategory(dataSendRequest);
+        requestAddCategory(dataSendRequest, 'category');
     };
 
     return (
-        <div className="fade-up">
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
-            <div className="add-product">
+            <div className="add-category">
                 <div className="card rounded-md p-2">
                     <div className="form">
                         <div className="card-header p-3 border-b">
-                            <h3 className="card-title" onClick={() => setDefaultTab(1)}>
-                                Thêm danh mục mới
-                            </h3>
+                            <h3 className="card-title">Thêm danh mục mới</h3>
                         </div>
-                        <Tabs className="mt-4" variant="soft-rounded" colorScheme="twitter" defaultIndex={defaultTab}>
+                        <Tabs className="mt-4" variant="soft-rounded" colorScheme="twitter">
                             <TabList>
                                 <Tab>Danh mục chính</Tab>
                                 <Tab className="mx-3">Danh mục phụ</Tab>
@@ -152,7 +154,7 @@ const AddCategory = () => {
                                                     <RadioField
                                                         label="Ẩn"
                                                         name="status"
-                                                        value={0}
+                                                        value={2}
                                                         id="status-2"
                                                         control={control}
                                                         error={errors}
@@ -175,7 +177,7 @@ const AddCategory = () => {
                                         <form onSubmit={handleSubmitSub(handleSubmitSubCategory)}>
                                             <div className="form-group grid gird-cols-1 md:grid-cols-2">
                                                 <SelectField
-                                                    name="category"
+                                                    name="parent_id"
                                                     placeholder="Chọn danh mục chính..."
                                                     label="Danh mục chính"
                                                     options={optionsCategory}
@@ -186,7 +188,7 @@ const AddCategory = () => {
                                             <div className=" my-3 form-group grid gird-cols-1 md:grid-cols-2 gap-2">
                                                 <InputField
                                                     type="text"
-                                                    name="sub_category"
+                                                    name="name_sub"
                                                     label="Tên danh mục phụ"
                                                     control={controlSub}
                                                     error={errorsSub}
@@ -206,7 +208,7 @@ const AddCategory = () => {
                                                     <RadioField
                                                         label="Ẩn"
                                                         name="status_sub"
-                                                        value={0}
+                                                        value={2}
                                                         id="status-4"
                                                         control={controlSub}
                                                         error={errorsSub}
@@ -229,7 +231,7 @@ const AddCategory = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
