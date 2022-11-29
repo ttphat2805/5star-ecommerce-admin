@@ -28,7 +28,7 @@ import { InputField, RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import CategoryService from '~/services/CategoryService';
 import { toSlug } from '~/utils/Slug';
-import { CategoryType, SubCategoryType } from '~/utils/Types';
+import { CategoryType, ResponseType, SubCategoryType } from '~/utils/Types';
 
 const defaultValues = {
     name: '',
@@ -95,21 +95,58 @@ const EditProduct = () => {
 
     const requestUpdateCategory = (id: number, data: CategoryType | SubCategoryType, type: string) => {
         CategoryService.updateCategory(id, data).then((res: any) => {
-            console.log(res);
             if (res.statusCode === 200) {
                 if (type === 'subCategory') {
                     getCategory(String(slug), 'category');
                     onClose();
                 } else {
+                    toast({
+                        position: 'top-right',
+                        title: 'Cập nhật danh mục thành công',
+                        duration: 2000,
+                        status: 'success',
+                    });
+                    Navigate('/category/list-category');
                 }
             }
         });
     };
 
-    const handleDeleteSubCategory = (id: number = 0) => {};
+    const handleDeleteSubCategory = (id: number = 0) => {
+        console.log(id);
+        if (id > 0) {
+            CategoryService.deleteCategory(id).then(
+                (res: ResponseType) => {
+                    if (res.statusCode === 200) {
+                        toast({
+                            position: 'top-right',
+                            title: 'Xóa danh mục phụ thành công',
+                            duration: 2000,
+                            status: 'success',
+                        });
+                        getCategory(String(slug), 'category');
+                    }
+                },
+                (err) => {
+                    toast({
+                        position: 'top-right',
+                        title: 'Xóa danh mục phụ thất bại',
+                        duration: 2000,
+                        status: 'error',
+                    });
+                },
+            );
+        }
+    };
 
     const handleSubmitForm = (values: CategoryType) => {
-        console.log('values: ', values);
+        const { name, status } = values;
+        let dataCategory = {
+            name,
+            status: Number(status),
+            slug: toSlug(name),
+        };
+        requestUpdateCategory(Number(slug), dataCategory, 'category');
     };
     const submitFormSubCategory = (values: SubCategoryType) => {
         const { name_sub: name, status_sub: status } = values;
@@ -118,7 +155,6 @@ const EditProduct = () => {
             status: Number(status),
             slug: toSlug(name),
         };
-        console.log('dataSubCategory: ', dataSubCategory);
         requestUpdateCategory(idSubCategory, dataSubCategory, 'subCategory');
     };
     return (
@@ -159,65 +195,73 @@ const EditProduct = () => {
                                             <RadioField
                                                 label="Ẩn"
                                                 name="status"
-                                                value={0}
+                                                value={2}
                                                 id="status-2"
                                                 control={control}
                                                 error={errors}
                                             />
                                         </div>
                                     </div>
-                                    <div className="form-table card text-base overflow-x-auto w-full md:w-3/4">
-                                        <Table variant="simple" className="w-full text-center">
-                                            <Thead>
-                                                <Tr>
-                                                    <Th>#</Th>
-                                                    <Th>Name</Th>
-                                                    <Th>Slug</Th>
-                                                    <Th>Status</Th>
-                                                    <Th>Action</Th>
-                                                </Tr>
-                                            </Thead>
-                                            <Tbody>
-                                                {category?.sub_category?.map((subCat: CategoryType, index: number) => (
-                                                    <Tr key={subCat.id}>
-                                                        <Td>{index + 1}</Td>
-                                                        <Td>{subCat.name}</Td>
-                                                        <Td>{subCat.slug}</Td>
-                                                        <Td>
-                                                            {subCat.status === 1 ? (
-                                                                <span className="badge-status">Hiện</span>
-                                                            ) : (
-                                                                <span className="badge-status !bg-red-500">Ẩn</span>
-                                                            )}
-                                                        </Td>
-                                                        <Td>
-                                                            <div className="flex">
-                                                                <Button
-                                                                    p={1}
-                                                                    colorScheme="twitter"
-                                                                    className="mx-2"
-                                                                    onClick={() => {
-                                                                        onOpen();
-                                                                        setIdSubCategory(subCat.id || 0);
-                                                                    }}
-                                                                >
-                                                                    <AiFillEdit className="text-lg" />
-                                                                </Button>
-                                                                <ModalConfirm
-                                                                    handleConfirm={() =>
-                                                                        handleDeleteSubCategory(subCat?.id)
-                                                                    }
-                                                                >
-                                                                    <Button p={1} colorScheme="red">
-                                                                        <IoClose className="text-lg" />
-                                                                    </Button>
-                                                                </ModalConfirm>
-                                                            </div>
-                                                        </Td>
+                                    <div className="form-table card text-base overflow-x-auto w-full md:w-3/4 mt-3">
+                                        <FormLabel>Danh sách danh mục phụ</FormLabel>
+
+                                        {category?.sub_category.length > 0 && (
+                                            <Table variant="simple" className="w-full text-center">
+                                                <Thead>
+                                                    <Tr>
+                                                        <Th>#</Th>
+                                                        <Th>Name</Th>
+                                                        <Th>Slug</Th>
+                                                        <Th>Status</Th>
+                                                        <Th>Action</Th>
                                                     </Tr>
-                                                ))}
-                                            </Tbody>
-                                        </Table>
+                                                </Thead>
+                                                <Tbody>
+                                                    {category?.sub_category?.map(
+                                                        (subCat: CategoryType, index: number) => (
+                                                            <Tr key={subCat.id}>
+                                                                <Td>{index + 1}</Td>
+                                                                <Td>{subCat.name}</Td>
+                                                                <Td>{subCat.slug}</Td>
+                                                                <Td>
+                                                                    {subCat.status === 1 ? (
+                                                                        <span className="badge-status">Hiện</span>
+                                                                    ) : (
+                                                                        <span className="badge-status !bg-red-500">
+                                                                            Ẩn
+                                                                        </span>
+                                                                    )}
+                                                                </Td>
+                                                                <Td>
+                                                                    <div className="flex">
+                                                                        <Button
+                                                                            p={1}
+                                                                            colorScheme="twitter"
+                                                                            className="mx-2"
+                                                                            onClick={() => {
+                                                                                onOpen();
+                                                                                setIdSubCategory(subCat.id || 0);
+                                                                            }}
+                                                                        >
+                                                                            <AiFillEdit className="text-lg" />
+                                                                        </Button>
+                                                                        <ModalConfirm
+                                                                            handleConfirm={() =>
+                                                                                handleDeleteSubCategory(subCat?.id)
+                                                                            }
+                                                                        >
+                                                                            <Button p={1} colorScheme="red">
+                                                                                <IoClose className="text-lg" />
+                                                                            </Button>
+                                                                        </ModalConfirm>
+                                                                    </div>
+                                                                </Td>
+                                                            </Tr>
+                                                        ),
+                                                    )}
+                                                </Tbody>
+                                            </Table>
+                                        )}
                                     </div>
                                     <div className="btn-action flex items-center justify-center mt-5">
                                         <Button type="submit" colorScheme="twitter">
@@ -269,7 +313,7 @@ const EditProduct = () => {
                                     <RadioField
                                         label="Ẩn"
                                         name="status_sub"
-                                        value={0}
+                                        value={2}
                                         id="status-4"
                                         control={controlSubCat}
                                         error={errorsSubCat}

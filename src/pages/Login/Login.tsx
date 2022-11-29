@@ -2,10 +2,8 @@ import { Button, useToast } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { AiOutlineGooglePlus } from 'react-icons/ai';
 import { FiUserCheck } from 'react-icons/fi';
-import { MdOutlineFacebook } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import images from '~/assets/images';
 
 import Image from '~/components/Image';
@@ -55,7 +53,12 @@ const Login = () => {
                 }
             },
             (err) => {
-                console.log(err);
+                toast({
+                    position: 'top-right',
+                    title: 'Tài khoản hoặc mật khẩu không tồn tại',
+                    duration: 2000,
+                    status: 'error',
+                });
             },
         );
     };
@@ -65,8 +68,8 @@ const Login = () => {
     };
 
     return (
-        <div className="flex justify-center h-screen overflow-x-hidden">
-            <div className="backgroud hidden w-full max-h-screen bg-primary md:flex justify-center items-center">
+        <div className="login-component flex justify-center h-screen overflow-x-hidden">
+            <div className="bg-main hidden w-full max-h-screen  md:flex justify-center items-center">
                 <div className="shape-animations">
                     <div className="shape-1 w-[200px] h-[200px] lg:w-[400px] lg:h-[400px]"></div>
                 </div>

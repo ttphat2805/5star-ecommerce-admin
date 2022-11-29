@@ -29,3 +29,8 @@ export type OptionsSelect = {
     label: string;
     parent?: number | undefined;
 }[];
+
+export type ResponseType = {
+    statusCode?: number;
+    data?: any;
+};

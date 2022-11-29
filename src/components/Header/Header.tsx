@@ -138,8 +138,8 @@ const Header = () => {
                                                 </Tooltip>
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent marginRight="20px" className="w-full">
-                                            <div className="menu-dropdown bg-white text-base shadow-xl rounded-md">
+                                        <PopoverContent marginRight="20px" width="200px">
+                                            <div className="menu-dropdown bg-white text-base shadow-xl rounded-md w-[200px]">
                                                 <div className="account flex border-b p-4 items-center">
                                                     <div className="img-avatar h-[50px] w-[50px]">
                                                         <img

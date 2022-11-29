@@ -17,18 +17,19 @@ type Values = {
 
 const initialValuesForm_Category = {
     name: '',
-    status: 0,
+    status: 2,
 };
 
 const initialValuesForm_SubCategory = {
     parent_id: '',
     name_sub: '',
-    status_sub: 0,
+    status_sub: 2,
 };
 
 const AddCategory = () => {
     const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
 
+    const toast = useToast();
     const Navigate = useNavigate();
 
     // INIT FORM
@@ -51,8 +52,6 @@ const AddCategory = () => {
 
     // ==== END INIT FORM
     // END STATE
-
-    const toast = useToast();
 
     const requestAddCategory = (data: CategoryType, type: string) => {
         CategoryService.addCategory(data).then((res: any) => {
@@ -155,7 +154,7 @@ const AddCategory = () => {
                                                     <RadioField
                                                         label="Ẩn"
                                                         name="status"
-                                                        value={0}
+                                                        value={2}
                                                         id="status-2"
                                                         control={control}
                                                         error={errors}
@@ -209,7 +208,7 @@ const AddCategory = () => {
                                                     <RadioField
                                                         label="Ẩn"
                                                         name="status_sub"
-                                                        value={0}
+                                                        value={2}
                                                         id="status-4"
                                                         control={controlSub}
                                                         error={errorsSub}

@@ -25,7 +25,7 @@ const requestUploadImage = async (fileImage: any) => {
     formData.append('file', fileImage);
     try {
         // CALL SERVICES UPLOAD
-        let idImage = await UploadService.UploadImage(formData);
+        let idImage = await UploadImage(formData);
         return idImage ? idImage : 0;
     } catch (error) {
         console.log(error);

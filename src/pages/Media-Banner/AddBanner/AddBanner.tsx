@@ -15,6 +15,7 @@ import './AddBanner.scss';
 const initialValues = {
     title: '',
     sub_title: '',
+    link: '',
     image: 0,
     status: 0,
 };
@@ -120,6 +121,15 @@ const AddBanner = () => {
                                         type="text"
                                         name="sub_title"
                                         label="Tiêu đề phụ"
+                                        control={control}
+                                        error={errors}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <InputField
+                                        type="text"
+                                        name="link"
+                                        label="Đường dẫn đến sản phẩm"
                                         control={control}
                                         error={errors}
                                     />

@@ -1,5 +1,6 @@
 import { AiOutlineBgColors } from 'react-icons/ai';
 import { GiClothes } from 'react-icons/gi';
+import { HiUserGroup } from 'react-icons/hi';
 import { IoIosAdd } from 'react-icons/io';
 import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
 import { TbLayoutDashboard } from 'react-icons/tb';
@@ -11,7 +12,7 @@ export const RouteSidebarMenu = [
     },
     {
         path: '/',
-        name: 'Dashboard',
+        name: 'Tổng quan',
         icon: <TbLayoutDashboard />,
     },
 
@@ -20,7 +21,21 @@ export const RouteSidebarMenu = [
         title: true,
     },
     {
+        name: 'Thành viên',
+        icon: <HiUserGroup />,
+        color: 'text-blue-400',
+        isParent: true,
+        children: [
+            {
+                path: '/member/list-member',
+                name: 'Danh sách thành viên',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
         name: 'Sản phẩm',
+        color: 'text-blue-400',
         icon: <GiClothes />,
         isParent: true,
         children: [
@@ -39,6 +54,7 @@ export const RouteSidebarMenu = [
     {
         name: 'Danh mục',
         icon: <MdOutlineCategory />,
+        color: 'text-blue-400',
         isParent: true,
         children: [
             {
@@ -55,6 +71,7 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Đa phương tiện',
+        color: 'text-blue-400',
         icon: <MdOutlinePermMedia />,
         isParent: true,
         children: [
@@ -71,18 +88,19 @@ export const RouteSidebarMenu = [
         ],
     },
     {
-        name: 'Thuộc tính',
+        name: 'Thương hiệu',
         icon: <AiOutlineBgColors />,
+        color: 'text-blue-400',
         isParent: true,
         children: [
             {
-                path: '/attribute/add-attribute',
-                name: 'Thêm thuộc tính',
+                path: '/brand/add-brand',
+                name: 'Thêm thương hiệu',
                 icon: <IoIosAdd />,
             },
             {
-                path: '/attribute/list-attribute',
-                name: 'Danh sách thuộc tính',
+                path: '/brand/list-brand',
+                name: 'Danh sách thương hiệu',
                 icon: <VscTasklist />,
             },
         ],

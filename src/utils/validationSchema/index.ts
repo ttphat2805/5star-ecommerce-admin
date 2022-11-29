@@ -1,8 +1,9 @@
 import * as Yup from 'yup';
 
 export const addBannerSchema = Yup.object({
-    title: Yup.string().trim().min(6, 'Tiêu đề chính phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề chính'),
-    sub_title: Yup.string().min(6, 'Tiêu đề phụ phải lớn hơn 6 kí tự').required('Vui lòng nhập tiêu đề phụ'),
+    title: Yup.string().trim().required('Vui lòng nhập tiêu đề chính').min(6, 'Tiêu đề chính phải lớn hơn 6 kí tự'),
+    sub_title: Yup.string().required('Vui lòng nhập tiêu đề phụ').min(6, 'Tiêu đề phụ phải lớn hơn 6 kí tự'),
+    link: Yup.string().required('Vui lòng nhập đường dẫn').min(6, 'Đường dẫn phải lớn hơn 6 kí tự'),
     status: Yup.string().required('Vui lòng điền trạng thái'),
 });
 
@@ -52,16 +53,14 @@ export const addProductSchema = Yup.object({
         then: (schema) => schema.min(1, 'Số lượng sản phẩm phải lớn hơn 1').required('Vui lòng nhập số lượng sản phẩm'),
     }),
 
-    description: Yup.string().min(30, 'Mô tả sản phẩm phải lớn hơn 30 kí tự').required('Vui lòng nhập mô tả sản phẩm'),
-
-    name_classify_1: Yup.string().when('isClassify_1', {
-        is: true,
-        then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
-    }),
-    name_classify_2: Yup.string().when('isClassify_1', {
-        is: true,
-        then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
-    }),
+    // name_classify_1: Yup.string().when('isClassify_1', {
+    //     is: true,
+    //     then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
+    // }),
+    // name_classify_2: Yup.string().when('isClassify_1', {
+    //     is: true,
+    //     then: (schema) => schema.required('Vui lòng nhập tên nhóm phân loại'),
+    // }),
 });
 
 // AUTH SCHEMA

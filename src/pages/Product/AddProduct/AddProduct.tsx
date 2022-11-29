@@ -126,6 +126,7 @@ const AddProduct = () => {
     }, []);
 
     const handleSubmitForm = async (values: Values) => {
+        console.log('values: ', values);
         const imageArray: any = [];
         for (let imageItem of Object.values(image)) {
             if (imageItem) {
@@ -355,7 +356,7 @@ const AddProduct = () => {
                                             </div>
                                         )}
                                     </div>
-                                    {!activeAttribute.classify_2 && (
+                                    {activeAttribute.classify_1 && !activeAttribute.classify_2 && (
                                         <div className="flex mt-3 items-center">
                                             <button
                                                 type="button"
