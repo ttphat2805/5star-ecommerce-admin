@@ -19,7 +19,6 @@ const FieldArrayTable = ({ control, error, setValue }: any) => {
         control,
         name: 'classify_2',
     });
-    console.log('classify_2: ', classify_2);
     const name_classify_1 = useWatch({
         control,
         name: 'name_classify_1',

@@ -2,8 +2,9 @@ import { AiOutlineBgColors } from 'react-icons/ai';
 import { GiClothes } from 'react-icons/gi';
 import { HiUserGroup } from 'react-icons/hi';
 import { IoIosAdd } from 'react-icons/io';
+import { IoNewspaperOutline } from 'react-icons/io5';
 import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
-import { TbLayoutDashboard } from 'react-icons/tb';
+import { TbDiscount2, TbLayoutDashboard } from 'react-icons/tb';
 import { VscTasklist } from 'react-icons/vsc';
 export const RouteSidebarMenu = [
     {
@@ -101,6 +102,42 @@ export const RouteSidebarMenu = [
             {
                 path: '/brand/list-brand',
                 name: 'Danh sách thương hiệu',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Mã giảm giá',
+        icon: <TbDiscount2 />,
+        color: 'text-blue-400',
+        isParent: true,
+        children: [
+            {
+                path: '/coupon/add-coupon',
+                name: 'Thêm mã giảm giá',
+                icon: <IoIosAdd />,
+            },
+            {
+                path: '/coupon/list-coupon',
+                name: 'Danh sách mã giảm giá',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Bài viết',
+        icon: <IoNewspaperOutline />,
+        color: 'text-blue-400',
+        isParent: true,
+        children: [
+            {
+                path: '/blog/add-blog',
+                name: 'Thêm bài viết',
+                icon: <IoIosAdd />,
+            },
+            {
+                path: '/blog/list-blog',
+                name: 'Danh sách bài viết',
                 icon: <VscTasklist />,
             },
         ],

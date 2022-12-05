@@ -2,7 +2,15 @@ import { useEffect, useRef } from 'react';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
 import { RiDeleteBin3Line } from 'react-icons/ri';
 import './ImageUpload.scss';
-const ImageUpload = ({ image, setImage, imagePreview, setImagePreview, label, name }: any) => {
+const ImageUpload = ({
+    image,
+    setImage,
+    imagePreview,
+    setImagePreview,
+    label,
+    name,
+    className = 'w-[140px] h-[140px]',
+}: any) => {
     const handleChangeFile = (e: any) => {
         let file = e.target.files[0];
         const dataImageUrl = URL?.createObjectURL(file);
@@ -32,7 +40,7 @@ const ImageUpload = ({ image, setImage, imagePreview, setImagePreview, label, na
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
                 ref={dragUploadRef}
-                className="add-image relative p-1 w-[140px] h-[140px] overflow-hidden border-dashed border-[1px] border-primary hover:bg-slate-100 transition-all duration-300"
+                className={`${className} add-image relative p-1 overflow-hidden border-dashed border-[1px] border-primary hover:bg-slate-100 transition-all duration-300`}
             >
                 {imagePreview && !imagePreview[name] && (
                     <label
@@ -48,7 +56,7 @@ const ImageUpload = ({ image, setImage, imagePreview, setImagePreview, label, na
                         <img
                             src={imagePreview[name]}
                             alt="Ảnh không tồn tại !"
-                            className="w-full h-full border-none outline-none"
+                            className="w-full h-full border-none outline-none object-contain"
                         />
                     </div>
                 )}
