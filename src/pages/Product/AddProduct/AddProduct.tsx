@@ -1,5 +1,4 @@
 import { Button, FormLabel, useToast } from '@chakra-ui/react';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,7 +6,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Breadcrumb from '~/components/Breadcrumb';
-import { FieldArrayClassify, FieldArrayTable, ImageUpload } from '~/layouts/components/AddProduct';
+import { FieldArrayTable, FieldColorPicker, FieldSize, ImageUpload } from '~/layouts/components/AddProduct';
 import InfoDetail from '~/layouts/components/AddProduct/InfoDetail';
 import { InputField, SelectField } from '~/layouts/components/CustomField';
 import CategoryService from '~/services/CategoryService';
@@ -15,7 +14,6 @@ import ProductService from '~/services/ProductService';
 import UploadService from '~/services/UploadService';
 import { toSlug } from '~/utils/Slug';
 import { CategoryType, OptionsSelect } from '~/utils/Types';
-import { addProductSchema } from '~/utils/validationSchema';
 import './AddProduct.scss';
 type Values = {
     name: string;
@@ -89,8 +87,10 @@ const AddProduct = () => {
         control,
         setValue,
         watch,
+        reset,
         formState: { errors, isSubmitting },
-    } = useForm<Values>({ defaultValues: initialValuesForm, resolver: yupResolver(addProductSchema) });
+    } = useForm<Values>({ defaultValues: initialValuesForm });
+    // resolver: yupResolver(addProductSchema)
 
     const categoryParentValue: number = +watch('category');
     useEffect(() => {
@@ -126,7 +126,6 @@ const AddProduct = () => {
     }, []);
 
     const handleSubmitForm = async (values: Values) => {
-        console.log('values: ', values);
         const imageArray: any = [];
         for (let imageItem of Object.values(image)) {
             if (imageItem) {
@@ -135,11 +134,10 @@ const AddProduct = () => {
         }
 
         const imageUploadRes = await UploadService.handleUploadImages(imageArray);
-        console.log('imageUploadRes: ', imageUploadRes);
 
         let dataSendRequest = {
             ...values,
-            image: imageUploadRes,
+            images: imageUploadRes,
             slug: toSlug(values.name),
             description: description,
             id_category: values.subCategory ? +values.subCategory : +values.category,
@@ -147,6 +145,7 @@ const AddProduct = () => {
 
         ProductService.addProduct(dataSendRequest).then((res: any) => {
             if (res.statusCode === 201) {
+                reset(initialValuesForm);
                 toast({
                     position: 'top-right',
                     title: 'Tạo sản phẩm mới thành công',
@@ -301,13 +300,10 @@ const AddProduct = () => {
                                                         <FormLabel className="text-sm">
                                                             Phân loại hàng (Màu sắc)
                                                         </FormLabel>
-                                                        <FieldArrayClassify
+                                                        <FieldColorPicker
                                                             control={control}
-                                                            error={errors}
-                                                            id="styleColor"
                                                             name="classify_1"
-                                                            type="color"
-                                                            placeholder="VD: Màu đỏ, màu xanh, màu đen"
+                                                            setValue={setValue}
                                                         />
                                                     </div>
                                                 </div>
@@ -345,11 +341,11 @@ const AddProduct = () => {
                                                             Phân loại hàng (kích thước)
                                                         </FormLabel>
 
-                                                        <FieldArrayClassify
+                                                        <FieldSize
                                                             control={control}
-                                                            placeholder="VD: Kích thước S, M, L, XL"
                                                             error={errors}
                                                             name="classify_2"
+                                                            placeholder="VD: S, M, L, XL"
                                                         />
                                                     </div>
                                                 </div>

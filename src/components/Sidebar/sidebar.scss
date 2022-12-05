@@ -1,4 +1,7 @@
 .side-menu {
+    .menu-list {
+        height: calc(100vh - 2rem);
+    }
     /* width */
     ::-webkit-scrollbar {
         width: 6px;

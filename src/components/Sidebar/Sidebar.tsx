@@ -60,9 +60,9 @@ const Sidebar = () => {
                             <Logo className="w-3/4 m-auto" />
                         </Link>
                     </motion.div>
-                    <div className="side-main h-full">
-                        <div className="side-menu h-full">
-                            <ul className="menu-list w-full px-0 lg:px-[10px] py-[10px] overflow-auto overflow-x-hidden h-full">
+                    <div className="side-main">
+                        <div className="side-menu">
+                            <ul className="menu-list w-full px-0 lg:px-[10px] py-[10px] overflow-y-scroll h-screen pb-[50px]">
                                 {RouteSidebarMenu.map((menu: any, index: string | number) => (
                                     <div key={index}>
                                         {/* This is Title. ex: Main */}
