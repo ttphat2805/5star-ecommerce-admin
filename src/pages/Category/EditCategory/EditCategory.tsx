@@ -210,10 +210,10 @@ const EditProduct = () => {
                                                 <Thead>
                                                     <Tr>
                                                         <Th>#</Th>
-                                                        <Th>Name</Th>
-                                                        <Th>Slug</Th>
-                                                        <Th>Status</Th>
-                                                        <Th>Action</Th>
+                                                        <Th>Tên</Th>
+                                                        <Th>Đường dẫn</Th>
+                                                        <Th>Trạng thái</Th>
+                                                        <Th>Hành động</Th>
                                                     </Tr>
                                                 </Thead>
                                                 <Tbody>
@@ -322,7 +322,7 @@ const EditProduct = () => {
                             </div>
                             <ModalFooter>
                                 <Button colorScheme="blue" mr={3} onClick={onClose}>
-                                    Close
+                                    Đóng
                                 </Button>
                                 <Button variant="ghost" type="submit">
                                     Cập nhật

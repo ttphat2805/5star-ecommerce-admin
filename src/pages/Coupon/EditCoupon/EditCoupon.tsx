@@ -1,7 +1,7 @@
 import { Button, FormLabel, useToast } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import moment from 'moment';
 import Breadcrumb from '~/components/Breadcrumb';
@@ -9,6 +9,7 @@ import { InputField, RadioField } from '~/layouts/components/CustomField';
 import CouponService from '~/services/CouponService';
 import { CouponType, ResponseType } from '~/utils/Types';
 import { addCouponSchema } from '~/utils/validationSchema';
+import { useEffect, useState } from 'react';
 
 const defaultValues = {
     name: '',
@@ -28,9 +29,11 @@ const defaultValues = {
 //     { label: 'Giảm theo %', value: 2 },
 // ];
 
-const AddCoupon = () => {
+const EditCoupon = () => {
     const toast = useToast();
     const Navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const { id } = useParams();
 
     const {
         handleSubmit,
@@ -39,6 +42,38 @@ const AddCoupon = () => {
         reset,
         formState: { errors },
     } = useForm<CouponType>({ defaultValues: defaultValues, resolver: yupResolver(addCouponSchema) });
+
+    const getCoupon = () => {
+        setLoading(true);
+        CouponService.getCoupon(Number(id)).then(
+            (res: ResponseType) => {
+                if (res.statusCode === 200) {
+                    setValueForm(res.data);
+                    setLoading(false);
+                }
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+    };
+
+    useEffect(() => {
+        getCoupon();
+    }, [id]);
+
+    const setValueForm = (data: any) => {
+        setValue('name', data.name);
+        setValue('code', data.code);
+        setValue('expirate_date', data.expirate_date);
+        setValue('start_date', data.start_date);
+        setValue('quantity', data.quantity);
+        setValue('type', data.type);
+        setValue('discount', data.discount);
+        setValue('min_order', data.min_order);
+        setValue('max_order', data.max_order);
+        setValue('status', data.status);
+    };
 
     const handleRandomCode = () => {
         const length = 6;
@@ -57,25 +92,29 @@ const AddCoupon = () => {
             expirate_date: moment(values.expirate_date).format('MM/DD/YYYY'),
             start_date: moment(values.start_date).format('MM/DD/YYYY'),
         };
-        CouponService.addCoupon(dataPost).then((res: ResponseType) => {
-            if (res.statusCode === 201) {
-                reset(defaultValues);
+        CouponService.updateCoupon(dataPost, Number(id)).then(
+            (res: ResponseType) => {
+                console.log('res: ', res);
+                if (res.statusCode === 200) {
+                    reset(defaultValues);
+                    toast({
+                        position: 'top-right',
+                        title: 'Cập nhật thành công',
+                        duration: 2000,
+                        status: 'success',
+                    });
+                    Navigate('/coupon/list-coupon');
+                }
+            },
+            (err) => {
                 toast({
                     position: 'top-right',
-                    title: 'Tạo mã giảm giá mới thành công',
-                    duration: 2000,
-                    status: 'success',
-                });
-            }
-            if (res.statusCode === 400) {
-                toast({
-                    position: 'top-right',
-                    title: 'Tạo mã giảm giá thất bại',
+                    title: 'Cập nhật thất bại',
                     duration: 2000,
                     status: 'error',
                 });
-            }
-        });
+            },
+        );
     };
 
     return (
@@ -84,12 +123,14 @@ const AddCoupon = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Thêm mã giảm giá" currentLink="list-coupon" parentPage="Mã giảm giá" />
+            <Breadcrumb currentPage="Cập nhật mã giảm giá" currentLink="list-coupon" parentPage="Mã giảm giá" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">
                         <div className="card-header p-3 border-b">
-                            <h3 className="card-title">Thêm mã giảm giá mới</h3>
+                            <h3 className="card-title">
+                                Cập nhật mã : <b></b>
+                            </h3>
                         </div>
                         <div className="card text-base p-3">
                             <form onSubmit={handleSubmit(onSubmit)}>
@@ -98,10 +139,13 @@ const AddCoupon = () => {
                                         <InputField name="name" label="Tiêu đề" control={control} error={errors} />
                                     </div>
                                     <div className="col-span-1 flex gap-2">
-                                        <InputField name="code" label="Mã giảm giá" control={control} error={errors} />
-                                        <Button className="mt-[32px]" onClick={handleRandomCode}>
-                                            Ngẫu nhiên
-                                        </Button>
+                                        <InputField
+                                            name="code"
+                                            label="Mã giảm giá"
+                                            control={control}
+                                            error={errors}
+                                            disabled
+                                        />
                                     </div>
                                 </div>
                                 <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
@@ -190,9 +234,13 @@ const AddCoupon = () => {
                                 </div>
                                 <div className="btn-action flex items-center justify-center mt-5">
                                     <Button type="submit" colorScheme="twitter">
-                                        Thêm thương hiệu
+                                        Cập nhật
                                     </Button>
-                                    <Button type="button" className="mx-2">
+                                    <Button
+                                        type="button"
+                                        className="mx-2"
+                                        onClick={() => Navigate('/coupon/list-coupon')}
+                                    >
                                         Quay lại
                                     </Button>
                                 </div>
@@ -205,4 +253,4 @@ const AddCoupon = () => {
     );
 };
 
-export default AddCoupon;
+export default EditCoupon;

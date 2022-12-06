@@ -34,3 +34,16 @@ export type ResponseType = {
     statusCode?: number;
     data?: any;
 };
+
+export type CouponType = {
+    name?: string;
+    code: string;
+    expirate_date: string;
+    start_date: string;
+    quantity: number;
+    type: number;
+    discount: number;
+    min_order: number;
+    max_order: number;
+    status?: number;
+};
