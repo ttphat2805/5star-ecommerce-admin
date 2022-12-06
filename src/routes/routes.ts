@@ -4,6 +4,7 @@ import { AddBlog, ListBlog } from '~/pages/Blog';
 import { AddBrand, ListBrand } from '~/pages/Brand';
 import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
 import { AddCoupon, ListCoupon } from '~/pages/Coupon';
+import EditCoupon from '~/pages/Coupon/EditCoupon';
 import Dashboard from '~/pages/Dashboard';
 import Login from '~/pages/Login';
 import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
@@ -115,6 +116,10 @@ const privateRoutes: Routes[] = [
     {
         path: '/coupon/list-coupon',
         Component: ListCoupon,
+    },
+    {
+        path: '/coupon/update-coupon/:id',
+        Component: EditCoupon,
     },
 ];
 

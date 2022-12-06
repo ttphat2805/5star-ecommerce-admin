@@ -69,3 +69,25 @@ export const LoginSchema = Yup.object({
     username: Yup.string().required('Vui lòng điền tên đăng nhập'),
     password: Yup.string().min(6, 'Mật khẩu phải lớn hơn 6 kí tự').required('Vui lòng điền mật khẩu'),
 });
+
+export const addCouponSchema = Yup.object({
+    // name: Yup.string().required('Vui lòng điền tiêu đề giảm giá'),
+    code: Yup.string().required('Vui lòng nhập mã giảm giá'),
+    start_date: Yup.date().required('Vui lòng nhập ngày bắt đầu'),
+    expirate_date: Yup.date()
+        .typeError('Wrong format (yyyy-MM-DD)')
+        .required('Vui lòng nhập ngày kết thúc')
+        .min(Yup.ref('start_date'), 'Ngày kết thúc phải lớn hơn ngày bắt đầu'),
+    quantity: Yup.number()
+        .required('Vui lòng nhập số lượng')
+        .min(1, 'Số lượng phải lớn hơn 0')
+        .typeError('Vui lòng nhập số lượng'),
+    // type: Yup.string(),
+    discount: Yup.number().typeError('Vui lòng nhập số tiền giảm').min(1000, 'Số tiền giảm phải lớn hơn 1000'),
+    min_order: Yup.number()
+        .typeError('Vui lòng nhập đơn hàng tối thiểu')
+        .min(Yup.ref('discount'), 'Đơn hàng tối thiểu phải lớn hơn số tiền giảm'),
+    max_order: Yup.number()
+        .typeError('Vui lòng nhập đơn hàng tối đa')
+        .min(Yup.ref('min_order'), 'Đơn hàng tối thiểu phải lớn hơn đơn hàng tối thiểu'),
+});
