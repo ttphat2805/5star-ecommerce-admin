@@ -8,13 +8,15 @@ import 'react-quill/dist/quill.snow.css';
 import Breadcrumb from '~/components/Breadcrumb';
 import { FieldArrayTable, FieldColorPicker, FieldSize, ImageUpload } from '~/layouts/components/AddProduct';
 import InfoDetail from '~/layouts/components/AddProduct/InfoDetail';
-import { InputField, SelectField } from '~/layouts/components/CustomField';
+import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
 import CategoryService from '~/services/CategoryService';
 import ProductService from '~/services/ProductService';
 import UploadService from '~/services/UploadService';
 import { toSlug } from '~/utils/Slug';
-import { CategoryType, OptionsSelect } from '~/utils/Types';
+import { CategoryType, OptionsSelect, ResponseType } from '~/utils/Types';
+import Select from 'react-select';
 import './AddProduct.scss';
+import BrandService from '~/services/BrandService';
 type Values = {
     name: string;
     price: number;
@@ -30,6 +32,8 @@ type Values = {
     isClassify_1: boolean;
     isClassify_2: boolean;
     info_detail: Array<any>;
+    status: number;
+    id_brand: number;
 };
 
 const initialValuesForm: Values = {
@@ -47,6 +51,8 @@ const initialValuesForm: Values = {
     isClassify_1: false,
     isClassify_2: false,
     info_detail: [''],
+    status: 2,
+    id_brand: 0,
 };
 
 const valuesImageObject = {
@@ -66,7 +72,7 @@ const modules = {
         ['clean'],
     ],
 };
-
+let optionsBrand: any = [];
 export const addBannerSchema = () => {};
 const AddProduct = () => {
     const [image, setImage] = useState<Object | any>(valuesImageObject);
@@ -121,7 +127,17 @@ const AddProduct = () => {
         });
     };
 
+    const getAllBrand = () => {
+        BrandService.GetBrands().then((res: ResponseType) => {
+            console.log('res: ', res);
+            if (res.statusCode === 200) {
+                // optionsBrand = res.data;
+            }
+        });
+    };
+
     useEffect(() => {
+        getAllBrand();
         getAllCategory();
     }, []);
 
@@ -213,7 +229,15 @@ const AddProduct = () => {
                                         error={errors}
                                     /> */}
                                 </div>
-
+                                <div className="brand my-2">
+                                    <FormLabel className="text-sm">Tên thương hiệu</FormLabel>
+                                    <Select
+                                        options={optionsBrand}
+                                        onChange={(e) => console.log(e)}
+                                        isClearable={true}
+                                        placeholder="Chọn thương hiệu cho sản phẩm của bạn...."
+                                    />
+                                </div>
                                 <div className="info-detail">
                                     <FormLabel className="text-sm">Thông tin chi tiết</FormLabel>
                                     <InfoDetail name="info_detail" control={control} error={errors} />
@@ -422,12 +446,33 @@ const AddProduct = () => {
                                 )}
 
                                 {/* End --- Price & Warehouse */}
-
+                                <div className="form-group mt-3">
+                                    <FormLabel>Trạng thái</FormLabel>
+                                    <div className=" flex gap-2">
+                                        <RadioField
+                                            label="Hiện"
+                                            name="status"
+                                            value={1}
+                                            id="status-3"
+                                            control={control}
+                                            error={errors}
+                                        />
+                                        <RadioField
+                                            label="Ẩn"
+                                            name="status"
+                                            value={2}
+                                            id="status-4"
+                                            control={control}
+                                            error={errors}
+                                        />
+                                    </div>
+                                </div>
                                 <div className="btn-action flex items-center justify-center mt-5">
                                     <Button
                                         type="submit"
                                         colorScheme="twitter"
                                         isLoading={isSubmitting}
+                                        disabled={isSubmitting}
                                         loadingText="Đang thêm..."
                                     >
                                         Thêm sản phẩm

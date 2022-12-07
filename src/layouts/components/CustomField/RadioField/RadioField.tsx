@@ -13,7 +13,7 @@ const RadioField = ({ label, error, id, control, name, ...propFieldInput }: any)
                             id={id}
                             {...field}
                             {...propFieldInput}
-                            checked={+field.value === +propFieldInput.value}
+                            checked={String(field.value) === String(propFieldInput.value)}
                             className={`radio-field ${error && name && error[name]?.message && 'is-invalid'}`}
                         />
                         <label className="radio-field-label" htmlFor={id}>

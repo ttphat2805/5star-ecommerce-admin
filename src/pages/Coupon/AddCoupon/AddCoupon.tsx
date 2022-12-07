@@ -9,6 +9,7 @@ import { InputField, RadioField } from '~/layouts/components/CustomField';
 import CouponService from '~/services/CouponService';
 import { CouponType, ResponseType } from '~/utils/Types';
 import { addCouponSchema } from '~/utils/validationSchema';
+import { useState } from 'react';
 
 const defaultValues = {
     name: '',
@@ -29,6 +30,7 @@ const defaultValues = {
 // ];
 
 const AddCoupon = () => {
+    const [loading, setLoading] = useState<boolean>(false);
     const toast = useToast();
     const Navigate = useNavigate();
 
@@ -52,6 +54,7 @@ const AddCoupon = () => {
     };
 
     const onSubmit = (values: CouponType) => {
+        setLoading(true);
         let dataPost = {
             ...values,
             expirate_date: moment(values.expirate_date).format('MM/DD/YYYY'),
@@ -60,14 +63,18 @@ const AddCoupon = () => {
         CouponService.addCoupon(dataPost).then((res: ResponseType) => {
             if (res.statusCode === 201) {
                 reset(defaultValues);
+                setLoading(false);
+
                 toast({
                     position: 'top-right',
                     title: 'Tạo mã giảm giá mới thành công',
                     duration: 2000,
                     status: 'success',
                 });
+                Navigate('/coupon/list-coupon');
             }
             if (res.statusCode === 400) {
+                setLoading(false);
                 toast({
                     position: 'top-right',
                     title: 'Tạo mã giảm giá thất bại',
@@ -189,8 +196,8 @@ const AddCoupon = () => {
                                     </div>
                                 </div>
                                 <div className="btn-action flex items-center justify-center mt-5">
-                                    <Button type="submit" colorScheme="twitter">
-                                        Thêm thương hiệu
+                                    <Button type="submit" colorScheme="twitter" isLoading={loading} disabled={loading}>
+                                        Thêm mã giảm giá
                                     </Button>
                                     <Button type="button" className="mx-2">
                                         Quay lại

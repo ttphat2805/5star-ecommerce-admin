@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { motion } from 'framer-motion';
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import Image from '~/components/Image';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
@@ -23,12 +24,16 @@ const initialValues = {
 const AddBanner = () => {
     const [imageURL, setImageURL] = useState<string>();
     const [fileBanner, setFileBanner] = useState<File | any>();
-    const toast = useToast();
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const Navigate = useNavigate();
     const dragUploadRef = useRef<HTMLHeadingElement>(null);
+    const toast = useToast();
     // INIT FORM
     const {
         handleSubmit,
         control,
+        reset,
         formState: { errors },
     } = useForm<BannerType>({ defaultValues: initialValues, resolver: yupResolver(addBannerSchema) });
 
@@ -52,14 +57,16 @@ const AddBanner = () => {
                 status: 'warning',
                 duration: 2000,
             });
+            return;
         }
+        setLoading(true);
 
         let imageResUpload: number | any = await UploadService.requestUploadImage(fileBanner[0]);
 
         let dataSendRequest = {
             ...values,
             status: +values.status,
-            image: imageResUpload,
+            image: `${imageResUpload}`,
         };
         MediaService.AddBanner(dataSendRequest).then(
             (res: any) => {
@@ -70,11 +77,23 @@ const AddBanner = () => {
                         duration: 2000,
                         status: 'success',
                     });
+                    reset(initialValues);
+                    setLoading(false);
+                    Navigate('/media/list-banner');
+                } else {
+                    setLoading(false);
+                    toast({
+                        position: 'top-right',
+                        title: 'Tạo banner thất bại',
+                        duration: 2000,
+                        status: 'error',
+                    });
                 }
             },
             // ERROR ADD BANNER
             (err) => {
-                console.log(err);
+                setLoading(false);
+
                 toast({
                     position: 'top-right',
                     title: 'Tạo banner thất bại',
@@ -222,8 +241,7 @@ const AddBanner = () => {
                                 </div>
 
                                 <div className="btn-action flex items-center justify-center mt-5">
-                                    {/* isLoading={formik.isSubmitting} */}
-                                    <Button type="submit" colorScheme="twitter">
+                                    <Button type="submit" colorScheme="twitter" isLoading={loading} disabled={loading}>
                                         Thêm danh mục
                                     </Button>
                                     <Button type="button" className="mx-2">

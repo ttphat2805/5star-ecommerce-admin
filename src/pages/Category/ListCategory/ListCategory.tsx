@@ -5,15 +5,19 @@ import { AiFillEdit } from 'react-icons/ai';
 import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import CategoryService from '~/services/CategoryService';
 import { CategoryType } from '~/utils/Types';
 const ListCategory = () => {
     const [category, setCategory] = useState([]);
+    const [loading, setLoading] = useState<boolean>(false);
+
     const toast = useToast();
     const Navigate = useNavigate();
     // END STATE
     const handleDeleteCategory = (id: string | any) => {
+        setLoading(true);
         CategoryService.deleteCategory(id).then(
             (res: any) => {
                 if (res.statusCode === 200) {
@@ -24,18 +28,25 @@ const ListCategory = () => {
                         status: 'success',
                     });
                     getAllCategory();
+                    setLoading(false);
+                } else {
+                    setLoading(false);
                 }
             },
             (err) => {
+                setLoading(false);
                 console.log(err);
             },
         );
     };
 
     const getAllCategory = () => {
+        setLoading(true);
+
         CategoryService.getCategoryParent().then((res: any) => {
             if (res) {
                 setCategory(res);
+                setLoading(false);
             }
         });
     };
@@ -53,68 +64,76 @@ const ListCategory = () => {
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product ">
                 <div className="card rounded-md p-2">
-                    <div className="w-full  grid grid-cols-1">
-                        <div className="form card text-base overflow-x-auto">
-                            <Table className="w-full ">
-                                <Thead>
-                                    <Tr>
-                                        <Th>#</Th>
-                                        <Th>Danh mục</Th>
-                                        <Th>Danh mục phụ</Th>
-                                        <Th>Trạng thái</Th>
-                                        <Th>Hành động</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {category.map((item: any, index: number) => (
-                                        <Tr key={index}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{item.name}</Td>
-                                            <Td>
-                                                {item?.sub_category.map((sub: CategoryType, index: number) => (
-                                                    <p
-                                                        key={index}
-                                                        className="bg-slate-500 mb-[4px] w-fit text-white p-1 rounded-md"
-                                                    >
-                                                        {sub.name}
-                                                    </p>
-                                                ))}
-                                                {item?.sub_category.length === 0 && (
-                                                    <Badge p={1} borderRadius="6px">
-                                                        Không có
-                                                    </Badge>
-                                                )}
-                                            </Td>
-                                            <Td>
-                                                {item.status === 1 ? (
-                                                    <span className="badge-status">Hiện</span>
-                                                ) : (
-                                                    <span className="badge-status !bg-red-500">Ẩn</span>
-                                                )}
-                                            </Td>
-                                            <Td>
-                                                <div className="flex">
-                                                    <Button
-                                                        p={1}
-                                                        colorScheme="twitter"
-                                                        className="mx-2"
-                                                        onClick={() => Navigate(`/category/edit-category/${item.id}`)}
-                                                    >
-                                                        <AiFillEdit className="text-lg" />
-                                                    </Button>
-                                                    <ModalConfirm handleConfirm={() => handleDeleteCategory(item.id)}>
-                                                        <Button p={1} colorScheme="red">
-                                                            <IoClose className="text-lg" />
-                                                        </Button>
-                                                    </ModalConfirm>
-                                                </div>
-                                            </Td>
+                    {loading ? (
+                        <LoadingSpin />
+                    ) : (
+                        <div className="w-full  grid grid-cols-1">
+                            <div className="form card text-base overflow-x-auto">
+                                <Table className="w-full ">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>#</Th>
+                                            <Th>Danh mục</Th>
+                                            <Th>Danh mục phụ</Th>
+                                            <Th>Trạng thái</Th>
+                                            <Th>Hành động</Th>
                                         </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
+                                    </Thead>
+                                    <Tbody>
+                                        {category.map((item: any, index: number) => (
+                                            <Tr key={index}>
+                                                <Td>{index + 1}</Td>
+                                                <Td>{item.name}</Td>
+                                                <Td>
+                                                    {item?.sub_category.map((sub: CategoryType, index: number) => (
+                                                        <p
+                                                            key={index}
+                                                            className="bg-slate-500 mb-[4px] w-fit text-white p-1 rounded-md"
+                                                        >
+                                                            {sub.name}
+                                                        </p>
+                                                    ))}
+                                                    {item?.sub_category.length === 0 && (
+                                                        <Badge p={1} borderRadius="6px">
+                                                            Không có
+                                                        </Badge>
+                                                    )}
+                                                </Td>
+                                                <Td>
+                                                    {item.status === 1 ? (
+                                                        <span className="badge-status">Hiện</span>
+                                                    ) : (
+                                                        <span className="badge-status !bg-red-500">Ẩn</span>
+                                                    )}
+                                                </Td>
+                                                <Td>
+                                                    <div className="flex">
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="twitter"
+                                                            className="mx-2"
+                                                            onClick={() =>
+                                                                Navigate(`/category/edit-category/${item.id}`)
+                                                            }
+                                                        >
+                                                            <AiFillEdit className="text-lg" />
+                                                        </Button>
+                                                        <ModalConfirm
+                                                            handleConfirm={() => handleDeleteCategory(item.id)}
+                                                        >
+                                                            <Button p={1} colorScheme="red">
+                                                                <IoClose className="text-lg" />
+                                                            </Button>
+                                                        </ModalConfirm>
+                                                    </div>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </motion.div>
