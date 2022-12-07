@@ -33,12 +33,16 @@ const ListCoupon = () => {
     const [couponList, setCouponList] = useState([]);
     const [couponDetail, setCouponDetail] = useState<any>({});
     const [loadingModal, setLoadingModal] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
+
     // END STATE
     const { isOpen, onOpen, onClose } = useDisclosure();
     const Navigate = useNavigate();
     const toast = useToast();
 
     const handleDelete = (id: string | any) => {
+        setLoadingModal(true);
+
         CouponService.deleteCoupon(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 toast({
@@ -48,6 +52,15 @@ const ListCoupon = () => {
                     status: 'success',
                 });
                 getCoupons();
+                setLoadingModal(false);
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Xóa thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+                setLoadingModal(false);
             }
         });
     };
@@ -73,13 +86,19 @@ const ListCoupon = () => {
     };
 
     const getCoupons = () => {
+        setLoading(true);
         CouponService.getCoupons().then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
+                    setLoading(false);
+
                     setCouponList(res.data.data);
+                } else {
+                    setLoading(false);
                 }
             },
             (err) => {
+                setLoading(false);
                 console.log(err);
             },
         );
@@ -98,64 +117,68 @@ const ListCoupon = () => {
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
-                    <div className="w-full grid grid-cols-1">
-                        <div className="form card text-base overflow-x-auto">
-                            <Table className="w-full">
-                                <Thead>
-                                    <Tr>
-                                        <Th>#</Th>
-                                        <Th>Mã giảm giá</Th>
-                                        <Th>Tiền giảm</Th>
-                                        <Th>Số lượng</Th>
-                                        <Th>Ngày bắt đầu</Th>
-                                        <Th>Ngày kết thúc</Th>
-                                        <Th>Đã dùng</Th>
-                                        <Th>Trạng thái</Th>
-                                        <Th>Hành động</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {couponList.map((item: any, index: number) => (
-                                        <Tr key={index}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{item.code}</Td>
-                                            <Td>{FormatPriceVND(item.discount)}</Td>
-                                            <Td>{item.quantity}</Td>
-                                            <Td>{item.start_date}</Td>
-                                            <Td>{item.expirate_date}</Td>
-                                            <Td>{item.used}</Td>
-                                            <Td>
-                                                {item.status === 1 ? (
-                                                    <span className="badge-status">Hiện</span>
-                                                ) : (
-                                                    <span className="badge-status !bg-red-500">Ẩn</span>
-                                                )}
-                                            </Td>
-                                            <Td className="flex">
-                                                <span
-                                                    className="bg-cyan-500 btn mr-2 text-white"
-                                                    onClick={() => openModalView(item.id)}
-                                                >
-                                                    <IoIosEye className="text-lg" />
-                                                </span>
-                                                <span
-                                                    className="bg-primary btn mr-2 text-white"
-                                                    onClick={() => Navigate('/coupon/update-coupon/' + item.id)}
-                                                >
-                                                    <AiFillEdit className="text-lg" />
-                                                </span>
-                                                <span className="bg-red-500 btn text-white ">
-                                                    <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                        <IoClose className="text-lg" />
-                                                    </ModalConfirm>
-                                                </span>
-                                            </Td>
+                    {loading ? (
+                        <LoadingSpin />
+                    ) : (
+                        <div className="w-full grid grid-cols-1">
+                            <div className="form card text-base overflow-x-auto">
+                                <Table className="w-full">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>#</Th>
+                                            <Th>Mã giảm giá</Th>
+                                            <Th>Tiền giảm</Th>
+                                            <Th>Số lượng</Th>
+                                            <Th>Ngày bắt đầu</Th>
+                                            <Th>Ngày kết thúc</Th>
+                                            <Th>Đã dùng</Th>
+                                            <Th>Trạng thái</Th>
+                                            <Th>Hành động</Th>
                                         </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
+                                    </Thead>
+                                    <Tbody>
+                                        {couponList.map((item: any, index: number) => (
+                                            <Tr key={index}>
+                                                <Td>{index + 1}</Td>
+                                                <Td>{item.code}</Td>
+                                                <Td>{FormatPriceVND(item.discount)}</Td>
+                                                <Td>{item.quantity}</Td>
+                                                <Td>{item.start_date}</Td>
+                                                <Td>{item.expirate_date}</Td>
+                                                <Td>{item.used}</Td>
+                                                <Td>
+                                                    {item.status === 1 ? (
+                                                        <span className="badge-status">Hiện</span>
+                                                    ) : (
+                                                        <span className="badge-status !bg-red-500">Ẩn</span>
+                                                    )}
+                                                </Td>
+                                                <Td className="flex">
+                                                    <span
+                                                        className="bg-cyan-500 btn mr-2 text-white"
+                                                        onClick={() => openModalView(item.id)}
+                                                    >
+                                                        <IoIosEye className="text-lg" />
+                                                    </span>
+                                                    <span
+                                                        className="bg-primary btn mr-2 text-white"
+                                                        onClick={() => Navigate('/coupon/update-coupon/' + item.id)}
+                                                    >
+                                                        <AiFillEdit className="text-lg" />
+                                                    </span>
+                                                    <span className="bg-red-500 btn text-white ">
+                                                        <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                            <IoClose className="text-lg" />
+                                                        </ModalConfirm>
+                                                    </span>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            </div>
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
             {/* MODAL VIEW DETAIL */}

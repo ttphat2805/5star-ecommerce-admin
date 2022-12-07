@@ -1,15 +1,16 @@
 import { Button, FormLabel, useToast } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useNavigate, useParams } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
 import CouponService from '~/services/CouponService';
 import { CouponType, ResponseType } from '~/utils/Types';
 import { addCouponSchema } from '~/utils/validationSchema';
-import { useEffect, useState } from 'react';
 
 const defaultValues = {
     name: '',
@@ -33,6 +34,7 @@ const EditCoupon = () => {
     const toast = useToast();
     const Navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
     const { id } = useParams();
 
     const {
@@ -50,9 +52,12 @@ const EditCoupon = () => {
                 if (res.statusCode === 200) {
                     setValueForm(res.data);
                     setLoading(false);
+                } else {
+                    setLoading(false);
                 }
             },
             (err) => {
+                setLoading(false);
                 console.log(err);
             },
         );
@@ -75,18 +80,8 @@ const EditCoupon = () => {
         setValue('status', data.status);
     };
 
-    const handleRandomCode = () => {
-        const length = 6;
-        let result = '5Star';
-        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let charactersLength = characters.length;
-        for (let i = 0; i < length; i++) {
-            result += characters.charAt(Math.floor(Math.random() * charactersLength));
-        }
-        setValue('code', result.toUpperCase());
-    };
-
     const onSubmit = (values: CouponType) => {
+        setLoadingSubmit(true);
         let dataPost = {
             ...values,
             expirate_date: moment(values.expirate_date).format('MM/DD/YYYY'),
@@ -94,7 +89,6 @@ const EditCoupon = () => {
         };
         CouponService.updateCoupon(dataPost, Number(id)).then(
             (res: ResponseType) => {
-                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     reset(defaultValues);
                     toast({
@@ -103,10 +97,21 @@ const EditCoupon = () => {
                         duration: 2000,
                         status: 'success',
                     });
+                    setLoadingSubmit(false);
                     Navigate('/coupon/list-coupon');
+                } else {
+                    setLoadingSubmit(false);
+                    toast({
+                        position: 'top-right',
+                        title: 'Cập nhật thất bại',
+                        duration: 2000,
+                        status: 'error',
+                    });
                 }
             },
             (err) => {
+                setLoadingSubmit(false);
+
                 toast({
                     position: 'top-right',
                     title: 'Cập nhật thất bại',
@@ -124,131 +129,145 @@ const EditCoupon = () => {
             transition={{ duration: 0.5 }}
         >
             <Breadcrumb currentPage="Cập nhật mã giảm giá" currentLink="list-coupon" parentPage="Mã giảm giá" />
-            <div className="add-product">
-                <div className="card rounded-md p-2">
-                    <div className="form">
-                        <div className="card-header p-3 border-b">
-                            <h3 className="card-title">
-                                Cập nhật mã : <b></b>
-                            </h3>
-                        </div>
-                        <div className="card text-base p-3">
-                            <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    <div className="col-span-1">
-                                        <InputField name="name" label="Tiêu đề" control={control} error={errors} />
+            {loading ? (
+                <LoadingSpin />
+            ) : (
+                <div className="edit-coupon">
+                    <div className="card rounded-md p-2">
+                        <div className="form">
+                            <div className="card-header p-3 border-b">
+                                <h3 className="card-title">
+                                    Cập nhật mã : <b></b>
+                                </h3>
+                            </div>
+                            <div className="card text-base p-3">
+                                <form onSubmit={handleSubmit(onSubmit)}>
+                                    <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                        <div className="col-span-1">
+                                            <InputField name="name" label="Tiêu đề" control={control} error={errors} />
+                                        </div>
+                                        <div className="col-span-1 flex gap-2">
+                                            <InputField
+                                                name="code"
+                                                label="Mã giảm giá"
+                                                control={control}
+                                                error={errors}
+                                                disabled
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="col-span-1 flex gap-2">
-                                        <InputField
-                                            name="code"
-                                            label="Mã giảm giá"
-                                            control={control}
-                                            error={errors}
-                                            disabled
-                                        />
+                                    <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                        {/* <div className="col-span-1">
+                                           <SelectField
+                                               name="type"
+                                               label="Loại giảm giá"
+                                               options={options}
+                                               control={control}
+                                               error={errors}
+                                           />
+                                       </div> */}
+                                        <div className="col-span-1">
+                                            <InputField
+                                                name="discount"
+                                                label="Số tiền giảm"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <InputField
+                                                name="quantity"
+                                                label="Số lượng"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    {/* <div className="col-span-1">
-                                        <SelectField
-                                            name="type"
-                                            label="Loại giảm giá"
-                                            options={options}
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div> */}
-                                    <div className="col-span-1">
-                                        <InputField
-                                            name="discount"
-                                            label="Số tiền giảm"
-                                            control={control}
-                                            error={errors}
-                                        />
+                                    <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                        <div className="col-span-1">
+                                            <InputField
+                                                type="number"
+                                                name="min_order"
+                                                label="Đơn hàng tối thiểu"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <InputField
+                                                name="max_order"
+                                                type="number"
+                                                label="Đơn hàng tối đa"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
                                     </div>
-                                    <div className="col-span-1">
-                                        <InputField name="quantity" label="Số lượng" control={control} error={errors} />
+                                    <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                        <div className="col-span-1">
+                                            <InputField
+                                                type="date"
+                                                name="start_date"
+                                                label="Ngày bắt đầu"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <InputField
+                                                type="date"
+                                                name="expirate_date"
+                                                label="Ngày kết thúc"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    <div className="col-span-1">
-                                        <InputField
-                                            type="number"
-                                            name="min_order"
-                                            label="Đơn hàng tối thiểu"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                    <div className="col-span-1">
-                                        <InputField
-                                            name="max_order"
-                                            type="number"
-                                            label="Đơn hàng tối đa"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    <div className="col-span-1">
-                                        <InputField
-                                            type="date"
-                                            name="start_date"
-                                            label="Ngày bắt đầu"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                    <div className="col-span-1">
-                                        <InputField
-                                            type="date"
-                                            name="expirate_date"
-                                            label="Ngày kết thúc"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                </div>
 
-                                <div className="form-group mt-3">
-                                    <FormLabel>Trạng thái</FormLabel>
-                                    <div className=" flex gap-2">
-                                        <RadioField
-                                            label="Hiện"
-                                            name="status"
-                                            value={1}
-                                            id="status-1"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                        <RadioField
-                                            label="Ẩn"
-                                            name="status"
-                                            value={2}
-                                            id="status-2"
-                                            control={control}
-                                            error={errors}
-                                        />
+                                    <div className="form-group mt-3">
+                                        <FormLabel>Trạng thái</FormLabel>
+                                        <div className=" flex gap-2">
+                                            <RadioField
+                                                label="Hiện"
+                                                name="status"
+                                                value={1}
+                                                id="status-1"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                            <RadioField
+                                                label="Ẩn"
+                                                name="status"
+                                                value={2}
+                                                id="status-2"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="btn-action flex items-center justify-center mt-5">
-                                    <Button type="submit" colorScheme="twitter">
-                                        Cập nhật
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        className="mx-2"
-                                        onClick={() => Navigate('/coupon/list-coupon')}
-                                    >
-                                        Quay lại
-                                    </Button>
-                                </div>
-                            </form>
+                                    <div className="btn-action flex items-center justify-center mt-5">
+                                        <Button
+                                            type="submit"
+                                            colorScheme="twitter"
+                                            isLoading={loadingSubmit}
+                                            disabled={loadingSubmit}
+                                        >
+                                            Cập nhật
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            className="mx-2"
+                                            onClick={() => Navigate('/coupon/list-coupon')}
+                                        >
+                                            Quay lại
+                                        </Button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
         </motion.div>
     );
 };

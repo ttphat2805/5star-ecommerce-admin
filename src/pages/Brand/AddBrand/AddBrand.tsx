@@ -1,4 +1,6 @@
 import { Button, FormLabel, useToast } from '@chakra-ui/react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,6 +9,7 @@ import { InputField, RadioField } from '~/layouts/components/CustomField';
 import BrandService from '~/services/BrandService';
 import { toSlug } from '~/utils/Slug';
 import { ResponseType } from '~/utils/Types';
+import { addBrandSchema } from '~/utils/validationSchema';
 
 const defaultValues = {
     name: '',
@@ -14,6 +17,7 @@ const defaultValues = {
 };
 
 const AddBrand = () => {
+    const [loading, setLoading] = useState<boolean>(false);
     const toast = useToast();
     const Navigate = useNavigate();
 
@@ -21,9 +25,10 @@ const AddBrand = () => {
         handleSubmit,
         control,
         formState: { errors },
-    } = useForm<any>({ defaultValues: defaultValues });
+    } = useForm<any>({ defaultValues: defaultValues, resolver: yupResolver(addBrandSchema) });
 
     const onSubmit = (values: any) => {
+        setLoading(true);
         const { name, status } = values;
         const dataPost = {
             name,
@@ -36,17 +41,27 @@ const AddBrand = () => {
                 if (res.statusCode === 201) {
                     toast({
                         position: 'top-right',
-                        title: 'Tạo danh mục mới thành công',
+                        title: 'Tạo thương hiệu mới thành công',
                         duration: 2000,
                         status: 'success',
                     });
+                    setLoading(false);
                     Navigate('/brand/list-brand');
+                } else {
+                    toast({
+                        position: 'top-right',
+                        title: 'Tạo thương hiệu thất bại',
+                        duration: 2000,
+                        status: 'error',
+                    });
+                    setLoading(false);
                 }
             },
             (err) => {
+                setLoading(false);
                 toast({
                     position: 'top-right',
-                    title: 'Tạo danh mục thất bại',
+                    title: 'Tạo thương hiệu thất bại',
                     duration: 2000,
                     status: 'error',
                 });
@@ -97,7 +112,7 @@ const AddBrand = () => {
                                     </div>
                                 </div>
                                 <div className="btn-action flex items-center justify-center mt-5">
-                                    <Button type="submit" colorScheme="twitter">
+                                    <Button type="submit" colorScheme="twitter" isLoading={loading} disabled={loading}>
                                         Thêm thương hiệu
                                     </Button>
                                     <Button type="button" className="mx-2">

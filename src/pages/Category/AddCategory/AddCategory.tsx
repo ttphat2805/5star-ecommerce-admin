@@ -28,7 +28,7 @@ const initialValuesForm_SubCategory = {
 
 const AddCategory = () => {
     const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
-
+    const [loading, setLoading] = useState<boolean>(false);
     const toast = useToast();
     const Navigate = useNavigate();
 
@@ -54,8 +54,8 @@ const AddCategory = () => {
     // END STATE
 
     const requestAddCategory = (data: CategoryType, type: string) => {
+        setLoading(true);
         CategoryService.addCategory(data).then((res: any) => {
-            console.log(res);
             if (res.statusCode === 201) {
                 toast({
                     position: 'top-right',
@@ -70,6 +70,9 @@ const AddCategory = () => {
                     Navigate('/category/list-category');
                 }
                 getAllCategory();
+                setLoading(false);
+            } else {
+                setLoading(false);
             }
         });
     };
@@ -162,10 +165,19 @@ const AddCategory = () => {
                                                 </div>
                                             </div>
                                             <div className="btn-action flex items-center justify-center mt-5">
-                                                <Button type="submit" colorScheme="twitter">
+                                                <Button
+                                                    type="submit"
+                                                    colorScheme="twitter"
+                                                    isLoading={loading}
+                                                    disabled={loading}
+                                                >
                                                     Thêm danh mục
                                                 </Button>
-                                                <Button type="button" className="mx-2">
+                                                <Button
+                                                    type="button"
+                                                    className="mx-2"
+                                                    onClick={() => Navigate('/category/list-category')}
+                                                >
                                                     Quay lại
                                                 </Button>
                                             </div>
@@ -216,10 +228,19 @@ const AddCategory = () => {
                                                 </div>
                                             </div>
                                             <div className="btn-action flex items-center justify-center mt-5">
-                                                <Button type="submit" colorScheme="twitter">
+                                                <Button
+                                                    type="submit"
+                                                    colorScheme="twitter"
+                                                    isLoading={loading}
+                                                    disabled={loading}
+                                                >
                                                     Thêm danh mục
                                                 </Button>
-                                                <Button type="button" className="mx-2">
+                                                <Button
+                                                    type="button"
+                                                    className="mx-2"
+                                                    onClick={() => Navigate('/category/list-category')}
+                                                >
                                                     Quay lại
                                                 </Button>
                                             </div>

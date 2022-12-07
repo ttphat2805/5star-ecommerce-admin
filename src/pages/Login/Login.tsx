@@ -7,11 +7,12 @@ import { useNavigate } from 'react-router-dom';
 import images from '~/assets/images';
 
 import Image from '~/components/Image';
+import Loading from '~/components/Loading';
 import Logo from '~/components/Logo';
 import InputFieldEye from '~/layouts/components/CustomField/InputFieldEye';
 import InputFieldIcon from '~/layouts/components/CustomField/InputFieldIcon';
 import { AuthService } from '~/services';
-import { LoginType } from '~/utils/Types';
+import { LoginType, ResponseType } from '~/utils/Types';
 import { LoginSchema } from '~/utils/validationSchema';
 import './Login.scss';
 
@@ -22,6 +23,7 @@ const initLoginForm = {
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     // END STATE
 
     // INIT FORM
@@ -36,13 +38,15 @@ const Login = () => {
 
     // HANDLE LOGIC
     const handleSubmitLogin = (values: LoginType) => {
+        setLoading(true);
         AuthService.signIn(values).then(
-            (res: any) => {
+            (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     let accessToken = res?.data?.accessToken;
                     if (accessToken) {
                         localStorage.setItem('access_token', accessToken);
                         Navigate('/');
+                        setLoading(false);
                         toast({
                             position: 'top-right',
                             title: 'Đăng nhập thành công',
@@ -50,9 +54,18 @@ const Login = () => {
                             status: 'success',
                         });
                     }
+                } else {
+                    setLoading(false);
+                    toast({
+                        position: 'top-right',
+                        title: 'Tài khoản hoặc mật khẩu không tồn tại',
+                        duration: 2000,
+                        status: 'error',
+                    });
                 }
             },
             (err) => {
+                setLoading(false);
                 toast({
                     position: 'top-right',
                     title: 'Tài khoản hoặc mật khẩu không tồn tại',
@@ -127,7 +140,13 @@ const Login = () => {
                                 </div> */}
                             </div>
                             <div className="button-action w-full mt-5">
-                                <Button type="submit" colorScheme="twitter" className="w-full py-6">
+                                <Button
+                                    type="submit"
+                                    colorScheme="twitter"
+                                    className="w-full py-6"
+                                    isLoading={loading}
+                                    disabled={loading}
+                                >
                                     Đăng nhập
                                 </Button>
                             </div>

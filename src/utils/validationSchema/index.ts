@@ -91,3 +91,7 @@ export const addCouponSchema = Yup.object({
         .typeError('Vui lòng nhập đơn hàng tối đa')
         .min(Yup.ref('min_order'), 'Đơn hàng tối thiểu phải lớn hơn đơn hàng tối thiểu'),
 });
+
+export const addBrandSchema = Yup.object({
+    name: Yup.string().required('Vui lòng điền tên thương hiệu'),
+});

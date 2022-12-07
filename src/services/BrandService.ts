@@ -1,5 +1,4 @@
 import Config from '~/config';
-import { BannerType } from '~/utils/Types';
 import AxiosInstance from './AxiosInstance';
 
 let url: string = 'brand';

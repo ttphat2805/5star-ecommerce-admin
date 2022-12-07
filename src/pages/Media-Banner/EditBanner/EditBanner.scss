@@ -1,0 +1,52 @@
+.drop-wrapper {
+    &.active {
+        .drop-container {
+            background-image: -webkit-linear-gradient(
+                135deg,
+                rgba(230, 230, 230, 0.26) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(230, 230, 230, 0.26) 50%,
+                rgba(230, 230, 230, 0.26) 75%,
+                transparent 75%,
+                transparent
+            );
+            background: linear-gradient(
+                -45deg,
+                rgba(230, 230, 230, 0.26) 25%,
+                transparent 25%,
+                transparent 50%,
+                rgba(230, 230, 230, 0.26) 50%,
+                rgba(230, 230, 230, 0.26) 75%,
+                transparent 75%,
+                transparent
+            );
+            background-size: 45px 45px;
+            -webkit-animation: stripes 1s linear infinite;
+            animation: stripes 1s linear infinite;
+        }
+    }
+    &:hover .modal {
+        transition: all 0.2s;
+        opacity: 1;
+        display: block;
+    }
+}
+
+@-webkit-keyframes stripes {
+    from {
+        -webkit-transform: translateX(0);
+    }
+    to {
+        -webkit-transform: translateX(46px);
+    }
+}
+
+@keyframes stripes {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(46px);
+    }
+}

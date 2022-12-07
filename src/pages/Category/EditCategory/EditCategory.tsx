@@ -21,8 +21,9 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillEdit } from 'react-icons/ai';
+import { BsPlus } from 'react-icons/bs';
 import { IoClose } from 'react-icons/io5';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
@@ -205,7 +206,17 @@ const EditProduct = () => {
                                     <div className="form-table card text-base overflow-x-auto w-full md:w-3/4 mt-3">
                                         <FormLabel>Danh sách danh mục phụ</FormLabel>
 
-                                        {category?.sub_category.length > 0 && (
+                                        {category?.sub_category.length === 0 ? (
+                                            <>
+                                                <p className="my-2">Không có danh mục phụ nào</p>
+                                                <Link to="/category/add-category">
+                                                    <Button>
+                                                        Thêm danh mục
+                                                        <BsPlus className="text-xl" />
+                                                    </Button>
+                                                </Link>
+                                            </>
+                                        ) : (
                                             <Table variant="simple" className="w-full text-center">
                                                 <Thead>
                                                     <Tr>

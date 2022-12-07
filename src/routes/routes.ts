@@ -11,7 +11,6 @@ import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
 import NotFound from '~/pages/NotFound';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
-import Register from '~/pages/Register';
 import { ListUser } from '~/pages/Users';
 
 interface Routes {
@@ -84,7 +83,7 @@ const privateRoutes: Routes[] = [
         Component: AddBanner,
     },
     {
-        path: '/media/edit-banner',
+        path: '/media/edit-banner/:id',
         Component: EditBanner,
     },
     {
@@ -132,11 +131,6 @@ const publicRoutes: Routes[] = [
     {
         path: '*',
         Component: NotFound,
-        layout: null,
-    },
-    {
-        path: '/register',
-        Component: Register,
         layout: null,
     },
 ];
