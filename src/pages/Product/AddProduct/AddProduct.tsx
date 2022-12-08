@@ -5,18 +5,19 @@ import { useForm } from 'react-hook-form';
 import { IoCloseOutline } from 'react-icons/io5';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useNavigate } from 'react-router-dom';
+import Select from 'react-select';
 import Breadcrumb from '~/components/Breadcrumb';
 import { FieldArrayTable, FieldColorPicker, FieldSize, ImageUpload } from '~/layouts/components/AddProduct';
 import InfoDetail from '~/layouts/components/AddProduct/InfoDetail';
 import { InputField, RadioField, SelectField } from '~/layouts/components/CustomField';
+import BrandService from '~/services/BrandService';
 import CategoryService from '~/services/CategoryService';
 import ProductService from '~/services/ProductService';
 import UploadService from '~/services/UploadService';
 import { toSlug } from '~/utils/Slug';
 import { CategoryType, OptionsSelect, ResponseType } from '~/utils/Types';
-import Select from 'react-select';
 import './AddProduct.scss';
-import BrandService from '~/services/BrandService';
 type Values = {
     name: string;
     price: number;
@@ -76,6 +77,7 @@ let optionsBrand: any = [];
 export const addBannerSchema = () => {};
 const AddProduct = () => {
     const [image, setImage] = useState<Object | any>(valuesImageObject);
+    const [loading, setLoading] = useState<boolean>(false);
     const [imagePreview, setImagePreview] = useState<Object | any>(valuesImageObject);
     // const [imageAttrbute, setImageAttrbute] = useState<Object | any>();
     const [activeAttribute, setActiceAttribute] = useState<any>({
@@ -86,6 +88,8 @@ const AddProduct = () => {
     const [optionsCategory, setOptionsCategory] = useState<OptionsSelect>();
     const [dataSubCategory, setDataSubCategory] = useState<OptionsSelect>();
     const [optionsSubCategory, setOptionsSubCategory] = useState<OptionsSelect>();
+
+    const Navigate = useNavigate();
 
     // INIT FORM
     const {
@@ -142,6 +146,7 @@ const AddProduct = () => {
     }, []);
 
     const handleSubmitForm = async (values: Values) => {
+        setLoading(true);
         const imageArray: any = [];
         for (let imageItem of Object.values(image)) {
             if (imageItem) {
@@ -154,6 +159,7 @@ const AddProduct = () => {
         let dataSendRequest = {
             ...values,
             images: imageUploadRes,
+            id_brand: 7,
             slug: toSlug(values.name),
             description: description,
             id_category: values.subCategory ? +values.subCategory : +values.category,
@@ -162,12 +168,22 @@ const AddProduct = () => {
         ProductService.addProduct(dataSendRequest).then((res: any) => {
             if (res.statusCode === 201) {
                 reset(initialValuesForm);
+                setLoading(false);
                 toast({
                     position: 'top-right',
                     title: 'Tạo sản phẩm mới thành công',
                     duration: 2000,
                     status: 'success',
                 });
+                Navigate('/product/list-product');
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Tạo sản phẩm thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+                Navigate('/product/list-product');
             }
         });
     };
@@ -471,8 +487,8 @@ const AddProduct = () => {
                                     <Button
                                         type="submit"
                                         colorScheme="twitter"
-                                        isLoading={isSubmitting}
-                                        disabled={isSubmitting}
+                                        isLoading={loading}
+                                        disabled={loading}
                                         loadingText="Đang thêm..."
                                     >
                                         Thêm sản phẩm
