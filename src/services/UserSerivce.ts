@@ -21,6 +21,9 @@ const UpdateUser = (id: number, data: any) => {
     return AxiosInstance.put(Config.apiUrl + url + '/' + id, data);
 };
 
+const updateRole = (data: any, id: number) => {
+    return AxiosInstance.put(Config.apiUrl + url + '/role/' + id, data);
+};
 // END BANNER
 
 const UserService = {
@@ -28,6 +31,7 @@ const UserService = {
     GetUser,
     GetUsers,
     DeleteUser,
+    updateRole,
 };
 
 export default UserService;

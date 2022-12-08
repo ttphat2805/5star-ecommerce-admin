@@ -27,9 +27,8 @@ import { IoClose } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import LoadingSpin from '~/components/LoadingSpin';
-import { InputField, RadioField } from '~/layouts/components/CustomField';
+import { RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
-import { AuthService } from '~/services';
 import UserService from '~/services/UserSerivce';
 import { ResponseType } from '~/utils/Types';
 
@@ -104,9 +103,25 @@ const ListUser = () => {
     };
 
     const onSubmitUpdateRole = (values: updateRole) => {
-        console.log('values: ', values);
-        AuthService.updateRole(values, idUser).then((res: ResponseType) => {
-            console.log(res);
+        UserService.updateRole(values, idUser).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật vai trò thành công',
+                    duration: 2000,
+                    status: 'success',
+                });
+                GetAllUsers();
+                onClose();
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật vai trò thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+                onClose();
+            }
         });
     };
 
