@@ -5,10 +5,11 @@ interface LogoProps {
     height?: number;
     width?: number;
     className?: string;
+    src?: any;
 }
 
-function Logo({ className }: LogoProps) {
-    return <Image src={images.logoBlack} alt="Logo 5Star" className={className} />;
+function Logo({ className, src = images.logoBlack }: LogoProps) {
+    return <Image src={src} alt="Logo 5Star" className={className} />;
 }
 
 export default Logo;

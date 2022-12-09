@@ -2,5 +2,15 @@
     .submenu-item__link.active {
         color: var(--primary);
         background: #f5f8fa;
+        .icon {
+            color: var(--primary);
+        }
+    }
+    .menu-item__link.active {
+        background: #f5f8fa;
+        color: var(--primary);
+        .icon {
+            color: var(--primary);
+        }
     }
 }

@@ -4,11 +4,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiUserCheck } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '~/app/hooks';
 import images from '~/assets/images';
 
 import Image from '~/components/Image';
 import Loading from '~/components/Loading';
 import Logo from '~/components/Logo';
+import { addUser } from '~/features/user/userSlice';
 import InputFieldEye from '~/layouts/components/CustomField/InputFieldEye';
 import InputFieldIcon from '~/layouts/components/CustomField/InputFieldIcon';
 import { AuthService } from '~/services';
@@ -24,6 +26,8 @@ const initLoginForm = {
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
+
     // END STATE
 
     // INIT FORM
@@ -43,6 +47,7 @@ const Login = () => {
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     let accessToken = res?.data?.accessToken;
+                    dispatch(addUser(res?.data?.user_info.profile));
                     if (accessToken) {
                         localStorage.setItem('access_token', accessToken);
                         Navigate('/');
@@ -95,7 +100,7 @@ const Login = () => {
                     <div className="card login p-4 md:bg-transparent lg:w-2/4 w-3/4">
                         <div className="login-top m-autoflex flex-col items-center my-4">
                             <div className="logo my-5 flex items-center justify-center">
-                                <Logo />
+                                <Logo className="w-[300px]" />
                             </div>
                             <div className="login-text my-5 m-auto">
                                 <h1 className="title font-bold text-3xl text-center my-5">Đăng nhập</h1>

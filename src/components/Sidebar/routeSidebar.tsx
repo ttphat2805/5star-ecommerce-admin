@@ -23,8 +23,9 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Thành viên',
+        path: '/member',
         icon: <HiUserGroup />,
-        color: 'text-blue-400',
+        color: 'text-[#00DBDE]',
         isParent: true,
         children: [
             {
@@ -36,7 +37,8 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Sản phẩm',
-        color: 'text-blue-400',
+        color: 'text-[#6284FF]',
+        path: '/product',
         icon: <GiClothes />,
         isParent: true,
         children: [
@@ -55,7 +57,8 @@ export const RouteSidebarMenu = [
     {
         name: 'Danh mục',
         icon: <MdOutlineCategory />,
-        color: 'text-blue-400',
+        path: '/category',
+        color: 'text-[#2BD2FF]',
         isParent: true,
         children: [
             {
@@ -72,8 +75,9 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Đa phương tiện',
-        color: 'text-blue-400',
+        color: 'text-[#FF6A88]',
         icon: <MdOutlinePermMedia />,
+        path: '/media',
         isParent: true,
         children: [
             {
@@ -90,8 +94,9 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Thương hiệu',
+        path: '/brand',
         icon: <AiOutlineBgColors />,
-        color: 'text-blue-400',
+        color: 'text-[#2B86C5]',
         isParent: true,
         children: [
             {
@@ -109,7 +114,8 @@ export const RouteSidebarMenu = [
     {
         name: 'Mã giảm giá',
         icon: <TbDiscount2 />,
-        color: 'text-blue-400',
+        path: '/coupon',
+        color: 'text-[#16A085]',
         isParent: true,
         children: [
             {
@@ -126,8 +132,9 @@ export const RouteSidebarMenu = [
     },
     {
         name: 'Bài viết',
+        path: '/blog',
         icon: <IoNewspaperOutline />,
-        color: 'text-blue-400',
+        color: 'text-[#9FACE6]',
         isParent: true,
         children: [
             {

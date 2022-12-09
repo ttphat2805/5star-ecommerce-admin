@@ -7,6 +7,7 @@ import Logo from '../Logo';
 import { RouteSidebarMenu } from './routeSidebar';
 import './sidebar.scss';
 import SidebarItem from './SidebarItem';
+import images from '~/assets/images';
 
 const showAnimation = {
     hidden: {
@@ -26,6 +27,7 @@ const showAnimation = {
 const Sidebar = () => {
     const isOpenMenu = useAppSelector(MenuActive);
     const dispatch = useAppDispatch();
+    console.log('isOpenMenu: ', isOpenMenu);
 
     const [hoverMenu, setHoverMenu] = useState(false);
 
@@ -53,11 +55,12 @@ const Sidebar = () => {
                         initial="hidden"
                         animate="show"
                         exit="hidden"
-                        className="sidebar-header flex tablet:hidden justify-center items-center h-[75px] py-[19px] px-[17px] border-b border-right border-[#e9edf4]"
+                        className="sidebar-header flex tablet:hidden justify-center items-center h-[75px] py-[5px] px-[5px] border-b border-right border-[#e9edf4]"
                     >
                         <Link to="/" className="branch-logo font-bold text-center text-primary">
                             {/* LOGO */}
-                            <Logo className="w-3/4 m-auto" />
+
+                            <Logo className="w-[150px] m-auto" />
                         </Link>
                     </motion.div>
                     <div className="side-main">

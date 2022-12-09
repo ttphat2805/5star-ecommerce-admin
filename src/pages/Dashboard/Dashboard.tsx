@@ -12,7 +12,12 @@ import {
 } from 'chart.js';
 import { Bar, Line, Pie } from 'react-chartjs-2';
 import Breadcrumb from '~/components/Breadcrumb';
-
+import Image from '~/components/Image';
+import images from '~/assets/images';
+import { motion } from 'framer-motion';
+import './Dashboard.scss';
+import { useAppSelector } from '~/app/hooks';
+import { getUser } from '~/features/user/userSlice';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -123,25 +128,32 @@ export const data3 = {
 };
 
 const Dashboard = () => {
+    const infoUser: any = useAppSelector(getUser);
+
     return (
-        <div>
-            <Breadcrumb />
-            <h1>Dashboard</h1>
-            <h1>HELLO DASHBOARD</h1>
-            <div className="chart">
-                <div className="grid grid-cols-3">
-                    <div className="col-span-1">
-                        <Pie data={data} className="!w-[500px] !h-auto" />
+        <motion.div>
+            <div className="dashboard m-auto rounded-md">
+                <div className="rounded-md p-3">
+                    <div className="welcome-back-area relative my-[28px] text-white">
+                        <span className="text-xl">
+                            Chào mừng bạn đến với <b>Trang Quản Trị 5Star</b>
+                        </span>
+                        <h2 className="text-3xl font-bold text-white my-2">
+                            {infoUser.frist_name} {infoUser.last_name}
+                        </h2>
+                        <p>Hãy thực hiện đúng nhiệm vụ của người quản trị </p>
+                        <div className="image absolute right-[150px] top-[-77px] hidden lg:block">
+                            <Image
+                                src="https://templates.envytheme.com/joxi/default/assets/images/welcome.png"
+                                className="w-full"
+                                alt=""
+                            />
+                        </div>
                     </div>
-                    <div className="col-span-1">
-                        <Bar options={options} data={data2} />;
-                    </div>
-                    <div className="col-span-1">
-                        <Line options={options2} data={data3} />
-                    </div>
+                    <div className="features-area"></div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 
