@@ -48,7 +48,8 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
         <>
             {menu.isParent ? (
                 <li className="sidebar-item menu-item text-base">
-                    <div
+                    <NavLink
+                        to={menu.path || '#'}
                         onClick={(e) => handleActiveSubMenu(e)}
                         className="menu-item__link select-none cursor-pointer flex items-center my-[10px] py-[6px] px-[15px] 
                     rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
@@ -86,7 +87,8 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                                 )}
                             </>
                         )}
-                    </div>
+                    </NavLink>
+
                     {/* isOpenMenu is a variable that when the menu closes, the item will be hidden */}
 
                     {/* This is SubMenu - Menu Child */}
@@ -130,9 +132,7 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                     <NavLink
                         to={menu.path || '#'}
                         className="menu-item__link w-full flex items-center my-[10px] py-[6px] px-[15px]
-                    rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all
-                    active:text-primary
-                    "
+                    rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
                     >
                         <span className="icon mr-1 text-xl">{menu.icon}</span>
                         {/* isOpenMenu is a variable that when the menu closes, the item will be hidden */}

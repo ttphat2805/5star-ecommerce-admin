@@ -30,7 +30,10 @@ const privateRoutes: Routes[] = [
         path: '/member/list-member',
         Component: ListUser,
     },
-
+    {
+        path: '/member',
+        Component: ListUser,
+    },
     // PRODUCT
     {
         path: '/product/add-product',
@@ -76,6 +79,10 @@ const privateRoutes: Routes[] = [
         Component: ListBrand,
     },
 
+    {
+        path: '/brand',
+        Component: ListBrand,
+    },
     // MEDIA
 
     {
