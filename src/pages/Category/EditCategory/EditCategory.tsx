@@ -52,6 +52,7 @@ const EditProduct = () => {
     const getCategory = (slug: string | number, type: string) => {
         if (+slug > 0) {
             CategoryService.getOneCategory(String(slug)).then((res: any) => {
+                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     const { name, status } = res?.data;
                     if (type === 'subCategory') {
@@ -114,7 +115,6 @@ const EditProduct = () => {
     };
 
     const handleDeleteSubCategory = (id: number = 0) => {
-        console.log(id);
         if (id > 0) {
             CategoryService.deleteCategory(id).then(
                 (res: ResponseType) => {
@@ -296,7 +296,7 @@ const EditProduct = () => {
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Modal Title</ModalHeader>
+                    <ModalHeader>Cập nhật danh mục phụ</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         <form onSubmit={handleSubmitSubCat(submitFormSubCategory)}>

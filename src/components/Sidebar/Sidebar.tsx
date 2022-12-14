@@ -27,8 +27,6 @@ const showAnimation = {
 const Sidebar = () => {
     const isOpenMenu = useAppSelector(MenuActive);
     const dispatch = useAppDispatch();
-    console.log('isOpenMenu: ', isOpenMenu);
-
     const [hoverMenu, setHoverMenu] = useState(false);
 
     const handleHoverSidebar = () => {

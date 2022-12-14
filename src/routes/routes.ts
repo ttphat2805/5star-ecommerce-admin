@@ -103,7 +103,10 @@ const privateRoutes: Routes[] = [
     },
 
     // BLOG
-
+    {
+        path: '/blog',
+        Component: ListBlog,
+    },
     {
         path: '/blog/add-blog',
         Component: AddBlog,
@@ -114,7 +117,10 @@ const privateRoutes: Routes[] = [
     },
 
     // COUPON
-
+    {
+        path: '/coupon',
+        Component: ListCoupon,
+    },
     {
         path: '/coupon/add-coupon',
         Component: AddCoupon,

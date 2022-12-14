@@ -33,6 +33,7 @@ export type OptionsSelect = {
 export type ResponseType = {
     statusCode?: number;
     data?: any;
+    message?: string;
 };
 
 export type CouponType = {

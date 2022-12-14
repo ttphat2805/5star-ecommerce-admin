@@ -1,24 +1,95 @@
-import { Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import {
+    Button,
+    FormLabel,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Table,
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tr,
+    useDisclosure,
+    useToast,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
+import { useForm } from 'react-hook-form';
 import { IoClose } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
+import { InputField, RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import BrandService from '~/services/BrandService';
 import { ResponseType } from '~/utils/Types';
+import { toSlug } from '~/utils/Slug';
+import ReactPaginate from 'react-paginate';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+
+interface brandType {
+    name: string;
+    id: number;
+    slug: string;
+    status: number;
+}
+
+const defaultValues = {
+    name: '',
+    slug: '',
+    status: 1,
+};
+
+const PER_PAGE = 10;
 
 const ListBrand = () => {
     const [brand, setBrand] = useState([]);
+    const [idBrand, setIdBrand] = useState<number>(0);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
-    const handleDelete = (id: string | any) => {
-        console.log('delete', id);
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+
+    const toast = useToast();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const handlePageChange = ({ selected }: any) => {
+        getAllBrands(selected);
+        setPageNumber(selected);
     };
 
-    const getAllBrands = () => {
-        BrandService.GetBrands().then(
+    const handleDelete = (id: string | any) => {
+        BrandService.DeleteBrand(id).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                toast({
+                    position: 'top-right',
+                    title: 'Xóa thành công',
+                    duration: 2000,
+                    status: 'success',
+                });
+                getAllBrands(pageNumber);
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Xóa thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+            }
+        });
+    };
+
+    const getAllBrands = (page: number) => {
+        BrandService.GetBrands(page).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
-                    setBrand(res.data[0]);
+                    if (res.data.total) {
+                        setTotalCount(res.data.total);
+                    }
+                    setBrand(res.data.data);
                 }
             },
             (err) => {
@@ -28,7 +99,63 @@ const ListBrand = () => {
     };
 
     useEffect(() => {
-        getAllBrands();
+        getBrand();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [idBrand]);
+
+    const getBrand = () => {
+        if (idBrand > 0) {
+            BrandService.GetBrand(idBrand).then((res: ResponseType) => {
+                console.log(res);
+                if (res.statusCode === 200) {
+                    const { name } = res?.data;
+                    setValue('name', name);
+                }
+            });
+        }
+    };
+
+    const submitUpdateBrand = (values: brandType) => {
+        const { name, status } = values;
+
+        const dataPost = {
+            name,
+            slug: toSlug(name),
+            status: Number(status),
+        };
+
+        BrandService.UpdateBrand(idBrand, dataPost).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật thành công',
+                    duration: 2000,
+                    status: 'success',
+                });
+                getAllBrands(pageNumber);
+                onClose();
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+                onClose();
+            }
+        });
+    };
+
+    // INIT FORM UPDATE BRAND
+    const {
+        handleSubmit,
+        control,
+        setValue,
+        formState: { errors },
+    } = useForm<brandType>({ defaultValues: defaultValues });
+
+    useEffect(() => {
+        getAllBrands(0);
     }, []);
 
     return (
@@ -42,37 +169,112 @@ const ListBrand = () => {
                                 <Thead>
                                     <Tr>
                                         <Th>#</Th>
-                                        <Th>Danh mục</Th>
-                                        <Th>Danh mục phụ</Th>
+                                        <Th>Tên thương hiệu</Th>
                                         <Th>Trạng thái</Th>
                                         <Th>Hành động</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {brand.map((item: any, index: number) => (
+                                    {brand?.map((item: any, index: number) => (
                                         <Tr key={index}>
                                             <Td>{index + 1}</Td>
                                             <Td>{item.name}</Td>
-                                            <Td>{item.parent_id ? item.name : 'Không có'}</Td>
-                                            <Td>{item.status === 1 ? 'Hiển thị' : 'Ẩn'}</Td>
+                                            <Td>
+                                                {item.status === 1 ? (
+                                                    <span className="badge-status">Hiện</span>
+                                                ) : (
+                                                    <span className="badge-status !bg-red-500">Ẩn</span>
+                                                )}
+                                            </Td>
                                             <Td className="flex">
-                                                <span className="bg-primary btn mr-2 text-white">
-                                                    <AiFillEdit className="text-lg" />
-                                                </span>
-                                                <span className="bg-red-500 btn text-white ">
-                                                    <ModalConfirm handleConfirm={handleDelete}>
-                                                        <IoClose className="text-lg" />
+                                                <div className="flex">
+                                                    <Button
+                                                        p={1}
+                                                        colorScheme="twitter"
+                                                        className="mx-2"
+                                                        onClick={() => {
+                                                            onOpen();
+                                                            setIdBrand(item.id);
+                                                        }}
+                                                    >
+                                                        <AiFillEdit className="text-lg" />
+                                                    </Button>
+                                                    <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                        <Button p={1} colorScheme="red">
+                                                            <IoClose className="text-lg" />
+                                                        </Button>
                                                     </ModalConfirm>
-                                                </span>
+                                                </div>
                                             </Td>
                                         </Tr>
                                     ))}
                                 </Tbody>
                             </Table>
                         </div>
+                        {totalPage > 0 && (
+                            <div className="pagination-feature flex">
+                                <ReactPaginate
+                                    previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                    nextLabel={<BiChevronRight className="inline text-xl" />}
+                                    pageCount={totalPage}
+                                    onPageChange={handlePageChange}
+                                    activeClassName={'page-item active'}
+                                    disabledClassName={'page-item disabled'}
+                                    containerClassName={'pagination'}
+                                    previousLinkClassName={'page-link'}
+                                    nextLinkClassName={'page-link'}
+                                    pageLinkClassName={'page-link'}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Cập nhật thương hiệu</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <form onSubmit={handleSubmit(submitUpdateBrand)}>
+                            <div className="form-group grid gird-cols-1 gap-2">
+                                <div className="col-span-1">
+                                    <InputField name="name" label="Tên thương hiệu" control={control} error={errors} />
+                                </div>
+                            </div>
+                            <div className="form-group mt-3">
+                                <FormLabel>Trạng thái</FormLabel>
+                                <div className=" flex gap-2">
+                                    <RadioField
+                                        label="Hiển thị"
+                                        name="status"
+                                        value={1}
+                                        id="status-3"
+                                        control={control}
+                                        error={errors}
+                                    />
+                                    <RadioField
+                                        label="Ẩn"
+                                        name="status"
+                                        value={2}
+                                        id="status-4"
+                                        control={control}
+                                        error={errors}
+                                    />
+                                </div>
+                            </div>
+                            <ModalFooter>
+                                <Button colorScheme="blue" mr={3} onClick={onClose}>
+                                    Đóng
+                                </Button>
+                                <Button variant="ghost" type="submit">
+                                    Cập nhật
+                                </Button>
+                            </ModalFooter>
+                        </form>
+                    </ModalBody>
+                </ModalContent>
+            </Modal>
         </div>
     );
 };

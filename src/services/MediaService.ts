@@ -10,8 +10,8 @@ const AddBanner = (data: BannerType) => {
     return AxiosInstance.post(Config.apiUrl + url, data);
 };
 
-const getBanners = (perPage: number = 9) => {
-    return AxiosInstance.get(`${Config.apiUrl}${url}?perPage=${perPage}`);
+const getBanners = (page: number = 0, perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(`${Config.apiUrl}${url}?perPage=${perPage}&page=${page}`);
 };
 
 const updateBanner = (data: BannerType, id: number) => {

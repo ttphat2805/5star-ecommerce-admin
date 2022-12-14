@@ -282,7 +282,7 @@ const EditBanner = () => {
                                         >
                                             Thêm danh mục
                                         </Button>
-                                        <Button type="button" className="mx-2">
+                                        <Button type="button" className="mx-2" onClick={() => Navigate('/media')}>
                                             Quay lại
                                         </Button>
                                     </div>

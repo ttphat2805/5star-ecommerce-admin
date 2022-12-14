@@ -65,6 +65,7 @@ const EditCoupon = () => {
 
     useEffect(() => {
         getCoupon();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const setValueForm = (data: any) => {
@@ -89,6 +90,7 @@ const EditCoupon = () => {
         };
         CouponService.updateCoupon(dataPost, Number(id)).then(
             (res: ResponseType) => {
+                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     reset(defaultValues);
                     toast({
@@ -99,6 +101,22 @@ const EditCoupon = () => {
                     });
                     setLoadingSubmit(false);
                     Navigate('/coupon/list-coupon');
+                } else if (res.message === 'start date should be affter now') {
+                    setLoadingSubmit(false);
+                    toast({
+                        position: 'top-right',
+                        title: 'Ngày bắt đầu phải lớn hơn ngày hiện tại',
+                        duration: 2000,
+                        status: 'error',
+                    });
+                } else if (res.message === 'expirate date should be affter start date') {
+                    setLoadingSubmit(false);
+                    toast({
+                        position: 'top-right',
+                        title: 'Ngày hết hạn phải lớn hơn ngày bắt đầu',
+                        duration: 2000,
+                        status: 'error',
+                    });
                 } else {
                     setLoadingSubmit(false);
                     toast({

@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
 :root {
-    --primary: #009ef7;
+    --primary: #319795;
     --secondary: '#282f53';
     --tbase: '#677788';
     --hover: '#f5f8fa';
@@ -94,5 +94,62 @@ tr th {
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+// PAGINATION CSS
+.pagination-feature {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 0;
+    margin-top: 10px;
+    .pagination {
+        display: flex;
+        li {
+            border: 1px solid #d8d7d78c;
+            margin: 0 4px;
+            color: #74788d;
+            cursor: pointer;
+            box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
+            border-radius: 0.375rem;
+            text-align: center;
+
+            &.active {
+                background: var(--primary);
+                color: white;
+            }
+            &:hover {
+                background: #c2c0c08c;
+                transition: all ease 0.2s;
+                color: black;
+            }
+            &.disabled {
+                &:hover {
+                    background: transparent;
+                    color: #74788d;
+                }
+                opacity: 0.5;
+            }
+        }
+        .page-link {
+            padding: 7px 13px;
+            line-height: 30px;
+        }
+        .next {
+            .page-link {
+                padding: 6px;
+                svg {
+                    margin-bottom: 2px;
+                }
+            }
+        }
+        .previous {
+            .page-link {
+                padding: 6px;
+                svg {
+                    margin-bottom: 2px;
+                }
+            }
+        }
     }
 }

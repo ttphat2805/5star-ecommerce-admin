@@ -5,19 +5,17 @@ import {
     Chart as ChartJS,
     Legend,
     LinearScale,
-    Title,
-    PointElement,
     LineElement,
+    PointElement,
+    Title,
     Tooltip,
 } from 'chart.js';
-import { Bar, Line, Pie } from 'react-chartjs-2';
-import Breadcrumb from '~/components/Breadcrumb';
-import Image from '~/components/Image';
-import images from '~/assets/images';
 import { motion } from 'framer-motion';
-import './Dashboard.scss';
+import { Bar, Line, Pie } from 'react-chartjs-2';
 import { useAppSelector } from '~/app/hooks';
+import Image from '~/components/Image';
 import { getUser } from '~/features/user/userSlice';
+import './Dashboard.scss';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
@@ -25,12 +23,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export const data = {
-    labels: ['Green', 'Purple', 'Orange'],
+    labels: ['Áo', 'Quần', 'Đồng hồ', 'Phụ kiện', 'Túi xách'],
     datasets: [
         {
             label: '# of Votes',
-            data: [12, 19, 3],
-            backgroundColor: ['#88d3ce', '#97d9e1', '#7028e4'],
+            data: [15, 12, 7, 20, 8],
+            backgroundColor: ['#FF6A88', '#80D0C7', '#7028e4', '#C850C0', '#8EC5FC'],
         },
     ],
 };
@@ -43,28 +41,20 @@ export const options = {
         },
         title: {
             display: true,
-            text: 'Chart.js Bar Chart',
+            text: 'Top danh mục bán chạy',
         },
     },
 };
 
-const labels2 = ['January', 'February', 'March'];
+const labels2 = ['Áo Polo', 'Áo Sơ mi', 'Quần Tây', 'Quần thể thao', 'Áo khoác'];
 export const data2 = {
     labels: labels2,
     datasets: [
         {
-            label: 'sp1',
-            data: [200, 585, 850],
+            label: '',
+            data: [101, 22, 87, 40, 57],
             backgroundColor: '#6c5ce7',
             borderWidth: 1,
-            borderRadius: 20,
-            borderSkipped: false,
-        },
-        {
-            label: '12312fasg',
-            data: [120, 284, 992],
-            backgroundColor: '#ff7675',
-            borderWidth: 2,
             borderRadius: 10,
             borderSkipped: false,
         },
@@ -150,7 +140,21 @@ const Dashboard = () => {
                             />
                         </div>
                     </div>
-                    <div className="features-area"></div>
+                    <div className="features-area">
+                        <div className="chart">
+                            <div className="grid grid-cols-2">
+                                <div className="col-span-1">
+                                    <Pie data={data} className="!w-[400px] !h-auto" />
+                                </div>
+                                <div className="col-span-1">
+                                    <Bar options={options} data={data2} />;
+                                </div>
+                                {/* <div className="col-span-1">
+                                    <Line options={options2} data={data3} />
+                                </div> */}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </motion.div>

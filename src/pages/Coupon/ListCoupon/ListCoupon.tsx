@@ -19,11 +19,14 @@ import {
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoIosEye } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
+import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import LoadingSpin from '~/components/LoadingSpin';
+import Config from '~/config';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import CouponService from '~/services/CouponService';
 import { FormatPriceVND } from '~/utils/FormatPriceVND';
@@ -34,12 +37,19 @@ const ListCoupon = () => {
     const [couponDetail, setCouponDetail] = useState<any>({});
     const [loadingModal, setLoadingModal] = useState(false);
     const [loading, setLoading] = useState<boolean>(false);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(0);
 
     // END STATE
     const { isOpen, onOpen, onClose } = useDisclosure();
     const Navigate = useNavigate();
     const toast = useToast();
+    const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
 
+    const handlePageChange = ({ selected }: any) => {
+        setPageNumber(selected);
+        getCoupons(selected);
+    };
     const handleDelete = (id: string | any) => {
         setLoadingModal(true);
 
@@ -51,7 +61,7 @@ const ListCoupon = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                getCoupons();
+                getCoupons(pageNumber);
                 setLoadingModal(false);
             } else {
                 toast({
@@ -85,13 +95,15 @@ const ListCoupon = () => {
         );
     };
 
-    const getCoupons = () => {
+    const getCoupons = (page: number = 0) => {
         setLoading(true);
-        CouponService.getCoupons().then(
+        CouponService.getCoupons(page).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setLoading(false);
-
+                    if (res.data.total) {
+                        setTotalCount(res.data.total);
+                    }
                     setCouponList(res.data.data);
                 } else {
                     setLoading(false);
@@ -153,30 +165,52 @@ const ListCoupon = () => {
                                                         <span className="badge-status !bg-red-500">Ẩn</span>
                                                     )}
                                                 </Td>
-                                                <Td className="flex">
-                                                    <span
-                                                        className="bg-cyan-500 btn mr-2 text-white"
-                                                        onClick={() => openModalView(item.id)}
-                                                    >
-                                                        <IoIosEye className="text-lg" />
-                                                    </span>
-                                                    <span
-                                                        className="bg-primary btn mr-2 text-white"
-                                                        onClick={() => Navigate('/coupon/update-coupon/' + item.id)}
-                                                    >
-                                                        <AiFillEdit className="text-lg" />
-                                                    </span>
-                                                    <span className="bg-red-500 btn text-white ">
+                                                <Td>
+                                                    <div className="flex">
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="cyan"
+                                                            className=""
+                                                            onClick={() => openModalView(item.id)}
+                                                        >
+                                                            <IoIosEye className="text-lg text-white" />
+                                                        </Button>
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="twitter"
+                                                            className="mx-2"
+                                                            onClick={() => Navigate('/coupon/update-coupon/' + item.id)}
+                                                        >
+                                                            <AiFillEdit className="text-lg" />
+                                                        </Button>
                                                         <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                            <IoClose className="text-lg" />
+                                                            <Button p={1} colorScheme="red">
+                                                                <IoClose className="text-lg" />
+                                                            </Button>
                                                         </ModalConfirm>
-                                                    </span>
+                                                    </div>
                                                 </Td>
                                             </Tr>
                                         ))}
                                     </Tbody>
                                 </Table>
                             </div>
+                        </div>
+                    )}
+                    {totalPage > 0 && (
+                        <div className="pagination-feature flex">
+                            <ReactPaginate
+                                previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                nextLabel={<BiChevronRight className="inline text-xl" />}
+                                pageCount={totalPage}
+                                onPageChange={handlePageChange}
+                                activeClassName={'page-item active'}
+                                disabledClassName={'page-item disabled'}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'page-link'}
+                                nextLinkClassName={'page-link'}
+                                pageLinkClassName={'page-link'}
+                            />
                         </div>
                     )}
                 </div>
