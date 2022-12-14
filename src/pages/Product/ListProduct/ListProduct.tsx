@@ -1,33 +1,44 @@
 import { Button, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import { FiEdit } from 'react-icons/fi';
-import { IoClose, IoCloseOutline } from 'react-icons/io5';
-import Breadcrumb from '~/components/Breadcrumb';
-import Image from '~/components/Image';
 import { motion } from 'framer-motion';
-import ProductService from '~/services/ProductService';
-import { ResponseType } from '~/utils/Types';
-import LoadingSpin from '~/components/LoadingSpin';
-import { FormatPriceVND } from '~/utils/FormatPriceVND';
-import CategoryService from '~/services/CategoryService';
-import Config from '~/config';
-import { useNavigate } from 'react-router-dom';
-import ModalConfirm from '~/layouts/components/ModalConfirm';
+import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { IoClose } from 'react-icons/io5';
+import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
+import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
+import Config from '~/config';
+import ModalConfirm from '~/layouts/components/ModalConfirm';
+import CategoryService from '~/services/CategoryService';
+import ProductService from '~/services/ProductService';
+import { FormatPriceVND } from '~/utils/FormatPriceVND';
+import { ResponseType } from '~/utils/Types';
 
 const ListProduct = () => {
     const [product, setProduct] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [listCategory, setListCategory] = useState<any>([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(0);
 
     const toast = useToast();
     const Navigate = useNavigate();
 
-    const getAllProduct = () => {
+    const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
+    const handlePageChange = ({ selected }: any) => {
+        getAllProduct(selected);
+        setPageNumber(selected);
+    };
+
+    const getAllProduct = (page: number = 0) => {
         setLoading(true);
-        ProductService.getAllProduct().then((res: ResponseType) => {
+        ProductService.getAllProduct(page).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setProduct(res.data);
+                if (res.data.total) {
+                    setTotalCount(res.data.total);
+                }
+                setProduct(res.data.data);
                 setLoading(false);
             } else {
                 setLoading(false);
@@ -88,56 +99,73 @@ const ListProduct = () => {
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {product?.map((item: any, index: number) => (
-                                            <Tr key={item.id}>
-                                                <Td>{index + 1}</Td>
-                                                <Td>
-                                                    {item?.name.length > 40
-                                                        ? item?.name.substring(0, 40) + '...'
-                                                        : item?.name}
-                                                </Td>
-                                                <Td>{getNameCategoryByProduct(item?.id_category)}</Td>
-                                                <Td>{FormatPriceVND(item?.stocks[0]?.price)}</Td>
-                                                <Td>
-                                                    <img
-                                                        src={`${Config.apiUrl}upload/${item?.images[0]?.file_name}`}
-                                                        alt=""
-                                                        className="w-3/4 h-[30%]"
-                                                    />
-                                                </Td>
-                                                <Td>
-                                                    {item.status === 1 ? (
-                                                        <span className="badge-status">Hiện</span>
-                                                    ) : (
-                                                        <span className="badge-status !bg-red-500">Ẩn</span>
-                                                    )}
-                                                </Td>
-                                                <Td>
-                                                    <div className="flex">
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="twitter"
-                                                            className="mx-2"
-                                                            onClick={() =>
-                                                                Navigate(`/category/edit-category/${item.id}`)
-                                                            }
-                                                        >
-                                                            <AiFillEdit className="text-lg" />
-                                                        </Button>
-                                                        <ModalConfirm
-                                                            handleConfirm={() => handleDeleteProduct(item.id)}
-                                                        >
-                                                            <Button p={1} colorScheme="red">
-                                                                <IoClose className="text-lg" />
+                                        {product.length > 0 &&
+                                            product?.map((item: any, index: number) => (
+                                                <Tr key={item.id}>
+                                                    <Td>{index + 1}</Td>
+                                                    <Td>
+                                                        {item?.name.length > 40
+                                                            ? item?.name.substring(0, 40) + '...'
+                                                            : item?.name}
+                                                    </Td>
+                                                    <Td>{getNameCategoryByProduct(item?.id_category)}</Td>
+                                                    <Td>{FormatPriceVND(item?.stocks[0]?.price)}</Td>
+                                                    <Td>
+                                                        <img
+                                                            src={`${Config.apiUrl}upload/${item?.images[0]?.file_name}`}
+                                                            alt=""
+                                                            className="w-3/4 h-[30%]"
+                                                        />
+                                                    </Td>
+                                                    <Td>
+                                                        {item.status === 1 ? (
+                                                            <span className="badge-status">Hiện</span>
+                                                        ) : (
+                                                            <span className="badge-status !bg-red-500">Ẩn</span>
+                                                        )}
+                                                    </Td>
+                                                    <Td>
+                                                        <div className="flex">
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="twitter"
+                                                                className="mx-2"
+                                                                onClick={() =>
+                                                                    Navigate(`/category/edit-category/${item.id}`)
+                                                                }
+                                                            >
+                                                                <AiFillEdit className="text-lg" />
                                                             </Button>
-                                                        </ModalConfirm>
-                                                    </div>
-                                                </Td>
-                                            </Tr>
-                                        ))}
+                                                            <ModalConfirm
+                                                                handleConfirm={() => handleDeleteProduct(item.id)}
+                                                            >
+                                                                <Button p={1} colorScheme="red">
+                                                                    <IoClose className="text-lg" />
+                                                                </Button>
+                                                            </ModalConfirm>
+                                                        </div>
+                                                    </Td>
+                                                </Tr>
+                                            ))}
                                     </Tbody>
                                 </Table>
                             </div>
+                        </div>
+                    )}
+                    {totalPage > 0 && (
+                        <div className="pagination-feature flex">
+                            <ReactPaginate
+                                previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                nextLabel={<BiChevronRight className="inline text-xl" />}
+                                pageCount={totalPage}
+                                onPageChange={handlePageChange}
+                                activeClassName={'page-item active'}
+                                disabledClassName={'page-item disabled'}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'page-link'}
+                                nextLinkClassName={'page-link'}
+                                pageLinkClassName={'page-link'}
+                            />
                         </div>
                     )}
                 </div>

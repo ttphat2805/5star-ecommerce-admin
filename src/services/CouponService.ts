@@ -3,8 +3,8 @@ import AxiosInstance from './AxiosInstance';
 
 let url: string = 'coupon';
 
-const getCoupons = () => {
-    return AxiosInstance.get(Config.apiUrl + url);
+const getCoupons = (page: number = 0, perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
 };
 
 const getCoupon = (id: number) => {

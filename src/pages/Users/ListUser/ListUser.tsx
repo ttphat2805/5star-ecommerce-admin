@@ -42,6 +42,7 @@ const initValues = {
 
 const ListUser = () => {
     const [users, setUsers] = useState([]);
+    const [user, setUser] = useState<any>([]);
     const [idUser, setIdUser] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingModal, setLoadingModal] = useState<boolean>(false);
@@ -78,7 +79,9 @@ const ListUser = () => {
     const GetOneUser = (id: number) => {
         setLoadingModal(true);
         UserService.GetUser(id).then((res: any) => {
+            console.log('res: ', res);
             if (res.statusCode === 200) {
+                setUser(res.data);
                 let role = res.data.roles[1] === 'admin' ? 'admin' : 'user';
                 setValue('role', role);
                 setLoadingModal(false);
@@ -100,6 +103,8 @@ const ListUser = () => {
 
     const openModalView = (id: number) => {
         onOpenView();
+        setIdUser(id);
+        GetOneUser(id);
     };
 
     const onSubmitUpdateRole = (values: updateRole) => {
@@ -174,25 +179,27 @@ const ListUser = () => {
                                                 </Td>
                                                 <Td>
                                                     <div className="flex">
-                                                        <span
-                                                            className="bg-cyan-500 btn mr-2 text-white"
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="cyan"
+                                                            className=""
                                                             onClick={() => openModalView(item.id)}
                                                         >
-                                                            <IoIosEye className="text-lg" />
-                                                        </span>
-                                                        <span
-                                                            className="bg-primary btn mr-2 text-white"
+                                                            <IoIosEye className="text-lg text-white" />
+                                                        </Button>
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="twitter"
+                                                            className="mx-2"
                                                             onClick={() => onOpenUpdate(item?.id)}
                                                         >
                                                             <AiFillEdit className="text-lg" />
-                                                        </span>
-                                                        <span className="bg-red-500 btn text-white ">
-                                                            <ModalConfirm
-                                                                handleConfirm={() => handleDeleteUser(item.id)}
-                                                            >
+                                                        </Button>
+                                                        <ModalConfirm handleConfirm={() => handleDeleteUser(item.id)}>
+                                                            <Button p={1} colorScheme="red">
                                                                 <IoClose className="text-lg" />
-                                                            </ModalConfirm>
-                                                        </span>
+                                                            </Button>
+                                                        </ModalConfirm>
                                                     </div>
                                                 </Td>
                                             </Tr>
@@ -258,12 +265,44 @@ const ListUser = () => {
                     ) : (
                         <>
                             <ModalHeader>
-                                Thành viên: <b>ABC</b>
+                                Thành viên:
+                                <b>
+                                    {user?.last_name} {user?.first_name}
+                                </b>
                             </ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
                                 <Table>
-                                    <Tbody></Tbody>
+                                    <Tbody>
+                                        <Tr>
+                                            <Th>Họ tên:</Th>
+                                            <Td>
+                                                {user?.last_name} {user?.first_name}
+                                            </Td>
+                                        </Tr>
+                                        <Tr>
+                                            <Th>Email:</Th>
+                                            <Td>{user?.email}</Td>
+                                        </Tr>
+                                        <Tr>
+                                            <Th>Ngày sinh:</Th>
+                                            <Td>
+                                                <Badge>Không có</Badge>
+                                            </Td>
+                                        </Tr>
+                                        <Tr>
+                                            <Th>Số điện thoại:</Th>
+                                            <Td>{user?.phone ? user?.phone : <Badge>Không có</Badge>}</Td>
+                                        </Tr>
+                                        <Tr>
+                                            <Th>Vai trò:</Th>
+                                            <Td>
+                                                {user?.roles?.length > 0 && user?.roles[1] === 'admin'
+                                                    ? 'Quản trị'
+                                                    : 'Người dùng'}
+                                            </Td>
+                                        </Tr>
+                                    </Tbody>
                                 </Table>
                             </ModalBody>
 

@@ -98,7 +98,7 @@ const AddProduct = () => {
         setValue,
         watch,
         reset,
-        formState: { errors, isSubmitting },
+        formState: { errors },
     } = useForm<Values>({ defaultValues: initialValuesForm });
     // resolver: yupResolver(addProductSchema)
 
@@ -131,17 +131,24 @@ const AddProduct = () => {
         });
     };
 
-    const getAllBrand = () => {
-        BrandService.GetBrands().then((res: ResponseType) => {
-            console.log('res: ', res);
-            if (res.statusCode === 200) {
-                // optionsBrand = res.data;
-            }
-        });
+    const getAllBrands = () => {
+        BrandService.GetBrands().then(
+            (res: ResponseType) => {
+                if (res.statusCode === 200) {
+                    for (let item of res.data.data) {
+                        let newOptios = { value: item.id, label: item.name };
+                        optionsBrand.push(newOptios);
+                    }
+                }
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
     };
 
     useEffect(() => {
-        getAllBrand();
+        getAllBrands();
         getAllCategory();
     }, []);
 
@@ -159,7 +166,7 @@ const AddProduct = () => {
         let dataSendRequest = {
             ...values,
             images: imageUploadRes,
-            id_brand: 7,
+            id_brand: 1,
             slug: toSlug(values.name),
             description: description,
             id_category: values.subCategory ? +values.subCategory : +values.category,
@@ -249,7 +256,7 @@ const AddProduct = () => {
                                     <FormLabel className="text-sm">Tên thương hiệu</FormLabel>
                                     <Select
                                         options={optionsBrand}
-                                        onChange={(e) => console.log(e)}
+                                        onChange={(e: any) => setValue('id_brand', e.value)}
                                         isClearable={true}
                                         placeholder="Chọn thương hiệu cho sản phẩm của bạn...."
                                     />

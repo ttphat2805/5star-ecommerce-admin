@@ -1,9 +1,11 @@
-import { Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { Button, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
-import { useNavigate, useParams } from 'react-router-dom';
+import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import Image from '~/components/Image';
 import LoadingSpin from '~/components/LoadingSpin';
@@ -15,13 +17,26 @@ import { ResponseType } from '~/utils/Types';
 const ListProduct = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [bannerList, setBannerList] = useState<any>([]);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(0);
+    //
 
+    const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
     const toast = useToast();
     const Navigate = useNavigate();
-    const getBanners = () => {
+
+    const handlePageChange = ({ selected }: any) => {
+        setPageNumber(selected);
+        getBanners(selected);
+    };
+
+    const getBanners = (page: number = 0) => {
         setLoading(true);
-        MediaService.getBanners().then((res: ResponseType) => {
+        MediaService.getBanners(page).then((res: ResponseType) => {
             if (res.statusCode === 200) {
+                if (res.data.total) {
+                    setTotalCount(res.data.total);
+                }
                 setBannerList(res.data.data);
                 setLoading(false);
             } else {
@@ -45,7 +60,7 @@ const ListProduct = () => {
                         duration: 2000,
                         status: 'success',
                     });
-                    getBanners();
+                    getBanners(pageNumber);
                     setLoading(false);
                 } else {
                     toast({
@@ -102,19 +117,19 @@ const ListProduct = () => {
                                                 </Td>
                                                 <Td>
                                                     <div className="flex">
-                                                        <span
-                                                            className="bg-primary btn mr-2 text-white"
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="twitter"
+                                                            className="mx-2"
                                                             onClick={() => Navigate('/media/edit-banner/' + item.id)}
                                                         >
                                                             <AiFillEdit className="text-lg" />
-                                                        </span>
-                                                        <span className="bg-red-500 btn text-white ">
-                                                            <ModalConfirm
-                                                                handleConfirm={() => handleDeleteBanner(item.id)}
-                                                            >
+                                                        </Button>
+                                                        <ModalConfirm handleConfirm={() => handleDeleteBanner(item.id)}>
+                                                            <Button p={1} colorScheme="red">
                                                                 <IoClose className="text-lg" />
-                                                            </ModalConfirm>
-                                                        </span>
+                                                            </Button>
+                                                        </ModalConfirm>
                                                     </div>
                                                 </Td>
                                             </Tr>
@@ -122,6 +137,22 @@ const ListProduct = () => {
                                     </Tbody>
                                 </Table>
                             </div>
+                        </div>
+                    )}
+                    {totalPage > 0 && (
+                        <div className="pagination-feature flex">
+                            <ReactPaginate
+                                previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                nextLabel={<BiChevronRight className="inline text-xl" />}
+                                pageCount={totalPage}
+                                onPageChange={handlePageChange}
+                                activeClassName={'page-item active'}
+                                disabledClassName={'page-item disabled'}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'page-link'}
+                                nextLinkClassName={'page-link'}
+                                pageLinkClassName={'page-link'}
+                            />
                         </div>
                     )}
                 </div>
