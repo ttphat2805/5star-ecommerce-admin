@@ -29,7 +29,6 @@ import { ResponseType } from '~/utils/Types';
 import { toSlug } from '~/utils/Slug';
 import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-import { motion } from 'framer-motion';
 
 interface brandType {
     name: string;
@@ -46,7 +45,7 @@ const defaultValues = {
 
 const PER_PAGE = 10;
 
-const ListBrand = () => {
+const ListStore = () => {
     const [brand, setBrand] = useState([]);
     const [idBrand, setIdBrand] = useState<number>(0);
     const [totalCount, setTotalCount] = useState<number>(0);
@@ -161,11 +160,7 @@ const ListBrand = () => {
     }, []);
 
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-        >
+        <div>
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
@@ -281,8 +276,8 @@ const ListBrand = () => {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-        </motion.div>
+        </div>
     );
 };
 
-export default ListBrand;
+export default ListStore;

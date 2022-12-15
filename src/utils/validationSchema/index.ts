@@ -73,6 +73,7 @@ export const LoginSchema = Yup.object({
 export const addCouponSchema = Yup.object({
     // name: Yup.string().required('Vui lòng điền tiêu đề giảm giá'),
     code: Yup.string().required('Vui lòng nhập mã giảm giá'),
+    status: Yup.number(),
     start_date: Yup.date().required('Vui lòng nhập ngày bắt đầu'),
     expirate_date: Yup.date()
         .typeError('Wrong format (yyyy-MM-DD)')
@@ -94,4 +95,16 @@ export const addCouponSchema = Yup.object({
 
 export const addBrandSchema = Yup.object({
     name: Yup.string().required('Vui lòng điền tên thương hiệu'),
+});
+
+export const addStoreSchema = Yup.object({
+    name: Yup.string().required('Vui lòng điền tên cửa hàng'),
+    time: Yup.string().required('Vui lòng điền thời gian mở - đóng'),
+    open_close: Yup.string().required('Vui lòng điền ngày mở - đóng'),
+    email: Yup.string().email('Vui lòng nhập đúng email').required('Vui lòng điền email'),
+    phone: Yup.string()
+        .required('Vui lòng nhập số điện thoại của bạn')
+        .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/, 'Vui lòng nhập đúng số điện thoại của bạn'),
+    address: Yup.string().required('Vui lòng nhập địa chỉ'),
+    status: Yup.number(),
 });

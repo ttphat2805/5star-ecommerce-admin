@@ -8,6 +8,7 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
+    Select,
     Table,
     Tbody,
     Td,
@@ -17,19 +18,20 @@ import {
     useDisclosure,
     useToast,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { AiFillEdit } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
+import { AiFillEdit } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
+import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import BrandService from '~/services/BrandService';
-import { ResponseType } from '~/utils/Types';
 import { toSlug } from '~/utils/Slug';
-import ReactPaginate from 'react-paginate';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-import { motion } from 'framer-motion';
+import { ResponseType } from '~/utils/Types';
 
 interface brandType {
     name: string;
@@ -46,7 +48,7 @@ const defaultValues = {
 
 const PER_PAGE = 10;
 
-const ListBrand = () => {
+const ListOrder = () => {
     const [brand, setBrand] = useState([]);
     const [idBrand, setIdBrand] = useState<number>(0);
     const [totalCount, setTotalCount] = useState<number>(0);
@@ -55,6 +57,7 @@ const ListBrand = () => {
     const totalPage = Math.ceil(totalCount / PER_PAGE);
 
     const toast = useToast();
+    const Navigate = useNavigate();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handlePageChange = ({ selected }: any) => {
@@ -171,11 +174,25 @@ const ListBrand = () => {
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">
                         <div className="form card text-base overflow-x-auto">
+                            <div className="status-order flex justify-end flex-col items-end mb-3">
+                                <div className="w-full md:w-[350px]">
+                                    <Select placeholder="Trạng thái giao hàng">
+                                        <option value="option1">Chưa xử lý</option>
+                                        <option value="option2">Đang xử lý</option>
+                                        <option value="option3">Đang giao hàng</option>
+                                        <option value="option3">Thành công</option>
+                                        <option value="option3">Hủy</option>
+                                    </Select>
+                                </div>
+                            </div>
+                            <div className="status-order w-[200px]"></div>
                             <Table className="w-full">
                                 <Thead>
                                     <Tr>
                                         <Th>#</Th>
-                                        <Th>Tên thương hiệu</Th>
+                                        <Th>Mã đơn hàng</Th>
+                                        <Th>Ngày đặt</Th>
+                                        <Th>Người đặt</Th>
                                         <Th>Trạng thái</Th>
                                         <Th>Hành động</Th>
                                     </Tr>
@@ -184,6 +201,8 @@ const ListBrand = () => {
                                     {brand?.map((item: any, index: number) => (
                                         <Tr key={index}>
                                             <Td>{index + 1}</Td>
+                                            <Td>{item.name}</Td>
+                                            <Td>{item.name}</Td>
                                             <Td>{item.name}</Td>
                                             <Td>
                                                 {item.status === 1 ? (
@@ -199,8 +218,7 @@ const ListBrand = () => {
                                                         colorScheme="twitter"
                                                         className="mx-2"
                                                         onClick={() => {
-                                                            onOpen();
-                                                            setIdBrand(item.id);
+                                                            Navigate('/order/' + item.id);
                                                         }}
                                                     >
                                                         <AiFillEdit className="text-lg" />
@@ -285,4 +303,4 @@ const ListBrand = () => {
     );
 };
 
-export default ListBrand;
+export default ListOrder;

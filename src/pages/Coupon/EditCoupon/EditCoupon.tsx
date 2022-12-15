@@ -69,6 +69,7 @@ const EditCoupon = () => {
     }, [id]);
 
     const setValueForm = (data: any) => {
+        console.log('data: ', data);
         setValue('name', data.name);
         setValue('code', data.code);
         setValue('expirate_date', data.expirate_date);
@@ -90,7 +91,6 @@ const EditCoupon = () => {
         };
         CouponService.updateCoupon(dataPost, Number(id)).then(
             (res: ResponseType) => {
-                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     reset(defaultValues);
                     toast({

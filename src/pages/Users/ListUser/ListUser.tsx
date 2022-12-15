@@ -67,6 +67,7 @@ const ListUser = () => {
     const GetAllUsers = () => {
         setLoading(true);
         UserService.GetUsers().then((res: any) => {
+            console.log('res: ', res);
             if (res.statusCode === 200) {
                 setUsers(res.data.profiles);
                 setLoading(false);
@@ -286,9 +287,7 @@ const ListUser = () => {
                                         </Tr>
                                         <Tr>
                                             <Th>Ngày sinh:</Th>
-                                            <Td>
-                                                <Badge>Không có</Badge>
-                                            </Td>
+                                            <Td>{user?.birth_day ? user?.birth_day : <Badge>Không có</Badge>}</Td>
                                         </Tr>
                                         <Tr>
                                             <Th>Số điện thoại:</Th>

@@ -9,8 +9,11 @@ import Dashboard from '~/pages/Dashboard';
 import Login from '~/pages/Login';
 import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
 import NotFound from '~/pages/NotFound';
+import { ListOrder } from '~/pages/Order';
+import OrderDetail from '~/pages/Order/OrderDetail';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
+import { AddStore, EditStore, ListStore } from '~/pages/Store';
 import { ListUser } from '~/pages/Users';
 
 interface Routes {
@@ -132,6 +135,37 @@ const privateRoutes: Routes[] = [
     {
         path: '/coupon/update-coupon/:id',
         Component: EditCoupon,
+    },
+    // STORE
+    {
+        path: '/store',
+        Component: ListStore,
+    },
+    {
+        path: '/store/add-store',
+        Component: AddStore,
+    },
+    {
+        path: '/store/list-store',
+        Component: ListStore,
+    },
+    {
+        path: '/store/update-store/:id',
+        Component: EditStore,
+    },
+
+    // ORDER
+    {
+        path: '/order',
+        Component: ListOrder,
+    },
+    {
+        path: '/order/list-order',
+        Component: ListOrder,
+    },
+    {
+        path: '/order/:id',
+        Component: OrderDetail,
     },
 ];
 

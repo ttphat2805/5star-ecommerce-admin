@@ -1,10 +1,11 @@
 import { AiOutlineBgColors } from 'react-icons/ai';
+import { BsCart4 } from 'react-icons/bs';
 import { GiClothes } from 'react-icons/gi';
 import { HiUserGroup } from 'react-icons/hi';
 import { IoIosAdd } from 'react-icons/io';
 import { IoNewspaperOutline } from 'react-icons/io5';
 import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
-import { TbDiscount2, TbLayoutDashboard } from 'react-icons/tb';
+import { TbBuildingStore, TbDiscount2, TbLayoutDashboard } from 'react-icons/tb';
 import { VscTasklist } from 'react-icons/vsc';
 export const RouteSidebarMenu = [
     {
@@ -69,6 +70,20 @@ export const RouteSidebarMenu = [
             {
                 path: '/category/list-category',
                 name: 'Danh sách danh mục',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Đơn hàng',
+        path: '/order',
+        icon: <BsCart4 />,
+        color: 'text-[#FF3CAC]',
+        isParent: true,
+        children: [
+            {
+                path: '/order/list-order',
+                name: 'Danh sách cửa hàng',
                 icon: <VscTasklist />,
             },
         ],
@@ -145,6 +160,25 @@ export const RouteSidebarMenu = [
             {
                 path: '/blog/list-blog',
                 name: 'Danh sách bài viết',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Hệ thống cửa hàng',
+        path: '/store',
+        icon: <TbBuildingStore />,
+        color: 'text-[#2B86C5]',
+        isParent: true,
+        children: [
+            {
+                path: '/store/add-store',
+                name: 'Thêm cửa hàng',
+                icon: <IoIosAdd />,
+            },
+            {
+                path: '/store/list-store',
+                name: 'Danh sách cửa hàng',
                 icon: <VscTasklist />,
             },
         ],

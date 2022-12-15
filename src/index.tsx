@@ -10,11 +10,9 @@ const container = document.getElementById('root')!;
 const root = createRoot(container);
 
 root.render(
-    <React.StrictMode>
-        <Provider store={store}>
-            <ChakraProvider>
-                <GlobalStyles Children={App} />
-            </ChakraProvider>
-        </Provider>
-    </React.StrictMode>,
+    <Provider store={store}>
+        <ChakraProvider>
+            <GlobalStyles Children={App} />
+        </ChakraProvider>
+    </Provider>,
 );
