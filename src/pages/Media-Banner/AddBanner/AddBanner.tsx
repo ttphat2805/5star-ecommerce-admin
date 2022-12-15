@@ -66,7 +66,7 @@ const AddBanner = () => {
         let dataSendRequest = {
             ...values,
             status: +values.status,
-            image: `${imageResUpload}`,
+            image: +imageResUpload,
         };
         MediaService.AddBanner(dataSendRequest).then(
             (res: any) => {

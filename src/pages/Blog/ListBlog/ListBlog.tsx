@@ -49,24 +49,25 @@ const ListBlog = () => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {brand.map((item: any, index: number) => (
-                                        <Tr key={index}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{item.name}</Td>
-                                            <Td>{item.parent_id ? item.name : 'Không có'}</Td>
-                                            <Td>{item.status === 1 ? 'Hiển thị' : 'Ẩn'}</Td>
-                                            <Td className="flex">
-                                                <span className="bg-primary btn mr-2 text-white">
-                                                    <AiFillEdit className="text-lg" />
-                                                </span>
-                                                <span className="bg-red-500 btn text-white ">
-                                                    <ModalConfirm handleConfirm={handleDelete}>
-                                                        <IoClose className="text-lg" />
-                                                    </ModalConfirm>
-                                                </span>
-                                            </Td>
-                                        </Tr>
-                                    ))}
+                                    {brand?.length > 0 &&
+                                        brand?.map((item: any, index: number) => (
+                                            <Tr key={index}>
+                                                <Td>{index + 1}</Td>
+                                                <Td>{item.name}</Td>
+                                                <Td>{item.parent_id ? item.name : 'Không có'}</Td>
+                                                <Td>{item.status === 1 ? 'Hiển thị' : 'Ẩn'}</Td>
+                                                <Td className="flex">
+                                                    <span className="bg-primary btn mr-2 text-white">
+                                                        <AiFillEdit className="text-lg" />
+                                                    </span>
+                                                    <span className="bg-red-500 btn text-white ">
+                                                        <ModalConfirm handleConfirm={handleDelete}>
+                                                            <IoClose className="text-lg" />
+                                                        </ModalConfirm>
+                                                    </span>
+                                                </Td>
+                                            </Tr>
+                                        ))}
                                 </Tbody>
                             </Table>
                         </div>

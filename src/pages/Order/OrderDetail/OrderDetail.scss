@@ -1,0 +1,79 @@
+.info-user {
+    .user-orderer {
+        position: relative;
+        &::after {
+            position: absolute;
+            content: '';
+            right: -15%;
+            top: 50%;
+            width: 200px;
+            height: 200px;
+            filter: blur(10px);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
+            // animation: radiusFancy 5s ease-in-out infinite alternate;
+        }
+    }
+    .user-receiver {
+        position: relative;
+
+        &::after {
+            position: absolute;
+            content: '';
+            right: -10%;
+            top: 50%;
+            width: 200px;
+            height: 200px;
+            filter: blur(10px);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background-image: linear-gradient(60deg, #64b3f4 0%, #c2e59c 100%);
+            // animation: radiusFancy 5s ease-in-out infinite alternate;
+        }
+    }
+
+    @keyframes radiusFancy {
+        0% {
+            transform: translateY(-20px);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background-size: 100% 100%;
+        }
+        50% {
+            transform: translateY(-50px);
+
+            border-radius: 30% 60% 70% 40% / 50% 60% 70% 40%;
+            background-size: 300% 150%;
+        }
+        100% {
+            transform: translateY(-20px);
+            border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+            background-size: 100% 100%;
+        }
+    }
+}
+.steps-tracking {
+    .step-item {
+        &.completed {
+            .step-icon-wrap {
+                &::after {
+                    background: var(--primary);
+                }
+            }
+        }
+        .step-icon-wrap {
+            position: relative;
+            &::after {
+                display: block;
+                position: absolute;
+                top: 50%;
+                width: 101%;
+                height: 4px;
+                margin-top: -1px;
+                border-radius: 5px;
+                background-color: #e1e7ec;
+                content: '';
+                z-index: 1;
+                right: 0;
+            }
+        }
+    }
+}

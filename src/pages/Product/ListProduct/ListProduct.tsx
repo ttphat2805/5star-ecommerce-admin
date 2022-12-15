@@ -1,4 +1,4 @@
-import { Button, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { Button, FormLabel, Input, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
@@ -19,6 +19,7 @@ const ListProduct = () => {
     const [product, setProduct] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [listCategory, setListCategory] = useState<any>([]);
+    console.log('listCategory: ', listCategory);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
 
@@ -86,6 +87,12 @@ const ListProduct = () => {
                     ) : (
                         <div className="w-full grid grid-cols-1">
                             <div className="form card text-base overflow-x-auto">
+                                <div className="status-order flex justify-end flex-col items-end mb-3">
+                                    <div className="w-full md:w-[350px]">
+                                        <FormLabel>Tìm kiếm:</FormLabel>
+                                        <Input />
+                                    </div>
+                                </div>
                                 <Table className="w-full">
                                     <Thead>
                                         <Tr>

@@ -28,3 +28,7 @@
 .badge-status {
     @apply text-base p-2 rounded-lg text-white font-semibold bg-green-700;
 }
+
+.step-icon {
+    @apply inline-block relative z-[2] w-[80px] h-[80px] rounded-3xl leading-[81px] bg-primary text-white;
+}

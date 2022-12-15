@@ -10,14 +10,13 @@ import BrandService from '~/services/BrandService';
 import { toSlug } from '~/utils/Slug';
 import { ResponseType } from '~/utils/Types';
 import { addBrandSchema } from '~/utils/validationSchema';
-import { motion } from 'framer-motion';
 
 const defaultValues = {
     name: '',
     status: 2,
 };
 
-const AddBrand = () => {
+const EditStore = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const toast = useToast();
     const Navigate = useNavigate();
@@ -71,11 +70,7 @@ const AddBrand = () => {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-        >
+        <div>
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
@@ -129,8 +124,8 @@ const AddBrand = () => {
                     </div>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
-export default AddBrand;
+export default EditStore;

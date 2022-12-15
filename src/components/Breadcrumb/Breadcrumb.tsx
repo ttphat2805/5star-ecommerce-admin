@@ -10,7 +10,7 @@ const Breadcrumb = (props: any) => {
                 <div className="title sm:ml-auto mr-[20px]">
                     <div className="breadcrumb-item flex-wrap">
                         <ul className="flex sm:text-base text-sm">
-                            <li className="text-primary font-medium">Dashboard</li>
+                            <li className="text-primary font-medium">Tổng quan</li>
                             {parentPage && (
                                 <li className="flex items-center">
                                     <span className="text-gray-400 mx-1">
