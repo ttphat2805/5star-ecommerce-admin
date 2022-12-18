@@ -57,7 +57,7 @@ const ListProduct = () => {
 
     const getNameCategoryByProduct = (id: number) => {
         let nameCategory;
-        listCategory.forEach((item: any) => {
+        listCategory?.forEach((item: any) => {
             if (item.id === id) {
                 nameCategory = item.name;
             }

@@ -5,7 +5,7 @@ let url: string = 'order';
 
 // BANNER
 
-const GetOrder = (id: string) => {
+const GetOrder = (id: number) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + id);
 };
 

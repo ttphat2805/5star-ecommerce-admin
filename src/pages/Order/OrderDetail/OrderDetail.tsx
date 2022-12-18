@@ -1,21 +1,42 @@
-import { Select, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from '@chakra-ui/react';
+import { Badge, Select, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsTruck } from 'react-icons/bs';
 import { MdOutlineHail, MdShoppingCart, MdSwapHoriz } from 'react-icons/md';
+import { useParams } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import Image from '~/components/Image';
+import Config from '~/config';
+import OrderService from '~/services/OrderService';
+import { FormatPriceVND } from '~/utils/FormatPriceVND';
+import { ResponseType } from '~/utils/Types';
 import './OrderDetail.scss';
 const OrderDetail = () => {
     const [status, setStatus] = useState<number>(1);
+    const [order, setOrder] = useState<any>();
     // END STATE
 
     const toast = useToast();
+    const { id } = useParams();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        console.log('value: ', e.target.value);
         setStatus(Number(e.target.value));
     };
+
+    const getOrder = () => {
+        OrderService.GetOrder(Number(id)).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                setOrder(res.data);
+                setStatus(res.data.status);
+            }
+        });
+    };
+
+    useEffect(() => {
+        getOrder();
+    }, []);
+
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -33,9 +54,9 @@ const OrderDetail = () => {
                     <div className="w-full grid grid-cols-1">
                         <div className="form card text-base overflow-x-auto">
                             <h3 className="title-order font-bold text-2xl flex items-center">
-                                Order: #36648
+                                Order: # {order?.id}
                                 <span className="flex items-center">
-                                    - Đã thanh toán
+                                    - {order?.payment_method_id === 1 ? 'Chưa thanh toán' : 'Đã thanh toán'}
                                     <AiOutlineCheckCircle className="ml-2 text-primary" />
                                 </span>
                             </h3>
@@ -49,23 +70,27 @@ const OrderDetail = () => {
                                             <Tbody>
                                                 <Tr>
                                                     <Td width={20}>Họ tên: </Td>
-                                                    <Td fontWeight="bold">Nguyễn Văn A </Td>
+                                                    <Td fontWeight="bold">{`${order?.user?.first_name} ${order?.user?.last_name}`}</Td>
                                                 </Tr>
                                                 <Tr>
                                                     <Td width={20}>Email: </Td>
-                                                    <Td fontWeight="bold">nguyenvanA@gmail.com </Td>
+                                                    <Td fontWeight="bold">{order?.user?.email} </Td>
                                                 </Tr>
                                                 <Tr>
                                                     <Td>Số điện thoại: </Td>
-                                                    <Td fontWeight="bold">012345678</Td>
+                                                    <Td fontWeight="bold">
+                                                        {order?.user?.phone ? (
+                                                            order?.user?.phone
+                                                        ) : (
+                                                            <Badge>Chưa cập nhật</Badge>
+                                                        )}
+                                                    </Td>
                                                 </Tr>
                                                 <Tr>
                                                     <Td>Địa chỉ: </Td>
-                                                    <Td fontWeight="bold">Ấp chà cú, huyện cù lao tỉnh đồng tháp</Td>
-                                                </Tr>
-                                                <Tr>
-                                                    <Td>Ghi chú: </Td>
-                                                    <Td fontWeight="bold">Gần bờ kè quận 2</Td>
+                                                    <Td fontWeight="bold">
+                                                        <Badge>Chưa cập nhật</Badge>
+                                                    </Td>
                                                 </Tr>
                                             </Tbody>
                                         </Table>
@@ -80,23 +105,29 @@ const OrderDetail = () => {
                                             <Tbody>
                                                 <Tr>
                                                     <Td width={20}>Họ tên: </Td>
-                                                    <Td fontWeight="bold">Nguyễn Văn A </Td>
+                                                    <Td fontWeight="bold">{order?.name}</Td>
                                                 </Tr>
                                                 <Tr>
-                                                    <Td width={20}>Email: </Td>
-                                                    <Td fontWeight="bold">nguyenvanA@gmail.com </Td>
+                                                    <Td width={20}>Phương thức thanh toán: </Td>
+                                                    <Td fontWeight="bold">
+                                                        {order?.payment_method_id === 1
+                                                            ? 'Thanh toán khi nhận hàng'
+                                                            : 'VN Pay'}
+                                                    </Td>
                                                 </Tr>
                                                 <Tr>
                                                     <Td>Số điện thoại: </Td>
-                                                    <Td fontWeight="bold">012345678</Td>
+                                                    <Td fontWeight="bold">{order?.phone}</Td>
                                                 </Tr>
                                                 <Tr>
                                                     <Td>Địa chỉ: </Td>
-                                                    <Td fontWeight="bold">Ấp chà cú, huyện cù lao tỉnh đồng tháp</Td>
+                                                    <Td fontWeight="bold" whiteSpace={'normal'}>
+                                                        {order?.address}
+                                                    </Td>
                                                 </Tr>
                                                 <Tr>
                                                     <Td>Ghi chú: </Td>
-                                                    <Td fontWeight="bold">Gần bờ kè quận 2</Td>
+                                                    <Td fontWeight="bold">{order?.note}</Td>
                                                 </Tr>
                                             </Tbody>
                                         </Table>
@@ -120,27 +151,23 @@ const OrderDetail = () => {
                                                 </Tr>
                                             </Thead>
                                             <Tbody>
-                                                <Tr>
-                                                    <Td>1</Td>
-                                                    <Td>Ảnh</Td>
-                                                    <Td>Quần áo tay dài</Td>
-                                                    <Td>1</Td>
-                                                    <Td>200000</Td>
-                                                </Tr>
-                                                <Tr>
-                                                    <Td>1</Td>
-                                                    <Td>Ảnh</Td>
-                                                    <Td>Quần áo tay dài</Td>
-                                                    <Td>1</Td>
-                                                    <Td>200000</Td>
-                                                </Tr>
-                                                <Tr>
-                                                    <Td>1</Td>
-                                                    <Td>Ảnh</Td>
-                                                    <Td>Quần áo tay dài</Td>
-                                                    <Td>1</Td>
-                                                    <Td>200000</Td>
-                                                </Tr>
+                                                {order?.details.map((item: any, index: number) => (
+                                                    <Tr>
+                                                        <Td>{index + 1}</Td>
+                                                        <Td>
+                                                            {item?.product_info?.product?.images?.length > 0 && (
+                                                                <Image
+                                                                    className="w-[120px] h-[120px]"
+                                                                    alt="Ảnh"
+                                                                    src={`${Config.apiUrl}upload/${item?.product_info?.product?.images[0].file_name}`}
+                                                                />
+                                                            )}
+                                                        </Td>
+                                                        <Td>{item?.product_info?.product?.name}</Td>
+                                                        <Td>{item?.quantity}</Td>
+                                                        <Td>{FormatPriceVND(item?.price || 0)}</Td>
+                                                    </Tr>
+                                                ))}
                                                 <Tr>
                                                     <Td></Td>
                                                     <Td></Td>
@@ -149,7 +176,9 @@ const OrderDetail = () => {
                                                     </Td>
                                                     <Td></Td>
                                                     <Td>
-                                                        <p className="text-lg font-semibold">800.000 VND</p>
+                                                        <p className="text-lg font-semibold">
+                                                            {FormatPriceVND(order?.total || 0)}
+                                                        </p>
                                                     </Td>
                                                 </Tr>
                                             </Tbody>

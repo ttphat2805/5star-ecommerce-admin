@@ -1,12 +1,34 @@
-import { Button, Select, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from '@chakra-ui/react';
+import {
+    Badge,
+    Button,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
+    Table,
+    Tbody,
+    Td,
+    Th,
+    Thead,
+    Tr,
+    useDisclosure,
+    useToast,
+} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
+import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
+import { IoIosEye } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
 import Config from '~/config';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import BrandService from '~/services/BrandService';
@@ -17,11 +39,15 @@ const ListOrder = () => {
     const [order, setOrder] = useState([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
+    const [loadingModal, setLoadingModal] = useState<boolean>(false);
+
     // END STATE
     const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
 
     const toast = useToast();
     const Navigate = useNavigate();
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handlePageChange = ({ selected }: any) => {
         getAllOrder(selected);
@@ -57,13 +83,47 @@ const ListOrder = () => {
                     if (res.data.total) {
                         setTotalCount(res.data.total);
                     }
-                    setOrder(res.data.data);
+                    setOrder(res.data);
                 }
             },
             (err) => {
                 console.log(err);
             },
         );
+    };
+
+    const openModalView = (id: number) => {
+        onOpen();
+    };
+    const handleStatus = (status: number) => {
+        let resultStatus: any = { name: '', scheme: '' };
+        switch (status) {
+            case 1:
+                resultStatus.name = 'Chưa xử lý';
+                resultStatus.scheme = 'red';
+                break;
+            case 2:
+                resultStatus.name = 'Đang xử lý';
+                resultStatus.scheme = 'yellow';
+                break;
+            case 3:
+                resultStatus.name = 'Đang giao hàng';
+                resultStatus.scheme = 'blue';
+                break;
+            case 4:
+                resultStatus.name = 'Thành công';
+                resultStatus.scheme = 'green';
+                break;
+            case 5:
+                resultStatus.name = 'Hủy';
+                resultStatus.scheme = 'red';
+                break;
+            default:
+                resultStatus.name = 'Chưa xử lý';
+                resultStatus.scheme = 'red';
+                break;
+        }
+        return resultStatus;
     };
 
     useEffect(() => {
@@ -96,7 +156,6 @@ const ListOrder = () => {
                             <Table className="w-full">
                                 <Thead>
                                     <Tr>
-                                        <Th>#</Th>
                                         <Th>Mã đơn hàng</Th>
                                         <Th>Ngày đặt</Th>
                                         <Th>Người đặt</Th>
@@ -107,19 +166,28 @@ const ListOrder = () => {
                                 <Tbody>
                                     {order?.map((item: any, index: number) => (
                                         <Tr key={index}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{item.name}</Td>
-                                            <Td>{item.name}</Td>
-                                            <Td>{item.name}</Td>
+                                            <Td>{item?.id}</Td>
+                                            <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
+                                            <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
                                             <Td>
-                                                {item.status === 1 ? (
-                                                    <span className="badge-status">Hiện</span>
-                                                ) : (
-                                                    <span className="badge-status !bg-red-500">Ẩn</span>
-                                                )}
+                                                <Badge
+                                                    p={2}
+                                                    borderRadius={4}
+                                                    colorScheme={handleStatus(item?.status).scheme}
+                                                >
+                                                    {handleStatus(item?.status).name}
+                                                </Badge>
                                             </Td>
                                             <Td className="flex">
                                                 <div className="flex">
+                                                    <Button
+                                                        p={1}
+                                                        colorScheme="cyan"
+                                                        className=""
+                                                        onClick={() => openModalView(item.id)}
+                                                    >
+                                                        <IoIosEye className="text-lg text-white" />
+                                                    </Button>
                                                     <Button
                                                         p={1}
                                                         colorScheme="twitter"
@@ -161,6 +229,31 @@ const ListOrder = () => {
                     </div>
                 </div>
             </div>
+            {/* MODAL VIEW DETAIL */}
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    {loadingModal ? (
+                        <LoadingSpin />
+                    ) : (
+                        <>
+                            <ModalHeader>Thành viên:</ModalHeader>
+                            <ModalCloseButton />
+                            <ModalBody>
+                                <Table>
+                                    <Tbody></Tbody>
+                                </Table>
+                            </ModalBody>
+
+                            <ModalFooter>
+                                <Button colorScheme="blue" mr={3} onClick={onClose}>
+                                    Đóng
+                                </Button>
+                            </ModalFooter>
+                        </>
+                    )}
+                </ModalContent>
+            </Modal>
         </motion.div>
     );
 };
