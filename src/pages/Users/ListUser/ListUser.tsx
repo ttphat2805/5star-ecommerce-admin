@@ -22,11 +22,14 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillEdit } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoIosEye } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
+import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import LoadingSpin from '~/components/LoadingSpin';
+import Config from '~/config';
 import { RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import UserService from '~/services/UserSerivce';
@@ -46,11 +49,20 @@ const ListUser = () => {
     const [idUser, setIdUser] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingModal, setLoadingModal] = useState<boolean>(false);
+    const [totalCount, setTotalCount] = useState<number>(0);
+    const [pageNumber, setPageNumber] = useState<number>(0);
+    // END STATE
+    const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isOpenView, onOpen: onOpenView, onClose: onCloseView } = useDisclosure();
     const toast = useToast();
     const Navigate = useNavigate();
+
+    const handlePageChange = ({ selected }: any) => {
+        GetAllUsers(selected);
+        setPageNumber(selected);
+    };
 
     // INIT FORM
     const {
@@ -64,12 +76,15 @@ const ListUser = () => {
         console.log('delete', id);
     };
 
-    const GetAllUsers = () => {
+    const GetAllUsers = (page: number) => {
         setLoading(true);
-        UserService.GetUsers().then((res: any) => {
+        UserService.GetUsers(page).then((res: any) => {
             console.log('res: ', res);
             if (res.statusCode === 200) {
-                setUsers(res.data.profiles);
+                setUsers(res.data.data);
+                if (res.data.total) {
+                    setTotalCount(res.data.total);
+                }
                 setLoading(false);
             } else {
                 setLoading(false);
@@ -80,7 +95,6 @@ const ListUser = () => {
     const GetOneUser = (id: number) => {
         setLoadingModal(true);
         UserService.GetUser(id).then((res: any) => {
-            console.log('res: ', res);
             if (res.statusCode === 200) {
                 setUser(res.data);
                 let role = res.data.roles[1] === 'admin' ? 'admin' : 'user';
@@ -93,7 +107,7 @@ const ListUser = () => {
     };
 
     useEffect(() => {
-        GetAllUsers();
+        GetAllUsers(0);
     }, []);
 
     const onOpenUpdate = (id: number) => {
@@ -117,7 +131,7 @@ const ListUser = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                GetAllUsers();
+                GetAllUsers(pageNumber);
                 onClose();
             } else {
                 toast({
@@ -157,7 +171,7 @@ const ListUser = () => {
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {users.map((item: any, index: number) => (
+                                        {users?.map((item: any, index: number) => (
                                             <Tr key={index}>
                                                 <Td>{index + 1}</Td>
                                                 <Td>
@@ -208,6 +222,22 @@ const ListUser = () => {
                                     </Tbody>
                                 </Table>
                             </div>
+                            {totalPage > 0 && (
+                                <div className="pagination-feature flex">
+                                    <ReactPaginate
+                                        previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                        nextLabel={<BiChevronRight className="inline text-xl" />}
+                                        pageCount={totalPage}
+                                        onPageChange={handlePageChange}
+                                        activeClassName={'page-item active'}
+                                        disabledClassName={'page-item disabled'}
+                                        containerClassName={'pagination'}
+                                        previousLinkClassName={'page-link'}
+                                        nextLinkClassName={'page-link'}
+                                        pageLinkClassName={'page-link'}
+                                    />
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>

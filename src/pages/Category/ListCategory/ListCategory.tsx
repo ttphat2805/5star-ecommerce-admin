@@ -11,6 +11,7 @@ import CategoryService from '~/services/CategoryService';
 import { CategoryType } from '~/utils/Types';
 const ListCategory = () => {
     const [category, setCategory] = useState([]);
+    const [subCategory, setSubCategory] = useState([]);
     const [loading, setLoading] = useState<boolean>(false);
 
     const toast = useToast();
@@ -42,13 +43,29 @@ const ListCategory = () => {
 
     const getAllCategory = () => {
         setLoading(true);
-
         CategoryService.getCategoryParent().then((res: any) => {
             if (res) {
                 setCategory(res);
                 setLoading(false);
             }
         });
+        CategoryService.getCategoryNoParent().then((res: any) => {
+            if (res) {
+                setSubCategory(res);
+                setLoading(false);
+            }
+        });
+    };
+
+    const getListSubCategory = (id: number) => {
+        let listSub: any = [];
+        subCategory.forEach((item: any) => {
+            if (item.parent_id === id) {
+                listSub.push(item);
+            }
+        });
+
+        return listSub;
     };
 
     useEffect(() => {
@@ -80,20 +97,23 @@ const ListCategory = () => {
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {category.map((item: any, index: number) => (
+                                        {category?.map((item: any, index: number) => (
                                             <Tr key={index}>
                                                 <Td>{index + 1}</Td>
                                                 <Td>{item.name}</Td>
                                                 <Td>
-                                                    {item?.sub_category.map((sub: CategoryType, index: number) => (
-                                                        <p
-                                                            key={index}
-                                                            className="bg-slate-500 mb-[4px] w-fit text-white p-1 rounded-md"
-                                                        >
-                                                            {sub.name}
-                                                        </p>
-                                                    ))}
-                                                    {item?.sub_category.length === 0 && (
+                                                    {getListSubCategory(item?.id).map(
+                                                        (sub: CategoryType, index: number) => (
+                                                            <p
+                                                                key={index}
+                                                                className="bg-slate-500 mb-[4px] w-fit text-white p-1 rounded-md"
+                                                            >
+                                                                {sub.name}
+                                                            </p>
+                                                        ),
+                                                    )}
+
+                                                    {getListSubCategory(item?.id).length === 0 && (
                                                         <Badge p={1} borderRadius="6px">
                                                             Không có
                                                         </Badge>

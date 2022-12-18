@@ -1,67 +1,30 @@
-import {
-    Button,
-    FormLabel,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Select,
-    Table,
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
-    useDisclosure,
-    useToast,
-} from '@chakra-ui/react';
+import { Button, Select, Table, Tbody, Td, Th, Thead, Tr, useDisclosure, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoClose } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
-import { InputField, RadioField } from '~/layouts/components/CustomField';
+import Config from '~/config';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import BrandService from '~/services/BrandService';
-import { toSlug } from '~/utils/Slug';
+import OrderService from '~/services/OrderService';
 import { ResponseType } from '~/utils/Types';
 
-interface brandType {
-    name: string;
-    id: number;
-    slug: string;
-    status: number;
-}
-
-const defaultValues = {
-    name: '',
-    slug: '',
-    status: 1,
-};
-
-const PER_PAGE = 10;
-
 const ListOrder = () => {
-    const [brand, setBrand] = useState([]);
-    const [idBrand, setIdBrand] = useState<number>(0);
+    const [order, setOrder] = useState([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
 
     const toast = useToast();
     const Navigate = useNavigate();
-    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handlePageChange = ({ selected }: any) => {
-        getAllBrands(selected);
+        getAllOrder(selected);
         setPageNumber(selected);
     };
 
@@ -74,7 +37,7 @@ const ListOrder = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                getAllBrands(pageNumber);
+                getAllOrder(pageNumber);
             } else {
                 toast({
                     position: 'top-right',
@@ -86,14 +49,15 @@ const ListOrder = () => {
         });
     };
 
-    const getAllBrands = (page: number) => {
-        BrandService.GetBrands(page).then(
+    const getAllOrder = (page: number) => {
+        OrderService.GetOrders(page).then(
             (res: ResponseType) => {
+                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     if (res.data.total) {
                         setTotalCount(res.data.total);
                     }
-                    setBrand(res.data.data);
+                    setOrder(res.data.data);
                 }
             },
             (err) => {
@@ -103,64 +67,7 @@ const ListOrder = () => {
     };
 
     useEffect(() => {
-        getBrand();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [idBrand]);
-
-    const getBrand = () => {
-        if (idBrand > 0) {
-            BrandService.GetBrand(idBrand).then((res: ResponseType) => {
-                console.log(res);
-                if (res.statusCode === 200) {
-                    const { name, status } = res?.data;
-                    setValue('name', name);
-                    setValue('status', status);
-                }
-            });
-        }
-    };
-
-    const submitUpdateBrand = (values: brandType) => {
-        const { name, status } = values;
-
-        const dataPost = {
-            name,
-            slug: toSlug(name),
-            status: Number(status),
-        };
-
-        BrandService.UpdateBrand(idBrand, dataPost).then((res: ResponseType) => {
-            if (res.statusCode === 200) {
-                toast({
-                    position: 'top-right',
-                    title: 'Cập nhật thành công',
-                    duration: 2000,
-                    status: 'success',
-                });
-                getAllBrands(pageNumber);
-                onClose();
-            } else {
-                toast({
-                    position: 'top-right',
-                    title: 'Cập nhật thất bại',
-                    duration: 2000,
-                    status: 'error',
-                });
-                onClose();
-            }
-        });
-    };
-
-    // INIT FORM UPDATE BRAND
-    const {
-        handleSubmit,
-        control,
-        setValue,
-        formState: { errors },
-    } = useForm<brandType>({ defaultValues: defaultValues });
-
-    useEffect(() => {
-        getAllBrands(0);
+        getAllOrder(0);
     }, []);
 
     return (
@@ -198,7 +105,7 @@ const ListOrder = () => {
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {brand?.map((item: any, index: number) => (
+                                    {order?.map((item: any, index: number) => (
                                         <Tr key={index}>
                                             <Td>{index + 1}</Td>
                                             <Td>{item.name}</Td>
@@ -254,51 +161,6 @@ const ListOrder = () => {
                     </div>
                 </div>
             </div>
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Cập nhật thương hiệu</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <form onSubmit={handleSubmit(submitUpdateBrand)}>
-                            <div className="form-group grid gird-cols-1 gap-2">
-                                <div className="col-span-1">
-                                    <InputField name="name" label="Tên thương hiệu" control={control} error={errors} />
-                                </div>
-                            </div>
-                            <div className="form-group mt-3">
-                                <FormLabel>Trạng thái</FormLabel>
-                                <div className=" flex gap-2">
-                                    <RadioField
-                                        label="Hiển thị"
-                                        name="status"
-                                        value={1}
-                                        id="status-3"
-                                        control={control}
-                                        error={errors}
-                                    />
-                                    <RadioField
-                                        label="Ẩn"
-                                        name="status"
-                                        value={2}
-                                        id="status-4"
-                                        control={control}
-                                        error={errors}
-                                    />
-                                </div>
-                            </div>
-                            <ModalFooter>
-                                <Button colorScheme="blue" mr={3} onClick={onClose}>
-                                    Đóng
-                                </Button>
-                                <Button variant="ghost" type="submit">
-                                    Cập nhật
-                                </Button>
-                            </ModalFooter>
-                        </form>
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
         </motion.div>
     );
 };

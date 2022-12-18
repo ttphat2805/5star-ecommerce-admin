@@ -33,11 +33,13 @@ import { CategoryType, ResponseType, SubCategoryType } from '~/utils/Types';
 
 const defaultValues = {
     name: '',
+    priority: 0,
     status: 0,
 };
 
 const defaultValuesSubCate = {
     name_sub: '',
+    priority: 0,
     status_sub: 0,
 };
 
@@ -52,7 +54,6 @@ const EditProduct = () => {
     const getCategory = (slug: string | number, type: string) => {
         if (+slug > 0) {
             CategoryService.getOneCategory(String(slug)).then((res: any) => {
-                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     const { name, status } = res?.data;
                     if (type === 'subCategory') {
@@ -141,18 +142,22 @@ const EditProduct = () => {
     };
 
     const handleSubmitForm = (values: CategoryType) => {
-        const { name, status } = values;
+        console.log('values: ', values);
+        const { name, status, priority } = values;
         let dataCategory = {
             name,
+            priority,
             status: Number(status),
             slug: toSlug(name),
         };
         requestUpdateCategory(Number(slug), dataCategory, 'category');
     };
+
     const submitFormSubCategory = (values: SubCategoryType) => {
-        const { name_sub: name, status_sub: status } = values;
+        const { name_sub: name, status_sub: status, priority } = values;
         let dataSubCategory = {
             name,
+            priority,
             status: Number(status),
             slug: toSlug(name),
         };
@@ -177,6 +182,17 @@ const EditProduct = () => {
                                             <InputField
                                                 name="name"
                                                 label="Tên danh mục"
+                                                control={control}
+                                                error={errors}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                        <div className="col-span-1">
+                                            <InputField
+                                                type="number"
+                                                name="priority"
+                                                label="Độ ưu tiên"
                                                 control={control}
                                                 error={errors}
                                             />
@@ -305,6 +321,17 @@ const EditProduct = () => {
                                     <InputField
                                         name="name_sub"
                                         label="Tên danh mục"
+                                        control={controlSubCat}
+                                        error={errorsSubCat}
+                                    />
+                                </div>
+                            </div>
+                            <div className="form-group grid gird-cols-1 gap-2">
+                                <div className="col-span-1">
+                                    <InputField
+                                        name="priority"
+                                        type="number"
+                                        label="Độ ưu tiên"
                                         control={controlSubCat}
                                         error={errorsSubCat}
                                     />

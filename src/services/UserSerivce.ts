@@ -9,8 +9,8 @@ const GetUser = (id: number) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + id);
 };
 
-const GetUsers = () => {
-    return AxiosInstance.get(Config.apiUrl + url);
+const GetUsers = (page: number = 0, perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
 };
 
 const DeleteUser = (id: number) => {

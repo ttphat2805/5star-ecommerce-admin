@@ -3,6 +3,7 @@ import AxiosInstance from './AxiosInstance';
 
 const UploadImage = async (image: FormData) => {
     let resDataImage: any = await AxiosInstance.post(Config.apiUrl + 'file/upload', image);
+    console.log('resDataImage: ', resDataImage);
     let idImageUpload: number = 0;
     if (resDataImage.statusCode === 201) {
         idImageUpload = resDataImage?.data?.id;

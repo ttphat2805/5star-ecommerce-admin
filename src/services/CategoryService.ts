@@ -21,7 +21,7 @@ const getCategoryParent = async () => {
         let resCategory: any = await AxiosInstance.get(Config.apiUrl + url);
         let dataCategory: any = [];
         if (resCategory.statusCode === 200) {
-            for (let category of resCategory.data[0]) {
+            for (let category of resCategory.data.data) {
                 if (!category.parent_id) {
                     dataCategory.push(category);
                 }
@@ -40,7 +40,7 @@ const getCategoryNoParent = async () => {
     let resCategory: any = await AxiosInstance.get(Config.apiUrl + url);
     let dataCategory: any = [];
     if (resCategory.statusCode === 200) {
-        for (let category of resCategory.data[0]) {
+        for (let category of resCategory.data.data) {
             if (category.parent_id) {
                 dataCategory.push(category);
             }

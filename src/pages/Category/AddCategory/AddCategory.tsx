@@ -13,17 +13,20 @@ import { addCategorySchema, addSubCategorySchema } from '~/utils/validationSchem
 type Values = {
     name: string;
     status: number;
+    priority: number;
 };
 
 const initialValuesForm_Category = {
     name: '',
     status: 2,
+    priority: 0,
 };
 
 const initialValuesForm_SubCategory = {
     parent_id: '',
     name_sub: '',
     status_sub: 2,
+    priority: 0,
 };
 
 const AddCategory = () => {
@@ -96,6 +99,7 @@ const AddCategory = () => {
     const handleSubmitSubCategory = (values: SubCategoryType) => {
         let dataSendRequest: CategoryType = {
             name: values.name_sub,
+            priority: Number(values.priority),
             parent_id: Number(values.parent_id),
             slug: toSlug(values.name_sub),
             status: +Number(values.status_sub),
@@ -139,6 +143,14 @@ const AddCategory = () => {
                                                 <InputField
                                                     name="name"
                                                     label="Tên danh mục"
+                                                    control={control}
+                                                    error={errors}
+                                                />
+                                            </div>
+                                            <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                                <InputField
+                                                    name="priority"
+                                                    label="Độ ưu tiên"
                                                     control={control}
                                                     error={errors}
                                                 />
@@ -202,6 +214,15 @@ const AddCategory = () => {
                                                     type="text"
                                                     name="name_sub"
                                                     label="Tên danh mục phụ"
+                                                    control={controlSub}
+                                                    error={errorsSub}
+                                                />
+                                            </div>
+                                            <div className=" my-3 form-group grid gird-cols-1 md:grid-cols-2 gap-2">
+                                                <InputField
+                                                    type="number"
+                                                    name="priority"
+                                                    label="Độ ưu tiên"
                                                     control={controlSub}
                                                     error={errorsSub}
                                                 />

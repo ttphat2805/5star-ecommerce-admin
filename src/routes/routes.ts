@@ -1,6 +1,7 @@
 // Different Layout
 
 import { AddBlog, ListBlog } from '~/pages/Blog';
+import EditBlog from '~/pages/Blog/EditBlog';
 import { AddBrand, ListBrand } from '~/pages/Brand';
 import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
 import { AddCoupon, ListCoupon } from '~/pages/Coupon';
@@ -117,6 +118,10 @@ const privateRoutes: Routes[] = [
     {
         path: '/blog/list-blog',
         Component: ListBlog,
+    },
+    {
+        path: '/blog/update-blog/:slug',
+        Component: EditBlog,
     },
 
     // COUPON
