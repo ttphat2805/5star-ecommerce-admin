@@ -14,6 +14,7 @@ export type CategoryType = {
     id?: number;
     name: string;
     slug: string;
+    priority?: number;
     status: number;
     parent_id?: number | undefined;
     sub_category?: CategoryType[] | any;
@@ -22,6 +23,7 @@ export type SubCategoryType = {
     parent_id?: string | undefined;
     name_sub: string;
     status_sub: number;
+    priority?: number;
 };
 
 export type OptionsSelect = {

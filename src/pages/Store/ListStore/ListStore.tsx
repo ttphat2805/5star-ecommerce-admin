@@ -1,68 +1,36 @@
-import {
-    Button,
-    FormLabel,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Table,
-    Tbody,
-    Td,
-    Th,
-    Thead,
-    Tr,
-    useDisclosure,
-    useToast,
-} from '@chakra-ui/react';
+import { Button, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
-import { useForm } from 'react-hook-form';
-import { IoClose } from 'react-icons/io5';
-import Breadcrumb from '~/components/Breadcrumb';
-import { InputField, RadioField } from '~/layouts/components/CustomField';
-import ModalConfirm from '~/layouts/components/ModalConfirm';
-import BrandService from '~/services/BrandService';
-import { ResponseType } from '~/utils/Types';
-import { toSlug } from '~/utils/Slug';
-import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-
-interface brandType {
-    name: string;
-    id: number;
-    slug: string;
-    status: number;
-}
-
-const defaultValues = {
-    name: '',
-    slug: '',
-    status: 1,
-};
+import { IoClose } from 'react-icons/io5';
+import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
+import Breadcrumb from '~/components/Breadcrumb';
+import ModalConfirm from '~/layouts/components/ModalConfirm';
+import StoreService from '~/services/StoreService';
+import { subString } from '~/utils/MinString';
+import { ResponseType } from '~/utils/Types';
 
 const PER_PAGE = 10;
 
 const ListStore = () => {
-    const [brand, setBrand] = useState([]);
-    const [idBrand, setIdBrand] = useState<number>(0);
+    const [store, setStore] = useState<any>();
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
     const totalPage = Math.ceil(totalCount / PER_PAGE);
 
     const toast = useToast();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const Navigate = useNavigate();
 
     const handlePageChange = ({ selected }: any) => {
-        getAllBrands(selected);
+        getAllStore(selected);
         setPageNumber(selected);
     };
 
     const handleDelete = (id: string | any) => {
-        BrandService.DeleteBrand(id).then((res: ResponseType) => {
+        StoreService.DeleteStore(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 toast({
                     position: 'top-right',
@@ -70,7 +38,7 @@ const ListStore = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                getAllBrands(pageNumber);
+                getAllStore(pageNumber);
             } else {
                 toast({
                     position: 'top-right',
@@ -82,14 +50,15 @@ const ListStore = () => {
         });
     };
 
-    const getAllBrands = (page: number) => {
-        BrandService.GetBrands(page).then(
+    const getAllStore = (page: number) => {
+        StoreService.GetStores(page).then(
             (res: ResponseType) => {
+                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     if (res.data.total) {
                         setTotalCount(res.data.total);
                     }
-                    setBrand(res.data.data);
+                    setStore(res.data.data);
                 }
             },
             (err) => {
@@ -99,68 +68,15 @@ const ListStore = () => {
     };
 
     useEffect(() => {
-        getBrand();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [idBrand]);
-
-    const getBrand = () => {
-        if (idBrand > 0) {
-            BrandService.GetBrand(idBrand).then((res: ResponseType) => {
-                console.log(res);
-                if (res.statusCode === 200) {
-                    const { name, status } = res?.data;
-                    setValue('name', name);
-                    setValue('status', status);
-                }
-            });
-        }
-    };
-
-    const submitUpdateBrand = (values: brandType) => {
-        const { name, status } = values;
-
-        const dataPost = {
-            name,
-            slug: toSlug(name),
-            status: Number(status),
-        };
-
-        BrandService.UpdateBrand(idBrand, dataPost).then((res: ResponseType) => {
-            if (res.statusCode === 200) {
-                toast({
-                    position: 'top-right',
-                    title: 'Cập nhật thành công',
-                    duration: 2000,
-                    status: 'success',
-                });
-                getAllBrands(pageNumber);
-                onClose();
-            } else {
-                toast({
-                    position: 'top-right',
-                    title: 'Cập nhật thất bại',
-                    duration: 2000,
-                    status: 'error',
-                });
-                onClose();
-            }
-        });
-    };
-
-    // INIT FORM UPDATE BRAND
-    const {
-        handleSubmit,
-        control,
-        setValue,
-        formState: { errors },
-    } = useForm<brandType>({ defaultValues: defaultValues });
-
-    useEffect(() => {
-        getAllBrands(0);
+        getAllStore(0);
     }, []);
 
     return (
-        <div>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
@@ -170,16 +86,22 @@ const ListStore = () => {
                                 <Thead>
                                     <Tr>
                                         <Th>#</Th>
-                                        <Th>Tên thương hiệu</Th>
+                                        <Th>Tên cửa hàng</Th>
+                                        <Th>Giờ mở cửa</Th>
+                                        <Th>Email</Th>
+                                        <Th>Ngày mở cửa</Th>
                                         <Th>Trạng thái</Th>
                                         <Th>Hành động</Th>
                                     </Tr>
                                 </Thead>
                                 <Tbody>
-                                    {brand?.map((item: any, index: number) => (
+                                    {store?.map((item: any, index: number) => (
                                         <Tr key={index}>
                                             <Td>{index + 1}</Td>
-                                            <Td>{item.name}</Td>
+                                            <Td>{subString(item?.name)}</Td>
+                                            <Td>{item.time}</Td>
+                                            <Td>{item.email}</Td>
+                                            <Td>{item.open_close}</Td>
                                             <Td>
                                                 {item.status === 1 ? (
                                                     <span className="badge-status">Hiện</span>
@@ -194,8 +116,7 @@ const ListStore = () => {
                                                         colorScheme="twitter"
                                                         className="mx-2"
                                                         onClick={() => {
-                                                            onOpen();
-                                                            setIdBrand(item.id);
+                                                            Navigate('/store/update-store/' + item.id);
                                                         }}
                                                     >
                                                         <AiFillEdit className="text-lg" />
@@ -231,52 +152,7 @@ const ListStore = () => {
                     </div>
                 </div>
             </div>
-            <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Cập nhật thương hiệu</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <form onSubmit={handleSubmit(submitUpdateBrand)}>
-                            <div className="form-group grid gird-cols-1 gap-2">
-                                <div className="col-span-1">
-                                    <InputField name="name" label="Tên thương hiệu" control={control} error={errors} />
-                                </div>
-                            </div>
-                            <div className="form-group mt-3">
-                                <FormLabel>Trạng thái</FormLabel>
-                                <div className=" flex gap-2">
-                                    <RadioField
-                                        label="Hiển thị"
-                                        name="status"
-                                        value={1}
-                                        id="status-3"
-                                        control={control}
-                                        error={errors}
-                                    />
-                                    <RadioField
-                                        label="Ẩn"
-                                        name="status"
-                                        value={2}
-                                        id="status-4"
-                                        control={control}
-                                        error={errors}
-                                    />
-                                </div>
-                            </div>
-                            <ModalFooter>
-                                <Button colorScheme="blue" mr={3} onClick={onClose}>
-                                    Đóng
-                                </Button>
-                                <Button variant="ghost" type="submit">
-                                    Cập nhật
-                                </Button>
-                            </ModalFooter>
-                        </form>
-                    </ModalBody>
-                </ModalContent>
-            </Modal>
-        </div>
+        </motion.div>
     );
 };
 

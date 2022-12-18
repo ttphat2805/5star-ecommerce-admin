@@ -6,10 +6,10 @@ import { useNavigate } from 'react-router-dom';
 
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
-import BrandService from '~/services/BrandService';
-import { toSlug } from '~/utils/Slug';
+import StoreService from '~/services/StoreService';
 import { ResponseType } from '~/utils/Types';
 import { addStoreSchema } from '~/utils/validationSchema';
+import { motion } from 'framer-motion';
 
 const defaultValues = {
     name: '',
@@ -34,43 +34,45 @@ const AddStore = () => {
 
     const onSubmit = (values: any) => {
         setLoading(true);
-        console.log('values: ', values);
-
-        // BrandService.AddBrand(dataPost).then(
-        //     (res: ResponseType) => {
-        //         if (res.statusCode === 201) {
-        //             toast({
-        //                 position: 'top-right',
-        //                 title: 'Tạo thương hiệu mới thành công',
-        //                 duration: 2000,
-        //                 status: 'success',
-        //             });
-        //             setLoading(false);
-        //             Navigate('/brand/list-brand');
-        //         } else {
-        //             toast({
-        //                 position: 'top-right',
-        //                 title: 'Tạo thương hiệu thất bại',
-        //                 duration: 2000,
-        //                 status: 'error',
-        //             });
-        //             setLoading(false);
-        //         }
-        //     },
-        //     (err) => {
-        //         setLoading(false);
-        //         toast({
-        //             position: 'top-right',
-        //             title: 'Tạo thương hiệu thất bại',
-        //             duration: 2000,
-        //             status: 'error',
-        //         });
-        //     },
-        // );
+        StoreService.AddStore(values).then(
+            (res: ResponseType) => {
+                if (res.statusCode === 201) {
+                    toast({
+                        position: 'top-right',
+                        title: 'Tạo cửa hàng mới thành công',
+                        duration: 2000,
+                        status: 'success',
+                    });
+                    setLoading(false);
+                    Navigate('/store/list-store');
+                } else {
+                    toast({
+                        position: 'top-right',
+                        title: 'Tạo cửa hàng thất bại',
+                        duration: 2000,
+                        status: 'error',
+                    });
+                    setLoading(false);
+                }
+            },
+            (err) => {
+                setLoading(false);
+                toast({
+                    position: 'top-right',
+                    title: 'Tạo cửa hàng thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+            },
+        );
     };
 
     return (
-        <div>
+        <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+        >
             <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
@@ -163,7 +165,7 @@ const AddStore = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 };
 

@@ -1,7 +1,7 @@
 import Config from '~/config';
 import AxiosInstance from './AxiosInstance';
 
-let url: string = 'store';
+let url: string = 'store-system';
 
 // BANNER
 
@@ -9,8 +9,8 @@ const GetStore = (id: number) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + id);
 };
 
-const GetStores = () => {
-    return AxiosInstance.get(Config.apiUrl + url);
+const GetStores = (page: number = 0, perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
 };
 
 const AddStore = (data: any) => {
@@ -26,7 +26,7 @@ const UpdateStore = (id: number, data: any) => {
 
 // END BANNER
 
-const BrandService = {
+const StoreService = {
     AddStore,
     GetStore,
     GetStores,
@@ -34,4 +34,4 @@ const BrandService = {
     UpdateStore,
 };
 
-export default BrandService;
+export default StoreService;
