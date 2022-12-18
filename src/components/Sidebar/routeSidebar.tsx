@@ -83,7 +83,7 @@ export const RouteSidebarMenu = [
         children: [
             {
                 path: '/order/list-order',
-                name: 'Danh sách cửa hàng',
+                name: 'Danh sách đơn hàng',
                 icon: <VscTasklist />,
             },
         ],

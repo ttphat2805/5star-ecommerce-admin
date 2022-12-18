@@ -117,7 +117,7 @@ const AddProduct = () => {
         let subCategory: OptionsSelect = [];
         CategoryService.getAllCategory().then((res: any) => {
             if (res.statusCode === 200) {
-                res.data[0].forEach((itemCat: CategoryType) => {
+                res.data.data.forEach((itemCat: CategoryType) => {
                     if (!itemCat.parent_id) {
                         category.push({ label: itemCat.name, value: itemCat.id });
                     } else {
@@ -134,6 +134,7 @@ const AddProduct = () => {
     const getAllBrands = () => {
         BrandService.GetBrands().then(
             (res: ResponseType) => {
+                console.log('res: ', res);
                 if (res.statusCode === 200) {
                     for (let item of res.data.data) {
                         let newOptios = { value: item.id, label: item.name };
