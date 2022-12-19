@@ -30,5 +30,5 @@
 }
 
 .step-icon {
-    @apply inline-block relative z-[2] w-[80px] h-[80px] rounded-3xl leading-[81px] bg-primary text-white;
+    @apply inline-block relative z-[2] w-[80px] h-[80px] rounded-3xl leading-[81px] text-white;
 }

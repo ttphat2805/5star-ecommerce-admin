@@ -101,9 +101,8 @@ const ListCoupon = () => {
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setLoading(false);
-                    if (res.data.total) {
-                        setTotalCount(res.data.total);
-                    }
+
+                    setTotalCount(res.data.total);
                     setCouponList(res.data.data);
                 } else {
                     setLoading(false);

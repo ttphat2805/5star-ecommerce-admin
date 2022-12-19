@@ -14,10 +14,12 @@ import { ResponseType } from '~/utils/Types';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { subString } from '~/utils/MinString';
+import LoadingSpin from '~/components/LoadingSpin';
 
 const ListBlog = () => {
     const [blog, setBlog] = useState([]);
     const [user, setUser] = useState([]);
+    const [loading, setLoading] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
@@ -56,14 +58,14 @@ const ListBlog = () => {
     };
 
     const getAllBlog = (page: number) => {
+        setLoading(true);
         BlogService.GetBlogs(page).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
-                    if (res.data.total) {
-                        setTotalCount(res.data.total);
-                    }
+                    setTotalCount(res.data.total);
                     setBlog(res.data.data);
                 }
+                setLoading(false);
             },
             (err) => {
                 console.log(err);
@@ -93,83 +95,89 @@ const ListBlog = () => {
         >
             <Breadcrumb currentPage="Danh sách bài viết" currentLink="category/list-category" parentPage="Bài viết" />
             <div className="list-product">
-                <div className="card rounded-md p-2">
-                    <div className="w-full grid grid-cols-1">
-                        <div className="form card text-base overflow-x-auto">
-                            <Table className="w-full">
-                                <Thead>
-                                    <Tr>
-                                        <Th>#</Th>
-                                        <Th>Tiêu đề</Th>
-                                        <Th>Hình</Th>
-                                        <Th>Người đăng</Th>
-                                        <Th>Ngày đăng</Th>
-                                        <Th>Trạng thái</Th>
-                                        <Th>Hành động</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {blog?.length > 0 &&
-                                        blog?.map((item: any, index: number) => (
-                                            <Tr key={index}>
-                                                <Td>{index + 1}</Td>
-                                                <Td>{subString(item?.title)}</Td>
-                                                <Td>
-                                                    <img
-                                                        src={`${Config.apiUrl}upload/${item?.media?.file_name}`}
-                                                        alt=""
-                                                        className="w-[200px] h-[120px] object-contain"
-                                                    />
-                                                </Td>
-                                                <Td>{getNameUser(item?.user_id)}</Td>
-                                                <Td>{moment(item?.create_at).format('DD-MM-YYYY')}</Td>
-                                                <Td>
-                                                    {item.status === 1 ? (
-                                                        <span className="badge-status">Hiện</span>
-                                                    ) : (
-                                                        <span className="badge-status !bg-red-500">Ẩn</span>
-                                                    )}
-                                                </Td>
-                                                <Td>
-                                                    <div className="flex">
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="twitter"
-                                                            className="mx-2"
-                                                            onClick={() => Navigate('/blog/update-blog/' + item.slug)}
-                                                        >
-                                                            <AiFillEdit className="text-lg" />
-                                                        </Button>
-                                                        <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                            <Button p={1} colorScheme="red">
-                                                                <IoClose className="text-lg" />
+                {loading ? (
+                    <LoadingSpin />
+                ) : (
+                    <div className="card rounded-md p-2">
+                        <div className="w-full grid grid-cols-1">
+                            <div className="form card text-base overflow-x-auto">
+                                <Table className="w-full">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>#</Th>
+                                            <Th>Tiêu đề</Th>
+                                            <Th>Hình</Th>
+                                            <Th>Người đăng</Th>
+                                            <Th>Ngày đăng</Th>
+                                            <Th>Trạng thái</Th>
+                                            <Th>Hành động</Th>
+                                        </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                        {blog?.length > 0 &&
+                                            blog?.map((item: any, index: number) => (
+                                                <Tr key={index}>
+                                                    <Td>{index + 1}</Td>
+                                                    <Td>{subString(item?.title)}</Td>
+                                                    <Td>
+                                                        <img
+                                                            src={`${Config.apiUrl}upload/${item?.media?.file_name}`}
+                                                            alt=""
+                                                            className="w-[200px] h-[120px] object-contain"
+                                                        />
+                                                    </Td>
+                                                    <Td>{getNameUser(item?.user_id)}</Td>
+                                                    <Td>{moment(item?.create_at).format('DD-MM-YYYY hh:mm')}</Td>
+                                                    <Td>
+                                                        {item.status === 1 ? (
+                                                            <span className="badge-status">Hiện</span>
+                                                        ) : (
+                                                            <span className="badge-status !bg-red-500">Ẩn</span>
+                                                        )}
+                                                    </Td>
+                                                    <Td>
+                                                        <div className="flex">
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="twitter"
+                                                                className="mx-2"
+                                                                onClick={() =>
+                                                                    Navigate('/blog/update-blog/' + item.slug)
+                                                                }
+                                                            >
+                                                                <AiFillEdit className="text-lg" />
                                                             </Button>
-                                                        </ModalConfirm>
-                                                    </div>
-                                                </Td>
-                                            </Tr>
-                                        ))}
-                                </Tbody>
-                            </Table>
-                        </div>
-                        {totalPage > 0 && (
-                            <div className="pagination-feature flex">
-                                <ReactPaginate
-                                    previousLabel={<BiChevronLeft className="inline text-xl" />}
-                                    nextLabel={<BiChevronRight className="inline text-xl" />}
-                                    pageCount={totalPage}
-                                    onPageChange={handlePageChange}
-                                    activeClassName={'page-item active'}
-                                    disabledClassName={'page-item disabled'}
-                                    containerClassName={'pagination'}
-                                    previousLinkClassName={'page-link'}
-                                    nextLinkClassName={'page-link'}
-                                    pageLinkClassName={'page-link'}
-                                />
+                                                            <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                                <Button p={1} colorScheme="red">
+                                                                    <IoClose className="text-lg" />
+                                                                </Button>
+                                                            </ModalConfirm>
+                                                        </div>
+                                                    </Td>
+                                                </Tr>
+                                            ))}
+                                    </Tbody>
+                                </Table>
                             </div>
-                        )}
+                            {totalPage > 0 && (
+                                <div className="pagination-feature flex">
+                                    <ReactPaginate
+                                        previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                        nextLabel={<BiChevronRight className="inline text-xl" />}
+                                        pageCount={totalPage}
+                                        onPageChange={handlePageChange}
+                                        activeClassName={'page-item active'}
+                                        disabledClassName={'page-item disabled'}
+                                        containerClassName={'pagination'}
+                                        previousLinkClassName={'page-link'}
+                                        nextLinkClassName={'page-link'}
+                                        pageLinkClassName={'page-link'}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </motion.div>
     );

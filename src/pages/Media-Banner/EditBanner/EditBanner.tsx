@@ -73,7 +73,7 @@ const EditBanner = () => {
     const patchFormValue = (data: any) => {
         setValue('title', data.title);
         setValue('sub_title', data.sub_title);
-        // setValue('link', data.link);
+        setValue('link', data.link);
         setValue('status', data.status);
     };
 

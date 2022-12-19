@@ -87,9 +87,7 @@ const ListBrand = () => {
         BrandService.GetBrands(page).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
-                    if (res.data.total) {
-                        setTotalCount(res.data.total);
-                    }
+                    setTotalCount(res.data.total);
                     setBrand(res.data.data);
                 }
             },

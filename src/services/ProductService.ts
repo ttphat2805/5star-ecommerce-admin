@@ -3,8 +3,8 @@ import AxiosInstance from './AxiosInstance';
 
 let url: string = 'product';
 
-const getAllProduct = (page: number = 0, perPage: number = Config.PER_PAGE) => {
-    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
+const getAllProduct = (page: number = 0, name: string = '', perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}&name=${name}`);
 };
 
 const addProduct = (data: any) => {

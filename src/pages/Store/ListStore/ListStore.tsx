@@ -7,6 +7,7 @@ import { IoClose } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import StoreService from '~/services/StoreService';
 import { subString } from '~/utils/MinString';
@@ -16,6 +17,7 @@ const PER_PAGE = 10;
 
 const ListStore = () => {
     const [store, setStore] = useState<any>();
+    const [loading, setLoading] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
@@ -51,14 +53,14 @@ const ListStore = () => {
     };
 
     const getAllStore = (page: number) => {
+        setLoading(true);
+
         StoreService.GetStores(page).then(
             (res: ResponseType) => {
-                console.log('res: ', res);
                 if (res.statusCode === 200) {
-                    if (res.data.total) {
-                        setTotalCount(res.data.total);
-                    }
+                    setTotalCount(res.data.total);
                     setStore(res.data.data);
+                    setLoading(false);
                 }
             },
             (err) => {
@@ -79,78 +81,82 @@ const ListStore = () => {
         >
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
-                <div className="card rounded-md p-2">
-                    <div className="w-full grid grid-cols-1">
-                        <div className="form card text-base overflow-x-auto">
-                            <Table className="w-full">
-                                <Thead>
-                                    <Tr>
-                                        <Th>#</Th>
-                                        <Th>Tên cửa hàng</Th>
-                                        <Th>Giờ mở cửa</Th>
-                                        <Th>Email</Th>
-                                        <Th>Ngày mở cửa</Th>
-                                        <Th>Trạng thái</Th>
-                                        <Th>Hành động</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {store?.map((item: any, index: number) => (
-                                        <Tr key={index}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{subString(item?.name)}</Td>
-                                            <Td>{item.time}</Td>
-                                            <Td>{item.email}</Td>
-                                            <Td>{item.open_close}</Td>
-                                            <Td>
-                                                {item.status === 1 ? (
-                                                    <span className="badge-status">Hiện</span>
-                                                ) : (
-                                                    <span className="badge-status !bg-red-500">Ẩn</span>
-                                                )}
-                                            </Td>
-                                            <Td className="flex">
-                                                <div className="flex">
-                                                    <Button
-                                                        p={1}
-                                                        colorScheme="twitter"
-                                                        className="mx-2"
-                                                        onClick={() => {
-                                                            Navigate('/store/update-store/' + item.id);
-                                                        }}
-                                                    >
-                                                        <AiFillEdit className="text-lg" />
-                                                    </Button>
-                                                    <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                        <Button p={1} colorScheme="red">
-                                                            <IoClose className="text-lg" />
-                                                        </Button>
-                                                    </ModalConfirm>
-                                                </div>
-                                            </Td>
+                {loading ? (
+                    <LoadingSpin />
+                ) : (
+                    <div className="card rounded-md p-2">
+                        <div className="w-full grid grid-cols-1">
+                            <div className="form card text-base overflow-x-auto">
+                                <Table className="w-full">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>#</Th>
+                                            <Th>Tên cửa hàng</Th>
+                                            <Th>Giờ mở cửa</Th>
+                                            <Th>Email</Th>
+                                            <Th>Ngày mở cửa</Th>
+                                            <Th>Trạng thái</Th>
+                                            <Th>Hành động</Th>
                                         </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
-                        </div>
-                        {totalPage > 0 && (
-                            <div className="pagination-feature flex">
-                                <ReactPaginate
-                                    previousLabel={<BiChevronLeft className="inline text-xl" />}
-                                    nextLabel={<BiChevronRight className="inline text-xl" />}
-                                    pageCount={totalPage}
-                                    onPageChange={handlePageChange}
-                                    activeClassName={'page-item active'}
-                                    disabledClassName={'page-item disabled'}
-                                    containerClassName={'pagination'}
-                                    previousLinkClassName={'page-link'}
-                                    nextLinkClassName={'page-link'}
-                                    pageLinkClassName={'page-link'}
-                                />
+                                    </Thead>
+                                    <Tbody>
+                                        {store?.map((item: any, index: number) => (
+                                            <Tr key={index}>
+                                                <Td>{index + 1}</Td>
+                                                <Td>{subString(item?.name)}</Td>
+                                                <Td>{item.time}</Td>
+                                                <Td>{item.email}</Td>
+                                                <Td>{item.open_close}</Td>
+                                                <Td>
+                                                    {item.status === 1 ? (
+                                                        <span className="badge-status">Hiện</span>
+                                                    ) : (
+                                                        <span className="badge-status !bg-red-500">Ẩn</span>
+                                                    )}
+                                                </Td>
+                                                <Td className="flex">
+                                                    <div className="flex">
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="twitter"
+                                                            className="mx-2"
+                                                            onClick={() => {
+                                                                Navigate('/store/update-store/' + item.id);
+                                                            }}
+                                                        >
+                                                            <AiFillEdit className="text-lg" />
+                                                        </Button>
+                                                        <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                            <Button p={1} colorScheme="red">
+                                                                <IoClose className="text-lg" />
+                                                            </Button>
+                                                        </ModalConfirm>
+                                                    </div>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
                             </div>
-                        )}
+                            {totalPage > 0 && (
+                                <div className="pagination-feature flex">
+                                    <ReactPaginate
+                                        previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                        nextLabel={<BiChevronRight className="inline text-xl" />}
+                                        pageCount={totalPage}
+                                        onPageChange={handlePageChange}
+                                        activeClassName={'page-item active'}
+                                        disabledClassName={'page-item disabled'}
+                                        containerClassName={'pagination'}
+                                        previousLinkClassName={'page-link'}
+                                        nextLinkClassName={'page-link'}
+                                        pageLinkClassName={'page-link'}
+                                    />
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </motion.div>
     );

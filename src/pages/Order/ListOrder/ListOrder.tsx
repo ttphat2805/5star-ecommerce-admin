@@ -21,25 +21,33 @@ import {
 import { motion } from 'framer-motion';
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { AiFillEdit } from 'react-icons/ai';
+import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-import { IoIosEye } from 'react-icons/io';
+import { BsTruck } from 'react-icons/bs';
+import { IoIosEye, IoMdInformationCircleOutline } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
+import { MdOutlineHail, MdShoppingCart, MdSwapHoriz } from 'react-icons/md';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import Image from '~/components/Image';
 import LoadingSpin from '~/components/LoadingSpin';
 import Config from '~/config';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import BrandService from '~/services/BrandService';
 import OrderService from '~/services/OrderService';
+import { FormatPriceVND } from '~/utils/FormatPriceVND';
+import { subString } from '~/utils/MinString';
 import { ResponseType } from '~/utils/Types';
 
 const ListOrder = () => {
-    const [order, setOrder] = useState([]);
+    const [orders, setOrders] = useState([]);
+    const [idOrder, setIdOrder] = useState<number>();
+    const [order, setOrder] = useState<any>([]);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     const [loadingModal, setLoadingModal] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
     // END STATE
     const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
@@ -76,14 +84,28 @@ const ListOrder = () => {
     };
 
     const getAllOrder = (page: number) => {
+        setLoading(true);
         OrderService.GetOrders(page).then(
             (res: ResponseType) => {
-                console.log('res: ', res);
                 if (res.statusCode === 200) {
-                    if (res.data.total) {
-                        setTotalCount(res.data.total);
-                    }
+                    setTotalCount(res.data.total);
+                    setOrders(res.data);
+                    setLoading(false);
+                }
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+    };
+
+    const getOrder = (id: number) => {
+        setLoadingModal(true);
+        OrderService.GetOrder(id).then(
+            (res: ResponseType) => {
+                if (res.statusCode === 200) {
                     setOrder(res.data);
+                    setLoadingModal(false);
                 }
             },
             (err) => {
@@ -93,8 +115,11 @@ const ListOrder = () => {
     };
 
     const openModalView = (id: number) => {
+        getOrder(id);
+        setIdOrder(id);
         onOpen();
     };
+
     const handleStatus = (status: number) => {
         let resultStatus: any = { name: '', scheme: '' };
         switch (status) {
@@ -153,62 +178,68 @@ const ListOrder = () => {
                                 </div>
                             </div>
                             <div className="status-order w-[200px]"></div>
-                            <Table className="w-full">
-                                <Thead>
-                                    <Tr>
-                                        <Th>Mã đơn hàng</Th>
-                                        <Th>Ngày đặt</Th>
-                                        <Th>Người đặt</Th>
-                                        <Th>Trạng thái</Th>
-                                        <Th>Hành động</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {order?.map((item: any, index: number) => (
-                                        <Tr key={index}>
-                                            <Td>{item?.id}</Td>
-                                            <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
-                                            <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
-                                            <Td>
-                                                <Badge
-                                                    p={2}
-                                                    borderRadius={4}
-                                                    colorScheme={handleStatus(item?.status).scheme}
-                                                >
-                                                    {handleStatus(item?.status).name}
-                                                </Badge>
-                                            </Td>
-                                            <Td className="flex">
-                                                <div className="flex">
-                                                    <Button
-                                                        p={1}
-                                                        colorScheme="cyan"
-                                                        className=""
-                                                        onClick={() => openModalView(item.id)}
-                                                    >
-                                                        <IoIosEye className="text-lg text-white" />
-                                                    </Button>
-                                                    <Button
-                                                        p={1}
-                                                        colorScheme="twitter"
-                                                        className="mx-2"
-                                                        onClick={() => {
-                                                            Navigate('/order/' + item.id);
-                                                        }}
-                                                    >
-                                                        <AiFillEdit className="text-lg" />
-                                                    </Button>
-                                                    <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                        <Button p={1} colorScheme="red">
-                                                            <IoClose className="text-lg" />
-                                                        </Button>
-                                                    </ModalConfirm>
-                                                </div>
-                                            </Td>
+                            {loading ? (
+                                <LoadingSpin />
+                            ) : (
+                                <Table className="w-full">
+                                    <Thead>
+                                        <Tr>
+                                            <Th>Mã đơn hàng</Th>
+                                            <Th>Ngày đặt</Th>
+                                            <Th>Người đặt</Th>
+                                            <Th>Trạng thái</Th>
+                                            <Th>Hành động</Th>
                                         </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
+                                    </Thead>
+                                    <Tbody>
+                                        {orders?.map((item: any, index: number) => (
+                                            <Tr key={index}>
+                                                <Td>#{item?.id}</Td>
+                                                <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
+                                                <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
+                                                <Td>
+                                                    <Badge
+                                                        p={2}
+                                                        borderRadius={4}
+                                                        colorScheme={handleStatus(item?.status).scheme}
+                                                    >
+                                                        {handleStatus(item?.status).name}
+                                                    </Badge>
+                                                </Td>
+                                                <Td className="flex">
+                                                    <div className="flex">
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="cyan"
+                                                            className=""
+                                                            onClick={() => openModalView(item.id)}
+                                                        >
+                                                            <IoIosEye className="text-lg text-white" />
+                                                        </Button>
+                                                        <Button
+                                                            p={1}
+                                                            colorScheme="twitter"
+                                                            className="mx-2"
+                                                            onClick={() => {
+                                                                Navigate('/order/' + item.id);
+                                                            }}
+                                                        >
+                                                            <IoMdInformationCircleOutline className="text-lg" />
+                                                        </Button>
+                                                        {item?.status === 5 && (
+                                                            <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                                <Button p={1} colorScheme="red">
+                                                                    <IoClose className="text-lg" />
+                                                                </Button>
+                                                            </ModalConfirm>
+                                                        )}
+                                                    </div>
+                                                </Td>
+                                            </Tr>
+                                        ))}
+                                    </Tbody>
+                                </Table>
+                            )}
                         </div>
                         {totalPage > 0 && (
                             <div className="pagination-feature flex">
@@ -230,19 +261,237 @@ const ListOrder = () => {
                 </div>
             </div>
             {/* MODAL VIEW DETAIL */}
-            <Modal isOpen={isOpen} onClose={onClose}>
+            <Modal isOpen={isOpen} onClose={onClose} size="5xl">
                 <ModalOverlay />
                 <ModalContent>
                     {loadingModal ? (
                         <LoadingSpin />
                     ) : (
                         <>
-                            <ModalHeader>Thành viên:</ModalHeader>
+                            <ModalHeader>
+                                <h3 className="title-order font-bold text-2xl flex items-center">
+                                    Order: # {order?.id}
+                                    <span className="flex items-center">
+                                        - {order?.payment_method_id === 1 ? 'Chưa thanh toán' : 'Đã thanh toán'}
+                                        <AiOutlineCheckCircle className="ml-2 text-primary" />
+                                    </span>
+                                </h3>
+                            </ModalHeader>
                             <ModalCloseButton />
                             <ModalBody>
-                                <Table>
-                                    <Tbody></Tbody>
-                                </Table>
+                                <div className="w-full grid grid-cols-1">
+                                    <div className="form card text-base overflow-x-auto">
+                                        <div className="info-user grid grid-cols-2 gap-5 mt-5">
+                                            <div className="user-orderer col-span-1 bg-slate-100 rounded-xl overflow-hidden">
+                                                <div className="header-prod bg-primary w-full px-4 py-2 rounded-xl">
+                                                    <p className="text-bold text-xl text-white">Thông tin đặt hàng</p>
+                                                </div>
+                                                <div className="info-order">
+                                                    <Table>
+                                                        <Tbody>
+                                                            <Tr>
+                                                                <Td width={20}>Họ tên: </Td>
+                                                                <Td fontWeight="bold">{`${order?.user?.first_name} ${order?.user?.last_name}`}</Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td width={20}>Email: </Td>
+                                                                <Td fontWeight="bold">{order?.user?.email} </Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td>Số điện thoại: </Td>
+                                                                <Td fontWeight="bold">
+                                                                    {order?.user?.phone ? (
+                                                                        order?.user?.phone
+                                                                    ) : (
+                                                                        <Badge>Chưa cập nhật</Badge>
+                                                                    )}
+                                                                </Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td>Địa chỉ: </Td>
+                                                                <Td fontWeight="bold">
+                                                                    <Badge>Chưa cập nhật</Badge>
+                                                                </Td>
+                                                            </Tr>
+                                                        </Tbody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                            <div className="user-receiver col-span-1 bg-slate-100 rounded-xl overflow-hidden">
+                                                <div className="header-prod bg-primary w-full px-4 py-2 rounded-xl">
+                                                    <p className="text-bold text-xl text-white">Thông tin nhận hàng</p>
+                                                </div>
+                                                <div className="info-order">
+                                                    <Table>
+                                                        <Tbody>
+                                                            <Tr>
+                                                                <Td width={20}>Họ tên: </Td>
+                                                                <Td fontWeight="bold">{order?.name}</Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td width={20}>Phương thức thanh toán: </Td>
+                                                                <Td fontWeight="bold">
+                                                                    {order?.payment_method_id === 1
+                                                                        ? 'Thanh toán khi nhận hàng'
+                                                                        : 'VN Pay'}
+                                                                </Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td>Số điện thoại: </Td>
+                                                                <Td fontWeight="bold">{order?.phone}</Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td>Địa chỉ: </Td>
+                                                                <Td fontWeight="bold" whiteSpace={'normal'}>
+                                                                    {order?.address}
+                                                                </Td>
+                                                            </Tr>
+                                                            <Tr>
+                                                                <Td>Ghi chú: </Td>
+                                                                <Td fontWeight="bold">{order?.note}</Td>
+                                                            </Tr>
+                                                        </Tbody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="content grid grid-cols-1 mt-5 gap-5">
+                                            <div className="list-product col-span-1">
+                                                <div className="header-prod bg-primary w-full px-4 py-2 rounded-xl">
+                                                    <p className="text-bold text-xl text-white">Sản phẩm</p>
+                                                </div>
+                                                <div className="product px-4 mt-2">
+                                                    <Table variant="unstyled" borderBottom="1px solid #cccccc69">
+                                                        <Thead>
+                                                            <Tr>
+                                                                <Th className="!text-base">#</Th>
+                                                                <Th className="!text-base">Ảnh</Th>
+                                                                <Th className="!text-base">Tên sản phẩm</Th>
+                                                                <Th className="!text-base">Số lượng</Th>
+                                                                <Th className="!text-base">Giá</Th>
+                                                            </Tr>
+                                                        </Thead>
+                                                        <Tbody>
+                                                            {order?.details?.map((item: any, index: number) => (
+                                                                <Tr key={index}>
+                                                                    <Td>{index + 1}</Td>
+                                                                    <Td>
+                                                                        {item?.product_info?.product?.images?.length >
+                                                                            0 && (
+                                                                            <Image
+                                                                                className="w-[150px] h-[120px] object-cover"
+                                                                                alt="Ảnh"
+                                                                                src={`${Config.apiUrl}upload/${item?.product_info?.product?.images[0].file_name}`}
+                                                                            />
+                                                                        )}
+                                                                    </Td>
+                                                                    <Td>
+                                                                        {subString(
+                                                                            item?.product_info?.product?.name,
+                                                                            40,
+                                                                        )}
+                                                                    </Td>
+                                                                    <Td>{item?.quantity}</Td>
+                                                                    <Td>{FormatPriceVND(item?.price || 0)}</Td>
+                                                                </Tr>
+                                                            ))}
+                                                            <Tr>
+                                                                <Td></Td>
+                                                                <Td></Td>
+                                                                <Td>
+                                                                    <p className="text-lg text-primary font-semibold">
+                                                                        Tổng tiền
+                                                                    </p>
+                                                                </Td>
+                                                                <Td></Td>
+                                                                <Td>
+                                                                    <p className="text-lg font-semibold">
+                                                                        {FormatPriceVND(order?.total || 0)}
+                                                                    </p>
+                                                                </Td>
+                                                            </Tr>
+                                                        </Tbody>
+                                                    </Table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="tracking grid grid-cols-1 mt-6">
+                                            <div className="steps-tracking flex justify-between px-10 text-center border-t border-slate-200 pt-9">
+                                                <div
+                                                    className={`step-item w-full ${
+                                                        order?.status === 1 ||
+                                                        order?.status === 2 ||
+                                                        order?.status === 3 ||
+                                                        order?.status === 4 ||
+                                                        order?.status === 5
+                                                            ? 'completed'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    <div className="step-icon-wrap">
+                                                        <div className="step-icon bg-red-500">
+                                                            <MdShoppingCart className="text-4xl inline-block" />
+                                                        </div>
+                                                    </div>
+                                                    <h4 className="text-base font-semibold mt-2 text-tbase">
+                                                        Chưa xử lý
+                                                    </h4>
+                                                </div>
+                                                <div
+                                                    className={`step-item w-full ${
+                                                        order?.status === 2 ||
+                                                        order?.status === 3 ||
+                                                        order?.status === 4 ||
+                                                        order?.status === 5
+                                                            ? 'completed'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    <div className="step-icon-wrap">
+                                                        <div className="step-icon bg-yellow-500">
+                                                            <MdSwapHoriz className="text-4xl inline-block" />
+                                                        </div>
+                                                    </div>
+                                                    <h4 className="text-base font-semibold mt-2 text-tbase">
+                                                        Đang xử lý
+                                                    </h4>
+                                                </div>
+                                                <div
+                                                    className={`step-item w-full ${
+                                                        order?.status === 3 ||
+                                                        order?.status === 4 ||
+                                                        order?.status === 5
+                                                            ? 'completed'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    <div className="step-icon-wrap">
+                                                        <div className="step-icon bg-blue-500">
+                                                            <BsTruck className="text-4xl inline-block" />
+                                                        </div>
+                                                    </div>
+                                                    <h4 className="text-base font-semibold mt-2 text-tbase">
+                                                        Đang giao hàng
+                                                    </h4>
+                                                </div>
+                                                <div
+                                                    className={`step-item w-full ${
+                                                        order?.status === 4 || order?.status === 5 ? 'completed' : ''
+                                                    }`}
+                                                >
+                                                    <div className="step-icon-wrap">
+                                                        <div className="step-icon bg-green-500">
+                                                            <MdOutlineHail className="text-4xl inline-block" />
+                                                        </div>
+                                                    </div>
+                                                    <h4 className="text-base font-semibold mt-2 text-tbase">
+                                                        Thành công
+                                                    </h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </ModalBody>
 
                             <ModalFooter>

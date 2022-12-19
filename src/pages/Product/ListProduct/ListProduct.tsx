@@ -1,9 +1,9 @@
 import { Button, FormLabel, Input, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-import { IoClose } from 'react-icons/io5';
+import { IoClose, IoCloseOutline } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
@@ -12,16 +12,17 @@ import Config from '~/config';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import CategoryService from '~/services/CategoryService';
 import ProductService from '~/services/ProductService';
+import { Debounce } from '~/utils/Debouce';
 import { FormatPriceVND } from '~/utils/FormatPriceVND';
 import { ResponseType } from '~/utils/Types';
 
 const ListProduct = () => {
     const [product, setProduct] = useState<any>([]);
+    const [search, setSearch] = useState<string>();
     const [loading, setLoading] = useState<boolean>(false);
     const [listCategory, setListCategory] = useState<any>([]);
-    console.log('listCategory: ', listCategory);
     const [totalCount, setTotalCount] = useState<number>(0);
-    const [pageNumber, setPageNumber] = useState<number>(0);
+    const [, setPageNumber] = useState<number>(0);
 
     const toast = useToast();
     const Navigate = useNavigate();
@@ -32,13 +33,11 @@ const ListProduct = () => {
         setPageNumber(selected);
     };
 
-    const getAllProduct = (page: number = 0) => {
+    const getAllProduct = (page: number = 0, name: string = '') => {
         setLoading(true);
-        ProductService.getAllProduct(page).then((res: ResponseType) => {
+        ProductService.getAllProduct(page, name).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                if (res.data.total) {
-                    setTotalCount(res.data.total);
-                }
+                setTotalCount(res.data.total);
                 setProduct(res.data.data);
                 setLoading(false);
             } else {
@@ -47,10 +46,19 @@ const ListProduct = () => {
         });
     };
 
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = event.target;
+        setSearch(value);
+        getAllProduct(0, value);
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const debounceSearch = useCallback(Debounce(handleSearch, 1000), []);
+
     const getAllCategory = () => {
         CategoryService.getAllCategory().then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setListCategory(res.data[0]);
+                setListCategory(res.data.data);
             }
         });
     };
@@ -82,17 +90,17 @@ const ListProduct = () => {
             <div className="list-product">
                 <img src={`${Config.apiUrl}upload/3c2c50eed3ee67a441844e217934b126`} alt="" />
                 <div className="card rounded-md p-2">
-                    {loading ? (
-                        <LoadingSpin />
-                    ) : (
-                        <div className="w-full grid grid-cols-1">
-                            <div className="form card text-base overflow-x-auto">
-                                <div className="status-order flex justify-end flex-col items-end mb-3">
-                                    <div className="w-full md:w-[350px]">
-                                        <FormLabel>Tìm kiếm:</FormLabel>
-                                        <Input />
-                                    </div>
+                    <div className="w-full grid grid-cols-1">
+                        <div className="form card text-base overflow-x-auto">
+                            <div className="status-order flex justify-end flex-col items-end mb-3">
+                                <div className="w-full md:w-[350px]">
+                                    <FormLabel>Tìm kiếm:</FormLabel>
+                                    <Input onChange={debounceSearch} placeholder="Tìm sản phẩm..." />
                                 </div>
+                            </div>
+                            {loading ? (
+                                <LoadingSpin />
+                            ) : (
                                 <Table className="w-full">
                                     <Thead>
                                         <Tr>
@@ -121,7 +129,7 @@ const ListProduct = () => {
                                                         <img
                                                             src={`${Config.apiUrl}upload/${item?.images[0]?.file_name}`}
                                                             alt=""
-                                                            className="w-3/4 h-[30%]"
+                                                            className="w-[150px] h-[150px] object-contain"
                                                         />
                                                     </Td>
                                                     <Td>
@@ -156,9 +164,15 @@ const ListProduct = () => {
                                             ))}
                                     </Tbody>
                                 </Table>
-                            </div>
+                            )}
+                            {product.length === 0 && (
+                                <p className="text-xl font-semibold text-center my-5">
+                                    Không tồn tại thông tin nào
+                                    <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                </p>
+                            )}
                         </div>
-                    )}
+                    </div>
                     {totalPage > 0 && (
                         <div className="pagination-feature flex">
                             <ReactPaginate

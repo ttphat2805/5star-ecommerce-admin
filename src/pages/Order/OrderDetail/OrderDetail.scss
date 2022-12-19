@@ -1,11 +1,14 @@
 .info-user {
     .user-orderer {
         position: relative;
+        z-index: 1;
         &::after {
             position: absolute;
             content: '';
             right: -15%;
             top: 50%;
+            opacity: 0;
+            z-index: 0;
             width: 200px;
             height: 200px;
             filter: blur(10px);

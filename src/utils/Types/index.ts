@@ -6,6 +6,7 @@ export type LoginType = {
 export type BannerType = {
     title: string;
     sub_title: string;
+    link: string;
     image: number | string;
     status: number;
 };

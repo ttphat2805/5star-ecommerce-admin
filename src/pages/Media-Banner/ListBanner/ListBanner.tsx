@@ -34,9 +34,7 @@ const ListProduct = () => {
         setLoading(true);
         MediaService.getBanners(page).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                if (res.data.total) {
-                    setTotalCount(res.data.total);
-                }
+                setTotalCount(res.data.total);
                 setBannerList(res.data.data);
                 setLoading(false);
             } else {

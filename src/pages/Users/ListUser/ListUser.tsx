@@ -82,9 +82,8 @@ const ListUser = () => {
             console.log('res: ', res);
             if (res.statusCode === 200) {
                 setUsers(res.data.data);
-                if (res.data.total) {
-                    setTotalCount(res.data.total);
-                }
+
+                setTotalCount(res.data.total);
                 setLoading(false);
             } else {
                 setLoading(false);
