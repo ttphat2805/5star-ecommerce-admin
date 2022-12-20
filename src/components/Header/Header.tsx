@@ -134,11 +134,11 @@ const Header = () => {
                                         <PopoverTrigger>
                                             <Button className="!w-full !p-0 !bg-transparent">
                                                 <Tooltip label="Tùy chỉnh">
-                                                    <div className="icon relative w-full">
+                                                    <div className="img-avatar !h-[40px] !w-[50px] rounded-full">
                                                         <Image
                                                             src={`${Config.apiUrl}upload/${infoUser?.avatar?.file_name}`}
                                                             alt=""
-                                                            className="w-full h-full rounded-full border-2 border-gray-300 border-solid shadow-sm"
+                                                            className="w-full h-full rounded-full border-2 border-gray-300 border-solid"
                                                         />
                                                     </div>
                                                 </Tooltip>

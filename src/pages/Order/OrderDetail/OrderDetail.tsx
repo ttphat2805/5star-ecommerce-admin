@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BsTruck } from 'react-icons/bs';
-import { MdOutlineHail, MdShoppingCart, MdSwapHoriz } from 'react-icons/md';
+import { MdOutlineHail, MdOutlineRemoveShoppingCart, MdShoppingCart, MdSwapHoriz } from 'react-icons/md';
 import { useNavigate, useParams } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import Image from '~/components/Image';
@@ -252,54 +252,69 @@ const OrderDetail = () => {
                                             </Select>
                                         </div>
                                     </div>
-                                    <div className="steps-tracking flex flex-col md:flex-row justify-between px-10 text-center border-t border-slate-200 pt-9">
-                                        <div className={`step-item w-full completed`}>
-                                            <div className="step-icon-wrap ">
-                                                <div className="step-icon bg-red-500">
-                                                    <MdShoppingCart className="text-4xl inline-block" />
+                                    {status === 5 ? (
+                                        <div className="step-item w-fit ml-5">
+                                            <div className="step-icon-wrap text-center">
+                                                <div className="step-icon bg-red-500 ">
+                                                    <MdOutlineRemoveShoppingCart className="text-4xl inline-block" />
                                                 </div>
                                             </div>
-                                            <h4 className="text-base font-semibold mt-2 text-tbase">Chưa xử lý</h4>
+                                            <h4 className="text-base font-semibold mt-2 text-tbase text-left">
+                                                Đơn hàng đã bị hủy
+                                            </h4>
                                         </div>
-                                        <div
-                                            className={`step-item w-full ${
-                                                status === 2 || status === 3 || status === 4 || status === 5
-                                                    ? 'completed'
-                                                    : ''
-                                            }`}
-                                        >
-                                            <div className="step-icon-wrap ">
-                                                <div className="step-icon bg-yellow-500">
-                                                    <MdSwapHoriz className="text-4xl inline-block" />
+                                    ) : (
+                                        <div className="steps-tracking flex flex-col md:flex-row justify-between px-10 text-center border-t border-slate-200 pt-9">
+                                            <div className={`step-item w-full completed`}>
+                                                <div className="step-icon-wrap ">
+                                                    <div className="step-icon bg-red-500">
+                                                        <MdShoppingCart className="text-4xl inline-block" />
+                                                    </div>
                                                 </div>
+                                                <h4 className="text-base font-semibold mt-2 text-tbase">Chưa xử lý</h4>
                                             </div>
-                                            <h4 className="text-base font-semibold mt-2 text-tbase">Đang xử lý</h4>
-                                        </div>
-                                        <div
-                                            className={`step-item w-full ${
-                                                status === 3 || status === 4 || status === 5 ? 'completed' : ''
-                                            }`}
-                                        >
-                                            <div className="step-icon-wrap">
-                                                <div className="step-icon bg-blue-500">
-                                                    <BsTruck className="text-4xl inline-block" />
+                                            <div
+                                                className={`step-item w-full ${
+                                                    status === 2 || status === 3 || status === 4 || status === 5
+                                                        ? 'completed'
+                                                        : ''
+                                                }`}
+                                            >
+                                                <div className="step-icon-wrap ">
+                                                    <div className="step-icon bg-yellow-500">
+                                                        <MdSwapHoriz className="text-4xl inline-block" />
+                                                    </div>
                                                 </div>
+                                                <h4 className="text-base font-semibold mt-2 text-tbase">Đang xử lý</h4>
                                             </div>
-                                            <h4 className="text-base font-semibold mt-2 text-tbase">Đang giao hàng</h4>
-                                        </div>
-                                        <div
-                                            className={`step-item w-full ${
-                                                status === 4 || status === 5 ? 'completed' : ''
-                                            }`}
-                                        >
-                                            <div className="step-icon-wrap">
-                                                <div className="step-icon bg-green-500">
-                                                    <MdOutlineHail className="text-4xl inline-block" />
+                                            <div
+                                                className={`step-item w-full ${
+                                                    status === 3 || status === 4 || status === 5 ? 'completed' : ''
+                                                }`}
+                                            >
+                                                <div className="step-icon-wrap">
+                                                    <div className="step-icon bg-blue-500">
+                                                        <BsTruck className="text-4xl inline-block" />
+                                                    </div>
                                                 </div>
+                                                <h4 className="text-base font-semibold mt-2 text-tbase">
+                                                    Đang giao hàng
+                                                </h4>
                                             </div>
-                                            <h4 className="text-base font-semibold mt-2 text-tbase">Thành công</h4>
+                                            <div
+                                                className={`step-item w-full ${
+                                                    status === 4 || status === 5 ? 'completed' : ''
+                                                }`}
+                                            >
+                                                <div className="step-icon-wrap">
+                                                    <div className="step-icon bg-green-500">
+                                                        <MdOutlineHail className="text-4xl inline-block" />
+                                                    </div>
+                                                </div>
+                                                <h4 className="text-base font-semibold mt-2 text-tbase">Thành công</h4>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
                             </div>
                             <div className="btn-action flex items-center justify-center mt-5">
