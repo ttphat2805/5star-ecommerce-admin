@@ -201,7 +201,7 @@ const AddStore = () => {
                                         >
                                             Thêm thương hiệu
                                         </Button>
-                                        <Button type="button" className="mx-2">
+                                        <Button type="button" className="mx-2" onClick={() => Navigate('/store')}>
                                             Quay lại
                                         </Button>
                                     </div>

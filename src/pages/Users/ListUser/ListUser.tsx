@@ -79,7 +79,6 @@ const ListUser = () => {
     const GetAllUsers = (page: number) => {
         setLoading(true);
         UserService.GetUsers(page).then((res: any) => {
-            console.log('res: ', res);
             if (res.statusCode === 200) {
                 setUsers(res.data.data);
 

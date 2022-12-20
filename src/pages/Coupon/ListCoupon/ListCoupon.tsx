@@ -21,7 +21,7 @@ import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoIosEye } from 'react-icons/io';
-import { IoClose } from 'react-icons/io5';
+import { IoClose, IoCloseOutline } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
@@ -128,74 +128,84 @@ const ListCoupon = () => {
             <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
-                    {loading ? (
-                        <LoadingSpin />
-                    ) : (
-                        <div className="w-full grid grid-cols-1">
-                            <div className="form card text-base overflow-x-auto">
-                                <Table className="w-full">
-                                    <Thead>
-                                        <Tr>
-                                            <Th>#</Th>
-                                            <Th>Mã giảm giá</Th>
-                                            <Th>Tiền giảm</Th>
-                                            <Th>Số lượng</Th>
-                                            <Th>Ngày bắt đầu</Th>
-                                            <Th>Ngày kết thúc</Th>
-                                            <Th>Đã dùng</Th>
-                                            <Th>Trạng thái</Th>
-                                            <Th>Hành động</Th>
-                                        </Tr>
-                                    </Thead>
-                                    <Tbody>
-                                        {couponList.map((item: any, index: number) => (
-                                            <Tr key={index}>
-                                                <Td>{index + 1}</Td>
-                                                <Td>{item.code}</Td>
-                                                <Td>{FormatPriceVND(item.discount)}</Td>
-                                                <Td>{item.quantity}</Td>
-                                                <Td>{item.start_date}</Td>
-                                                <Td>{item.expirate_date}</Td>
-                                                <Td>{item.used}</Td>
-                                                <Td>
-                                                    {item.status === 1 ? (
-                                                        <span className="badge-status">Hiện</span>
-                                                    ) : (
-                                                        <span className="badge-status !bg-red-500">Ẩn</span>
-                                                    )}
-                                                </Td>
-                                                <Td>
-                                                    <div className="flex">
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="cyan"
-                                                            className=""
-                                                            onClick={() => openModalView(item.id)}
-                                                        >
-                                                            <IoIosEye className="text-lg text-white" />
-                                                        </Button>
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="twitter"
-                                                            className="mx-2"
-                                                            onClick={() => Navigate('/coupon/update-coupon/' + item.id)}
-                                                        >
-                                                            <AiFillEdit className="text-lg" />
-                                                        </Button>
-                                                        <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                            <Button p={1} colorScheme="red">
-                                                                <IoClose className="text-lg" />
-                                                            </Button>
-                                                        </ModalConfirm>
-                                                    </div>
-                                                </Td>
+                    <div className="w-full grid grid-cols-1">
+                        <div className="form card text-base overflow-x-auto">
+                            {loading ? (
+                                <LoadingSpin />
+                            ) : (
+                                <>
+                                    <Table className="w-full">
+                                        <Thead>
+                                            <Tr>
+                                                <Th>#</Th>
+                                                <Th>Mã giảm giá</Th>
+                                                <Th>Tiền giảm</Th>
+                                                <Th>Số lượng</Th>
+                                                <Th>Ngày bắt đầu</Th>
+                                                <Th>Ngày kết thúc</Th>
+                                                <Th>Đã dùng</Th>
+                                                <Th>Trạng thái</Th>
+                                                <Th>Hành động</Th>
                                             </Tr>
-                                        ))}
-                                    </Tbody>
-                                </Table>
-                            </div>
+                                        </Thead>
+                                        <Tbody>
+                                            {couponList?.map((item: any, index: number) => (
+                                                <Tr key={index}>
+                                                    <Td>{index + 1}</Td>
+                                                    <Td>{item.code}</Td>
+                                                    <Td>{FormatPriceVND(item.discount)}</Td>
+                                                    <Td>{item.quantity}</Td>
+                                                    <Td>{item.start_date}</Td>
+                                                    <Td>{item.expirate_date}</Td>
+                                                    <Td>{item.used}</Td>
+                                                    <Td>
+                                                        {item.status === 1 ? (
+                                                            <span className="badge-status">Hiện</span>
+                                                        ) : (
+                                                            <span className="badge-status !bg-red-500">Ẩn</span>
+                                                        )}
+                                                    </Td>
+                                                    <Td>
+                                                        <div className="flex">
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="cyan"
+                                                                className=""
+                                                                onClick={() => openModalView(item.id)}
+                                                            >
+                                                                <IoIosEye className="text-lg text-white" />
+                                                            </Button>
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="twitter"
+                                                                className="mx-2"
+                                                                onClick={() =>
+                                                                    Navigate('/coupon/update-coupon/' + item.id)
+                                                                }
+                                                            >
+                                                                <AiFillEdit className="text-lg" />
+                                                            </Button>
+                                                            <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                                <Button p={1} colorScheme="red">
+                                                                    <IoClose className="text-lg" />
+                                                                </Button>
+                                                            </ModalConfirm>
+                                                        </div>
+                                                    </Td>
+                                                </Tr>
+                                            ))}
+                                        </Tbody>
+                                    </Table>
+                                    {couponList?.length === 0 && (
+                                        <p className="text-xl font-semibold text-center my-5">
+                                            Không tồn tại thông tin nào
+                                            <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                        </p>
+                                    )}
+                                </>
+                            )}
                         </div>
-                    )}
+                    </div>
                     {totalPage > 0 && (
                         <div className="pagination-feature flex">
                             <ReactPaginate

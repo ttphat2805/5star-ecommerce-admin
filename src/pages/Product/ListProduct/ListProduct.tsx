@@ -101,75 +101,77 @@ const ListProduct = () => {
                             {loading ? (
                                 <LoadingSpin />
                             ) : (
-                                <Table className="w-full">
-                                    <Thead>
-                                        <Tr>
-                                            <Th>#</Th>
-                                            <Th>Tên sản phẩm</Th>
-                                            <Th>Danh mục</Th>
-                                            <Th>Giá</Th>
-                                            <Th>Hình ảnh</Th>
-                                            <Th>Trạng thái</Th>
-                                            <Th>Hành động</Th>
-                                        </Tr>
-                                    </Thead>
-                                    <Tbody>
-                                        {product.length > 0 &&
-                                            product?.map((item: any, index: number) => (
-                                                <Tr key={item.id}>
-                                                    <Td>{index + 1}</Td>
-                                                    <Td>
-                                                        {item?.name.length > 40
-                                                            ? item?.name.substring(0, 40) + '...'
-                                                            : item?.name}
-                                                    </Td>
-                                                    <Td>{getNameCategoryByProduct(item?.id_category)}</Td>
-                                                    <Td>{FormatPriceVND(item?.stocks[0]?.price)}</Td>
-                                                    <Td>
-                                                        <img
-                                                            src={`${Config.apiUrl}upload/${item?.images[0]?.file_name}`}
-                                                            alt=""
-                                                            className="w-[150px] h-[150px] object-contain"
-                                                        />
-                                                    </Td>
-                                                    <Td>
-                                                        {item.status === 1 ? (
-                                                            <span className="badge-status">Hiện</span>
-                                                        ) : (
-                                                            <span className="badge-status !bg-red-500">Ẩn</span>
-                                                        )}
-                                                    </Td>
-                                                    <Td>
-                                                        <div className="flex">
-                                                            <Button
-                                                                p={1}
-                                                                colorScheme="twitter"
-                                                                className="mx-2"
-                                                                onClick={() =>
-                                                                    Navigate(`/category/edit-category/${item.id}`)
-                                                                }
-                                                            >
-                                                                <AiFillEdit className="text-lg" />
-                                                            </Button>
-                                                            <ModalConfirm
-                                                                handleConfirm={() => handleDeleteProduct(item.id)}
-                                                            >
-                                                                <Button p={1} colorScheme="red">
-                                                                    <IoClose className="text-lg" />
+                                <>
+                                    <Table className="w-full">
+                                        <Thead>
+                                            <Tr>
+                                                <Th>#</Th>
+                                                <Th>Tên sản phẩm</Th>
+                                                <Th>Danh mục</Th>
+                                                <Th>Giá</Th>
+                                                <Th>Hình ảnh</Th>
+                                                <Th>Trạng thái</Th>
+                                                <Th>Hành động</Th>
+                                            </Tr>
+                                        </Thead>
+                                        <Tbody>
+                                            {product.length > 0 &&
+                                                product?.map((item: any, index: number) => (
+                                                    <Tr key={item.id}>
+                                                        <Td>{index + 1}</Td>
+                                                        <Td>
+                                                            {item?.name.length > 40
+                                                                ? item?.name.substring(0, 40) + '...'
+                                                                : item?.name}
+                                                        </Td>
+                                                        <Td>{getNameCategoryByProduct(item?.id_category)}</Td>
+                                                        <Td>{FormatPriceVND(item?.stocks[0]?.price)}</Td>
+                                                        <Td>
+                                                            <img
+                                                                src={`${Config.apiUrl}upload/${item?.images[0]?.file_name}`}
+                                                                alt=""
+                                                                className="w-[150px] h-[150px] object-contain"
+                                                            />
+                                                        </Td>
+                                                        <Td>
+                                                            {item.status === 1 ? (
+                                                                <span className="badge-status">Hiện</span>
+                                                            ) : (
+                                                                <span className="badge-status !bg-red-500">Ẩn</span>
+                                                            )}
+                                                        </Td>
+                                                        <Td>
+                                                            <div className="flex">
+                                                                <Button
+                                                                    p={1}
+                                                                    colorScheme="twitter"
+                                                                    className="mx-2"
+                                                                    onClick={() =>
+                                                                        Navigate(`/category/edit-category/${item.id}`)
+                                                                    }
+                                                                >
+                                                                    <AiFillEdit className="text-lg" />
                                                                 </Button>
-                                                            </ModalConfirm>
-                                                        </div>
-                                                    </Td>
-                                                </Tr>
-                                            ))}
-                                    </Tbody>
-                                </Table>
-                            )}
-                            {product.length === 0 && (
-                                <p className="text-xl font-semibold text-center my-5">
-                                    Không tồn tại thông tin nào
-                                    <IoCloseOutline className="inline-block font-semibold text-red-500" />
-                                </p>
+                                                                <ModalConfirm
+                                                                    handleConfirm={() => handleDeleteProduct(item.id)}
+                                                                >
+                                                                    <Button p={1} colorScheme="red">
+                                                                        <IoClose className="text-lg" />
+                                                                    </Button>
+                                                                </ModalConfirm>
+                                                            </div>
+                                                        </Td>
+                                                    </Tr>
+                                                ))}
+                                        </Tbody>
+                                    </Table>
+                                    {product.length === 0 && (
+                                        <p className="text-xl font-semibold text-center my-5">
+                                            Không tồn tại thông tin nào
+                                            <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                        </p>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>

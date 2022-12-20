@@ -20,7 +20,7 @@ import {
 import { useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
-import { IoClose } from 'react-icons/io5';
+import { IoClose, IoCloseOutline } from 'react-icons/io5';
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
@@ -30,6 +30,7 @@ import { toSlug } from '~/utils/Slug';
 import ReactPaginate from 'react-paginate';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { motion } from 'framer-motion';
+import LoadingSpin from '~/components/LoadingSpin';
 
 interface brandType {
     name: string;
@@ -49,6 +50,7 @@ const PER_PAGE = 10;
 const ListBrand = () => {
     const [brand, setBrand] = useState([]);
     const [idBrand, setIdBrand] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
@@ -84,12 +86,14 @@ const ListBrand = () => {
     };
 
     const getAllBrands = (page: number) => {
+        setLoading(true);
         BrandService.GetBrands(page).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setTotalCount(res.data.total);
                     setBrand(res.data.data);
                 }
+                setLoading(false);
             },
             (err) => {
                 console.log(err);
@@ -169,51 +173,63 @@ const ListBrand = () => {
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">
                         <div className="form card text-base overflow-x-auto">
-                            <Table className="w-full">
-                                <Thead>
-                                    <Tr>
-                                        <Th>#</Th>
-                                        <Th>Tên thương hiệu</Th>
-                                        <Th>Trạng thái</Th>
-                                        <Th>Hành động</Th>
-                                    </Tr>
-                                </Thead>
-                                <Tbody>
-                                    {brand?.map((item: any, index: number) => (
-                                        <Tr key={index}>
-                                            <Td>{index + 1}</Td>
-                                            <Td>{item.name}</Td>
-                                            <Td>
-                                                {item.status === 1 ? (
-                                                    <span className="badge-status">Hiện</span>
-                                                ) : (
-                                                    <span className="badge-status !bg-red-500">Ẩn</span>
-                                                )}
-                                            </Td>
-                                            <Td className="flex">
-                                                <div className="flex">
-                                                    <Button
-                                                        p={1}
-                                                        colorScheme="twitter"
-                                                        className="mx-2"
-                                                        onClick={() => {
-                                                            onOpen();
-                                                            setIdBrand(item.id);
-                                                        }}
-                                                    >
-                                                        <AiFillEdit className="text-lg" />
-                                                    </Button>
-                                                    <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                        <Button p={1} colorScheme="red">
-                                                            <IoClose className="text-lg" />
-                                                        </Button>
-                                                    </ModalConfirm>
-                                                </div>
-                                            </Td>
-                                        </Tr>
-                                    ))}
-                                </Tbody>
-                            </Table>
+                            {loading ? (
+                                <LoadingSpin />
+                            ) : (
+                                <>
+                                    <Table className="w-full">
+                                        <Thead>
+                                            <Tr>
+                                                <Th>#</Th>
+                                                <Th>Tên thương hiệu</Th>
+                                                <Th>Trạng thái</Th>
+                                                <Th>Hành động</Th>
+                                            </Tr>
+                                        </Thead>
+                                        <Tbody>
+                                            {brand?.map((item: any, index: number) => (
+                                                <Tr key={index}>
+                                                    <Td>{index + 1}</Td>
+                                                    <Td>{item.name}</Td>
+                                                    <Td>
+                                                        {item.status === 1 ? (
+                                                            <span className="badge-status">Hiện</span>
+                                                        ) : (
+                                                            <span className="badge-status !bg-red-500">Ẩn</span>
+                                                        )}
+                                                    </Td>
+                                                    <Td className="flex">
+                                                        <div className="flex">
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="twitter"
+                                                                className="mx-2"
+                                                                onClick={() => {
+                                                                    onOpen();
+                                                                    setIdBrand(item.id);
+                                                                }}
+                                                            >
+                                                                <AiFillEdit className="text-lg" />
+                                                            </Button>
+                                                            <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
+                                                                <Button p={1} colorScheme="red">
+                                                                    <IoClose className="text-lg" />
+                                                                </Button>
+                                                            </ModalConfirm>
+                                                        </div>
+                                                    </Td>
+                                                </Tr>
+                                            ))}
+                                        </Tbody>
+                                    </Table>
+                                    {brand?.length === 0 && (
+                                        <p className="text-xl font-semibold text-center my-5">
+                                            Không tồn tại thông tin nào
+                                            <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                        </p>
+                                    )}
+                                </>
+                            )}
                         </div>
                         {totalPage > 0 && (
                             <div className="pagination-feature flex">

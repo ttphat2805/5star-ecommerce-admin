@@ -25,7 +25,7 @@ import { AiOutlineCheckCircle } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { BsTruck } from 'react-icons/bs';
 import { IoIosEye, IoMdInformationCircleOutline } from 'react-icons/io';
-import { IoClose } from 'react-icons/io5';
+import { IoClose, IoCloseOutline } from 'react-icons/io5';
 import { MdOutlineHail, MdShoppingCart, MdSwapHoriz } from 'react-icons/md';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
@@ -85,7 +85,7 @@ const ListOrder = () => {
 
     const getAllOrder = (page: number) => {
         setLoading(true);
-        OrderService.GetOrders(page).then(
+        OrderService.GetOrders(2).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setTotalCount(res.data.total);
@@ -155,25 +155,27 @@ const ListOrder = () => {
         getAllOrder(0);
     }, []);
 
+    console.log('orders: ', orders);
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
+            <Breadcrumb currentPage="Danh sách đơn hàng" parentLink="order" parentPage="Đơn hàng" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">
                         <div className="form card text-base overflow-x-auto">
                             <div className="status-order flex justify-end flex-col items-end mb-3">
                                 <div className="w-full md:w-[350px]">
-                                    <Select placeholder="Trạng thái giao hàng">
-                                        <option value="option1">Chưa xử lý</option>
-                                        <option value="option2">Đang xử lý</option>
-                                        <option value="option3">Đang giao hàng</option>
-                                        <option value="option3">Thành công</option>
-                                        <option value="option3">Hủy</option>
+                                    <Select>
+                                        <option hidden>Trạng thái giao hàng</option>
+                                        <option value="1">Chưa xử lý</option>
+                                        <option value="2">Đang xử lý</option>
+                                        <option value="3">Đang giao hàng</option>
+                                        <option value="4">Thành công</option>
+                                        <option value="5">Hủy</option>
                                     </Select>
                                 </div>
                             </div>
@@ -181,64 +183,79 @@ const ListOrder = () => {
                             {loading ? (
                                 <LoadingSpin />
                             ) : (
-                                <Table className="w-full">
-                                    <Thead>
-                                        <Tr>
-                                            <Th>Mã đơn hàng</Th>
-                                            <Th>Ngày đặt</Th>
-                                            <Th>Người đặt</Th>
-                                            <Th>Trạng thái</Th>
-                                            <Th>Hành động</Th>
-                                        </Tr>
-                                    </Thead>
-                                    <Tbody>
-                                        {orders?.map((item: any, index: number) => (
-                                            <Tr key={index}>
-                                                <Td>#{item?.id}</Td>
-                                                <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
-                                                <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
-                                                <Td>
-                                                    <Badge
-                                                        p={2}
-                                                        borderRadius={4}
-                                                        colorScheme={handleStatus(item?.status).scheme}
-                                                    >
-                                                        {handleStatus(item?.status).name}
-                                                    </Badge>
-                                                </Td>
-                                                <Td className="flex">
-                                                    <div className="flex">
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="cyan"
-                                                            className=""
-                                                            onClick={() => openModalView(item.id)}
-                                                        >
-                                                            <IoIosEye className="text-lg text-white" />
-                                                        </Button>
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="twitter"
-                                                            className="mx-2"
-                                                            onClick={() => {
-                                                                Navigate('/order/' + item.id);
-                                                            }}
-                                                        >
-                                                            <IoMdInformationCircleOutline className="text-lg" />
-                                                        </Button>
-                                                        {item?.status === 5 && (
-                                                            <ModalConfirm handleConfirm={() => handleDelete(item.id)}>
-                                                                <Button p={1} colorScheme="red">
-                                                                    <IoClose className="text-lg" />
-                                                                </Button>
-                                                            </ModalConfirm>
-                                                        )}
-                                                    </div>
-                                                </Td>
+                                <>
+                                    <Table className="w-full">
+                                        <Thead>
+                                            <Tr>
+                                                <Th>Mã đơn hàng</Th>
+                                                <Th>Người đặt</Th>
+                                                <Th>Ngày đặt</Th>
+                                                <Th>Tổng tiền</Th>
+                                                <Th>Thanh toán</Th>
+                                                <Th>Trạng thái</Th>
+                                                <Th>Hành động</Th>
                                             </Tr>
-                                        ))}
-                                    </Tbody>
-                                </Table>
+                                        </Thead>
+                                        <Tbody>
+                                            {orders?.map((item: any, index: number) => (
+                                                <Tr key={index}>
+                                                    <Td>#{item?.id}</Td>
+                                                    <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
+                                                    <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
+                                                    <Td>{FormatPriceVND(item?.total)}</Td>
+                                                    <Td>{item?.payment_method_id === 1 ? 'COD' : 'VNPAY'}</Td>
+                                                    <Td>
+                                                        <Badge
+                                                            py={2}
+                                                            px={3}
+                                                            borderRadius="15px !important"
+                                                            colorScheme={handleStatus(item?.status).scheme}
+                                                        >
+                                                            {handleStatus(item?.status).name}
+                                                        </Badge>
+                                                    </Td>
+                                                    <Td className="flex">
+                                                        <div className="flex">
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="cyan"
+                                                                className=""
+                                                                onClick={() => openModalView(item.id)}
+                                                            >
+                                                                <IoIosEye className="text-lg text-white" />
+                                                            </Button>
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="twitter"
+                                                                className="mx-2"
+                                                                onClick={() => {
+                                                                    Navigate('/order/' + item.id);
+                                                                }}
+                                                            >
+                                                                <IoMdInformationCircleOutline className="text-lg" />
+                                                            </Button>
+                                                            {item?.status === 5 && (
+                                                                <ModalConfirm
+                                                                    handleConfirm={() => handleDelete(item.id)}
+                                                                >
+                                                                    <Button p={1} colorScheme="red">
+                                                                        <IoClose className="text-lg" />
+                                                                    </Button>
+                                                                </ModalConfirm>
+                                                            )}
+                                                        </div>
+                                                    </Td>
+                                                </Tr>
+                                            ))}
+                                        </Tbody>
+                                    </Table>
+                                    {orders?.length === 0 && (
+                                        <p className="text-xl font-semibold text-center my-5">
+                                            Không tồn tại thông tin nào
+                                            <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                        </p>
+                                    )}
+                                </>
                             )}
                         </div>
                         {totalPage > 0 && (
@@ -391,8 +408,14 @@ const ListOrder = () => {
                                                                             40,
                                                                         )}
                                                                     </Td>
-                                                                    <Td>{item?.quantity}</Td>
-                                                                    <Td>{FormatPriceVND(item?.price || 0)}</Td>
+                                                                    <Td>{`${item?.quantity} x ${FormatPriceVND(
+                                                                        item?.price || 0,
+                                                                    )}`}</Td>
+                                                                    <Td>
+                                                                        {FormatPriceVND(
+                                                                            item?.price * item?.quantity || 0,
+                                                                        )}
+                                                                    </Td>
                                                                 </Tr>
                                                             ))}
                                                             <Tr>

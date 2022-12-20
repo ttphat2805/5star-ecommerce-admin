@@ -11,8 +11,9 @@ import {
     Tooltip,
 } from 'chart.js';
 import { motion } from 'framer-motion';
-import { Bar, Line, Pie } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import { useAppSelector } from '~/app/hooks';
+import { ClothesIcon } from '~/components/Icons';
 import Image from '~/components/Image';
 import { getUser } from '~/features/user/userSlice';
 import './Dashboard.scss';
@@ -140,7 +141,26 @@ const Dashboard = () => {
                             />
                         </div>
                     </div>
-                    <div className="features-area">
+                    <div className="list-card">
+                        <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-10">
+                            <div className="card col-span-1 bg-white p-6 border border-slate-300 !rounded-3xl">
+                                <div className="flex justify-between">
+                                    <div>
+                                        <p className="text-tbase text-lg font-semibold">Tổng số sản phẩm</p>
+                                        <p className="text-3xl text-gray-600">
+                                            <b>149</b>
+                                        </p>
+                                    </div>
+                                    <div className="icon text-center ">
+                                        <div>
+                                            <ClothesIcon width={70} height={35} fillColor1="#fff" className="mt-5" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <div className="features-area">
                         <div className="chart">
                             <div className="grid grid-cols-2">
                                 <div className="col-span-1">
@@ -149,12 +169,12 @@ const Dashboard = () => {
                                 <div className="col-span-1">
                                     <Bar options={options} data={data2} />;
                                 </div>
-                                {/* <div className="col-span-1">
+                                <div className="col-span-1">
                                     <Line options={options2} data={data3} />
-                                </div> */}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </motion.div>

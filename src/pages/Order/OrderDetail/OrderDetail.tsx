@@ -80,12 +80,7 @@ const OrderDetail = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb
-                currentPage="Chi tiết đơn hàng"
-                currentLink="order/list-order"
-                parentPage="Đơn hàng"
-                parentLink="order"
-            />
+            <Breadcrumb currentPage="Chi tiết đơn hàng" parentLink="order" parentPage="Đơn hàng" />
             <div className="list-product">
                 <div className="card rounded-md p-4">
                     {loading ? (
@@ -204,8 +199,10 @@ const OrderDetail = () => {
                                                                 )}
                                                             </Td>
                                                             <Td>{subString(item?.product_info?.product?.name)}</Td>
-                                                            <Td>{item?.quantity}</Td>
-                                                            <Td>{FormatPriceVND(item?.price || 0)}</Td>
+                                                            <Td>{`${item?.quantity} x ${FormatPriceVND(
+                                                                item?.price || 0,
+                                                            )}`}</Td>
+                                                            <Td>{FormatPriceVND(item?.price * item?.quantity || 0)}</Td>
                                                         </Tr>
                                                     ))}
                                                     <Tr>
@@ -257,7 +254,7 @@ const OrderDetail = () => {
                                     </div>
                                     <div className="steps-tracking flex flex-col md:flex-row justify-between px-10 text-center border-t border-slate-200 pt-9">
                                         <div className={`step-item w-full completed`}>
-                                            <div className="step-icon-wrap">
+                                            <div className="step-icon-wrap ">
                                                 <div className="step-icon bg-red-500">
                                                     <MdShoppingCart className="text-4xl inline-block" />
                                                 </div>
@@ -271,7 +268,7 @@ const OrderDetail = () => {
                                                     : ''
                                             }`}
                                         >
-                                            <div className="step-icon-wrap">
+                                            <div className="step-icon-wrap ">
                                                 <div className="step-icon bg-yellow-500">
                                                     <MdSwapHoriz className="text-4xl inline-block" />
                                                 </div>
