@@ -156,7 +156,7 @@ const AddStore = () => {
                                     <Button type="submit" colorScheme="twitter" isLoading={loading} disabled={loading}>
                                         Thêm thương hiệu
                                     </Button>
-                                    <Button type="button" className="mx-2">
+                                    <Button type="button" className="mx-2" onClick={() => Navigate('/store')}>
                                         Quay lại
                                     </Button>
                                 </div>

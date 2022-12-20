@@ -5,22 +5,28 @@ import { HiMenuAlt2, HiMenuAlt3 } from 'react-icons/hi';
 import { IoMdLogOut, IoMdNotificationsOutline } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '~/app/hooks';
+import Config from '~/config';
 import { MenuActive, toggleMenu } from '~/features/SidebarActive/MenuSlice';
+import { getUser } from '~/features/user/userSlice';
+import { AuthService } from '~/services';
+import Image from '../Image';
 import './Header.scss';
 const Header = () => {
     const Navigate = useNavigate();
     const dispatch = useAppDispatch();
     const isOpenMenu = useAppSelector(MenuActive);
-
+    const infoUser: any = useAppSelector(getUser);
     const toggleMenuActive = () => {
         dispatch(toggleMenu());
     };
 
     const handleLogout = () => {
-        console.log('vo day');
-
-        localStorage.removeItem('access_token');
-        Navigate('/login');
+        AuthService.Logout().then((res) => {
+            if (res) {
+                localStorage.removeItem('access_token');
+                Navigate('/login');
+            }
+        });
     };
 
     return (
@@ -128,11 +134,11 @@ const Header = () => {
                                         <PopoverTrigger>
                                             <Button className="!w-full !p-0 !bg-transparent">
                                                 <Tooltip label="Tùy chỉnh">
-                                                    <div className="icon relative w-full">
-                                                        <img
-                                                            className="w-full h-full rounded-full"
-                                                            src="https://pixinvent.com/demo/frest-clean-bootstrap-admin-dashboard-template/assets/img/avatars/1.png"
+                                                    <div className="img-avatar !h-[40px] !w-[50px] rounded-full">
+                                                        <Image
+                                                            src={`${Config.apiUrl}upload/${infoUser?.avatar?.file_name}`}
                                                             alt=""
+                                                            className="w-full h-full rounded-full border-2 border-gray-300 border-solid"
                                                         />
                                                     </div>
                                                 </Tooltip>
@@ -142,15 +148,17 @@ const Header = () => {
                                             <div className="menu-dropdown bg-white text-base shadow-xl rounded-md w-[200px]">
                                                 <div className="account flex border-b p-4 items-center">
                                                     <div className="img-avatar h-[50px] w-[50px]">
-                                                        <img
-                                                            src="https://pixinvent.com/demo/frest-clean-bootstrap-admin-dashboard-template/assets/img/avatars/1.png"
+                                                        <Image
+                                                            src={`${Config.apiUrl}upload/${infoUser?.avatar?.file_name}`}
                                                             alt=""
                                                             className="w-full h-full rounded-full border-2 border-gray-300 border-solid"
                                                         />
                                                     </div>
                                                     <div className="info ml-3 text-sm">
-                                                        <div className="fullname font-bold">Admin Name</div>
-                                                        <div className="role">#SuperAdmin</div>
+                                                        <div className="fullname font-bold">{`${infoUser?.first_name} ${infoUser?.last_name}`}</div>
+                                                        <div className="role">
+                                                            {infoUser?.roles[1] === 'admin' ? 'Quản trị' : 'Người dùng'}
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <ul className="list-menu p-2 py-3">

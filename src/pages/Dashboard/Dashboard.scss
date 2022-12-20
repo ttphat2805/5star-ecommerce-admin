@@ -1,8 +1,27 @@
-.welcome-back-area {
-    background: url('../../assets/images/welcome-bg.jpg');
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    padding: 65px 50px;
-    border-radius: 20px;
+.dashboard {
+    .welcome-back-area {
+        background: url('../../assets/images/welcome-bg.jpg');
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        padding: 65px 50px;
+        border-radius: 20px;
+    }
+    .list-card {
+        .card {
+            transition: all 0.2s ease-in;
+            &:hover {
+                box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+                border: 1px solid transparent;
+            }
+        }
+        .icon {
+            background-image: linear-gradient(to bottom, #1765fd, #4fcb8d);
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            text-align: center;
+            border-radius: 20px;
+        }
+    }
 }

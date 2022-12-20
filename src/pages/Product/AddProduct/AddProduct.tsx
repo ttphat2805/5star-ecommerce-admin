@@ -134,8 +134,8 @@ const AddProduct = () => {
     const getAllBrands = () => {
         BrandService.GetBrands().then(
             (res: ResponseType) => {
-                console.log('res: ', res);
                 if (res.statusCode === 200) {
+                    optionsBrand = [];
                     for (let item of res.data.data) {
                         let newOptios = { value: item.id, label: item.name };
                         optionsBrand.push(newOptios);
@@ -173,7 +173,7 @@ const AddProduct = () => {
             id_category: values.subCategory ? +values.subCategory : +values.category,
         };
 
-        ProductService.addProduct(dataSendRequest).then((res: any) => {
+        ProductService.addProduct(dataSendRequest).then((res: ResponseType) => {
             if (res.statusCode === 201) {
                 reset(initialValuesForm);
                 setLoading(false);
@@ -184,10 +184,17 @@ const AddProduct = () => {
                     status: 'success',
                 });
                 Navigate('/product/list-product');
+            } else if (res.statusCode === 409 && res.message === 'slug already exist') {
+                toast({
+                    position: 'top-right',
+                    title: 'Tên sản phẩm này đã tồn tại',
+                    duration: 2000,
+                    status: 'warning',
+                });
             } else {
                 toast({
                     position: 'top-right',
-                    title: 'Tạo sản phẩm thất bại',
+                    title: 'Tạo thất bại do lỗi từ server',
                     duration: 2000,
                     status: 'error',
                 });
@@ -501,7 +508,7 @@ const AddProduct = () => {
                                     >
                                         Thêm sản phẩm
                                     </Button>
-                                    <Button type="button" className="mx-2">
+                                    <Button type="button" className="mx-2" onClick={() => Navigate('/product')}>
                                         Quay lại
                                     </Button>
                                 </div>

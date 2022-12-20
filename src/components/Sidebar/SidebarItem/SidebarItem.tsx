@@ -50,7 +50,10 @@ const SidebarItem = ({ menu, isOpenMenu, showAnimation }: any) => {
                 <li className="sidebar-item menu-item text-base">
                     <NavLink
                         to={menu.path || '#'}
-                        onClick={(e) => handleActiveSubMenu(e)}
+                        onClick={(e) => {
+                            handleActiveSubMenu(e);
+                            e.preventDefault();
+                        }}
                         className="menu-item__link select-none cursor-pointer flex items-center my-[10px] py-[6px] px-[15px] 
                     rounded-md whitespace-nowrap text-tbase hover:bg-hover hover:text-primary hover:transition-all"
                     >
