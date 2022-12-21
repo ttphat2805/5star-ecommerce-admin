@@ -9,8 +9,8 @@ const GetOrder = (id: number) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + id);
 };
 
-const GetOrders = (page: number = 0, perPage: number = Config.PER_PAGE) => {
-    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
+const GetOrders = (page: number = 0, status: string = '', perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}&status=${status}`);
 };
 
 const AddOrder = (data: any) => {
@@ -21,7 +21,7 @@ const DeleteOrder = (id: number) => {
 };
 
 const UpdateStatusOrder = (id: number, data: any) => {
-    return AxiosInstance.put(Config.apiUrl + url + `/${id}/state`, data);
+    return AxiosInstance.put(Config.apiUrl + url + `/${id}`, data);
 };
 
 // END BANNER

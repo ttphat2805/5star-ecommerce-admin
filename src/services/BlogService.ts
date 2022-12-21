@@ -9,8 +9,8 @@ const GetBlog = (slug: string) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + slug);
 };
 
-const GetBlogs = (page: number = 0, perPage: number = Config.PER_PAGE) => {
-    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
+const GetBlogs = (page: number = 0, title: string = '', perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}&title=${title}`);
 };
 
 const AddBlog = (data: any) => {

@@ -1,21 +1,21 @@
 import { Button, FormLabel, Input, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import moment from 'moment';
 import { useCallback, useEffect, useState } from 'react';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoClose, IoCloseOutline } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
+import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
 import Config from '~/config';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import BlogService from '~/services/BlogService';
 import UserService from '~/services/UserSerivce';
-import { ResponseType } from '~/utils/Types';
-import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { subString } from '~/utils/MinString';
-import LoadingSpin from '~/components/LoadingSpin';
 import { Debounce } from '~/utils/Debouce';
+import { subString } from '~/utils/MinString';
+import { ResponseType } from '~/utils/Types';
 
 const ListBlog = () => {
     const [blog, setBlog] = useState([]);
@@ -52,7 +52,7 @@ const ListBlog = () => {
     const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = event.target;
         setSearch(value);
-        // getAllBlog(0, value);
+        getAllBlog(0, value);
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,9 +66,9 @@ const ListBlog = () => {
         });
     };
 
-    const getAllBlog = (page: number) => {
+    const getAllBlog = (page: number, title: string = '') => {
         setLoading(true);
-        BlogService.GetBlogs(page).then(
+        BlogService.GetBlogs(page, title).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setTotalCount(res.data.total);

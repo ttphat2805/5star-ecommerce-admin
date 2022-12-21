@@ -151,10 +151,10 @@ const AddBlog = () => {
                                         className="w-[180px] h-[180px]"
                                     />
                                 </div>
-                                <div className="form-group my-5 md:h-[200px] h-[250px]">
+                                <div className="form-group my-5">
                                     <FormLabel className="text-tbase">Nội dung bài viết</FormLabel>
                                     <ReactQuill
-                                        className="custom-quill h-[120px]"
+                                        className="custom-quill h-auto"
                                         theme="snow"
                                         value={content}
                                         onChange={(data) => setValue('content', data)}
@@ -163,7 +163,7 @@ const AddBlog = () => {
                                     />
                                 </div>
 
-                                <div className="form-group mt-3">
+                                <div className="form-group mt-5">
                                     <FormLabel>Trạng thái</FormLabel>
                                     <div className=" flex gap-2">
                                         <RadioField
