@@ -1,4 +1,4 @@
-import { Button, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Button, Select, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import {
     ArcElement,
     BarElement,
@@ -33,7 +33,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export const data = {
-    labels: ['Áo', 'Quần', 'Đồng hồ', 'Phụ kiện', 'Túi xách'],
+    labels: ['Chưa xử lý', 'Đang xử lý', 'Đang giao hàng', 'Thành công', 'Hủy'],
     datasets: [
         {
             label: '# of Votes',
@@ -283,8 +283,15 @@ const Dashboard = () => {
                             </div>
                             <div className="col-span-12 md:col-span-6 xl:col-span-4 ml-5">
                                 <div className="card chart-pie m-auto p-5 rounded-2xl shadow-md">
-                                    <div className="w-full px-4 py-2">
+                                    <div className="w-full px-4 py-2 text-center">
                                         <p className="text-bold text-xl text-tbase font-semibold">Thống kê đơn hàng</p>
+                                        <div className="!flex !justify-center">
+                                            <Select width="150px" my={2}>
+                                                <option>Tháng 1</option>
+                                                <option>Tháng 1</option>
+                                                <option>Tháng 1</option>
+                                            </Select>
+                                        </div>
                                     </div>
                                     <Doughnut data={data} className="!w-[300px] !h-auto m-auto" />
                                     <div className="m-auto mt-3">

@@ -14,6 +14,7 @@ import { ListOrder } from '~/pages/Order';
 import OrderDetail from '~/pages/Order/OrderDetail';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
+import Statistical from '~/pages/Statistical';
 import { AddStore, EditStore, ListStore } from '~/pages/Store';
 import { ListUser } from '~/pages/Users';
 
@@ -171,6 +172,12 @@ const privateRoutes: Routes[] = [
     {
         path: '/order/:id',
         Component: OrderDetail,
+    },
+
+    // CHART
+    {
+        path: '/statistical',
+        Component: Statistical,
     },
 ];
 

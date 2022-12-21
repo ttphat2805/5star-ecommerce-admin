@@ -1,4 +1,4 @@
-import { Badge, Button, Select, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Badge, Button, Select, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { AiOutlineCheckCircle } from 'react-icons/ai';
@@ -20,10 +20,33 @@ const OrderDetail = () => {
     const [order, setOrder] = useState<any>();
     // END STATE
 
+    const toast = useToast();
     const { id } = useParams();
     const Navigate = useNavigate();
     const changeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setStatus(Number(e.target.value));
+        const { value } = e.target;
+        setStatus(Number(value));
+        let dataUpdate = {
+            status: +value,
+        };
+        OrderService.UpdateStatusOrder(Number(id), dataUpdate).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                getOrder();
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật trạng thái thành công',
+                    duration: 2000,
+                    status: 'success',
+                });
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật trạng thái thất bại',
+                    duration: 2000,
+                    status: 'error',
+                });
+            }
+        });
     };
 
     const getOrder = () => {

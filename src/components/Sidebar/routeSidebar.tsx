@@ -7,6 +7,7 @@ import { IoNewspaperOutline } from 'react-icons/io5';
 import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
 import { TbBuildingStore, TbDiscount2, TbLayoutDashboard } from 'react-icons/tb';
 import { VscTasklist } from 'react-icons/vsc';
+import { FcComboChart } from 'react-icons/fc';
 export const RouteSidebarMenu = [
     {
         name: 'Main',
@@ -182,5 +183,12 @@ export const RouteSidebarMenu = [
                 icon: <VscTasklist />,
             },
         ],
+    },
+    {
+        name: 'Thống kê',
+        path: '/statistical',
+        icon: <FcComboChart />,
+        color: 'text-red-500',
+        isParent: false,
     },
 ];

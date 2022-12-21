@@ -40,7 +40,8 @@ const ListOrder = () => {
     };
 
     const handleDelete = (id: string | any) => {
-        BrandService.DeleteBrand(id).then((res: ResponseType) => {
+        OrderService.DeleteOrder(id).then((res: ResponseType) => {
+            console.log('res: ', res);
             if (res.statusCode === 200) {
                 toast({
                     position: 'top-right',
@@ -60,13 +61,13 @@ const ListOrder = () => {
         });
     };
 
-    const getAllOrder = (page: number) => {
+    const getAllOrder = (page: number, status: string = '') => {
         setLoading(true);
-        OrderService.GetOrders(2).then(
+        OrderService.GetOrders(page, status).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setTotalCount(res.data.total);
-                    setOrders(res.data);
+                    setOrders(res.data.data);
                     setLoading(false);
                 }
             },
@@ -74,6 +75,17 @@ const ListOrder = () => {
                 console.log(err);
             },
         );
+    };
+
+    useEffect(() => {
+        getAllOrder(0);
+    }, []);
+
+    const onChangeFilterStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const { value } = e.target;
+        if (value) {
+            getAllOrder(pageNumber, value);
+        }
     };
 
     const getOrder = (id: number) => {
@@ -128,10 +140,6 @@ const ListOrder = () => {
         return resultStatus;
     };
 
-    useEffect(() => {
-        getAllOrder(0);
-    }, []);
-
     return (
         <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
@@ -145,7 +153,7 @@ const ListOrder = () => {
                         <div className="form card text-base overflow-x-auto">
                             <div className="status-order flex justify-end flex-col items-end mb-3">
                                 <div className="w-full md:w-[350px]">
-                                    <Select>
+                                    <Select onChange={(e) => onChangeFilterStatus(e)}>
                                         <option hidden>Trạng thái giao hàng</option>
                                         <option value="1">Chưa xử lý</option>
                                         <option value="2">Đang xử lý</option>
@@ -173,56 +181,57 @@ const ListOrder = () => {
                                             </Tr>
                                         </Thead>
                                         <Tbody>
-                                            {orders?.map((item: any, index: number) => (
-                                                <Tr key={index}>
-                                                    <Td>#{item?.id}</Td>
-                                                    <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
-                                                    <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
-                                                    <Td>{FormatPriceVND(item?.total)}</Td>
-                                                    <Td>{item?.payment_method_id === 1 ? 'COD' : 'VNPAY'}</Td>
-                                                    <Td>
-                                                        <Badge
-                                                            py={2}
-                                                            px={3}
-                                                            borderRadius="15px !important"
-                                                            colorScheme={handleStatus(item?.status).scheme}
-                                                        >
-                                                            {handleStatus(item?.status).name}
-                                                        </Badge>
-                                                    </Td>
-                                                    <Td className="flex">
-                                                        <div className="flex">
-                                                            <Button
-                                                                p={1}
-                                                                colorScheme="cyan"
-                                                                className=""
-                                                                onClick={() => openModalView(item.id)}
+                                            {orders?.length > 0 &&
+                                                orders?.map((item: any, index: number) => (
+                                                    <Tr key={index}>
+                                                        <Td>#{item?.id}</Td>
+                                                        <Td>{`${item.user.first_name} ${item.user.last_name}`}</Td>
+                                                        <Td>{moment(item.create_at).format('DD-MM-YYYY hh:mm')}</Td>
+                                                        <Td>{FormatPriceVND(item?.total)}</Td>
+                                                        <Td>{item?.payment_method_id === 1 ? 'COD' : 'VNPAY'}</Td>
+                                                        <Td>
+                                                            <Badge
+                                                                py={2}
+                                                                px={3}
+                                                                borderRadius="15px !important"
+                                                                colorScheme={handleStatus(item?.status).scheme}
                                                             >
-                                                                <IoIosEye className="text-lg text-white" />
-                                                            </Button>
-                                                            <Button
-                                                                p={1}
-                                                                colorScheme="twitter"
-                                                                className="mx-2"
-                                                                onClick={() => {
-                                                                    Navigate('/order/' + item.id);
-                                                                }}
-                                                            >
-                                                                <IoMdInformationCircleOutline className="text-lg" />
-                                                            </Button>
-                                                            {item?.status === 5 && (
-                                                                <ModalConfirm
-                                                                    handleConfirm={() => handleDelete(item.id)}
+                                                                {handleStatus(item?.status).name}
+                                                            </Badge>
+                                                        </Td>
+                                                        <Td className="flex">
+                                                            <div className="flex">
+                                                                <Button
+                                                                    p={1}
+                                                                    colorScheme="cyan"
+                                                                    className=""
+                                                                    onClick={() => openModalView(item.id)}
                                                                 >
-                                                                    <Button p={1} colorScheme="red">
-                                                                        <IoClose className="text-lg" />
-                                                                    </Button>
-                                                                </ModalConfirm>
-                                                            )}
-                                                        </div>
-                                                    </Td>
-                                                </Tr>
-                                            ))}
+                                                                    <IoIosEye className="text-lg text-white" />
+                                                                </Button>
+                                                                <Button
+                                                                    p={1}
+                                                                    colorScheme="twitter"
+                                                                    className="mx-2"
+                                                                    onClick={() => {
+                                                                        Navigate('/order/' + item.id);
+                                                                    }}
+                                                                >
+                                                                    <IoMdInformationCircleOutline className="text-lg" />
+                                                                </Button>
+                                                                {item?.status === 5 && (
+                                                                    <ModalConfirm
+                                                                        handleConfirm={() => handleDelete(item.id)}
+                                                                    >
+                                                                        <Button p={1} colorScheme="red">
+                                                                            <IoClose className="text-lg" />
+                                                                        </Button>
+                                                                    </ModalConfirm>
+                                                                )}
+                                                            </div>
+                                                        </Td>
+                                                    </Tr>
+                                                ))}
                                         </Tbody>
                                     </Table>
                                     {orders?.length === 0 && (
