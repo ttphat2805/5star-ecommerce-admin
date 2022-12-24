@@ -4,13 +4,16 @@ import { AddBlog, ListBlog } from '~/pages/Blog';
 import EditBlog from '~/pages/Blog/EditBlog';
 import { AddBrand, ListBrand } from '~/pages/Brand';
 import { AddCategory, EditCategory, ListCategory } from '~/pages/Category';
+import ListComment from '~/pages/Comment/ListComment';
 import { AddCoupon, ListCoupon } from '~/pages/Coupon';
 import EditCoupon from '~/pages/Coupon/EditCoupon';
 import Dashboard from '~/pages/Dashboard';
+import ListFeedback from '~/pages/Feedback/ListFeedback';
 import Login from '~/pages/Login';
 import { AddBanner, EditBanner, ListBanner } from '~/pages/Media-Banner';
 import NotFound from '~/pages/NotFound';
 import { ListOrder } from '~/pages/Order';
+import { AddOrderMethod, ListOrderMethod } from '~/pages/Order-Method';
 import OrderDetail from '~/pages/Order/OrderDetail';
 import { AddProduct, EditProduct } from '~/pages/Product';
 import ListProduct from '~/pages/Product/ListProduct';
@@ -178,6 +181,40 @@ const privateRoutes: Routes[] = [
     {
         path: '/statistical',
         Component: Statistical,
+    },
+
+    // ORDER METHOD
+    {
+        path: '/ordermethod',
+        Component: ListOrderMethod,
+    },
+    {
+        path: '/ordermethod/list-ordermethod',
+        Component: ListOrderMethod,
+    },
+    {
+        path: '/ordermethod/add-ordermethod',
+        Component: AddOrderMethod,
+    },
+    // COMMENT
+    {
+        path: '/comment',
+        Component: ListComment,
+    },
+    {
+        path: '/comment/list-comment',
+        Component: ListComment,
+    },
+
+    // FEEDBACK
+
+    {
+        path: '/feedback',
+        Component: ListFeedback,
+    },
+    {
+        path: '/feedback/list-feedback',
+        Component: ListFeedback,
     },
 ];
 

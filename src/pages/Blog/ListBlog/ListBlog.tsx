@@ -35,7 +35,6 @@ const ListBlog = () => {
     };
     const handleDelete = (id: string | any) => {
         BlogService.DeleteBlog(id).then((res: ResponseType) => {
-            console.log(res);
             if (res.statusCode === 200) {
                 toast({
                     position: 'top-right',
@@ -43,9 +42,7 @@ const ListBlog = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                setTimeout(() => {
-                    getAllBlog(pageNumber);
-                }, 1000);
+                getAllBlog(pageNumber);
             }
         });
     };
@@ -102,7 +99,7 @@ const ListBlog = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách bài viết" currentLink="category/list-category" parentPage="Bài viết" />
+            <Breadcrumb currentPage="Danh sách bài viết" parentLink="category/list-category" parentPage="Bài viết" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">

@@ -6,22 +6,19 @@ import { useNavigate } from 'react-router-dom';
 
 import Breadcrumb from '~/components/Breadcrumb';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
-import StoreService from '~/services/StoreService';
+import BrandService from '~/services/BrandService';
+import { toSlug } from '~/utils/Slug';
 import { ResponseType } from '~/utils/Types';
-import { addStoreSchema } from '~/utils/validationSchema';
+import { addBrandSchema } from '~/utils/validationSchema';
 import { motion } from 'framer-motion';
+import OrderMethodService from '~/services/OrdermethodService';
 
 const defaultValues = {
     name: '',
-    time: '',
-    open_close: '',
-    phone: '',
-    email: '',
-    address: '',
     status: 2,
 };
 
-const AddStore = () => {
+const AddOrderMethod = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const toast = useToast();
     const Navigate = useNavigate();
@@ -30,25 +27,41 @@ const AddStore = () => {
         handleSubmit,
         control,
         formState: { errors },
-    } = useForm<any>({ defaultValues: defaultValues, resolver: yupResolver(addStoreSchema) });
+    } = useForm<any>({ defaultValues: defaultValues, resolver: yupResolver(addBrandSchema) });
 
     const onSubmit = (values: any) => {
         setLoading(true);
-        StoreService.AddStore(values).then(
+        const { name, status } = values;
+        const dataPost = {
+            name,
+            slug: toSlug(name),
+            status: Number(status),
+        };
+
+        OrderMethodService.AddOrderMethod(dataPost).then(
             (res: ResponseType) => {
+                console.log('res: ', res);
                 if (res.statusCode === 201) {
                     toast({
                         position: 'top-right',
-                        title: 'Tạo cửa hàng mới thành công',
+                        title: 'Tạo phương thức mới thành công',
                         duration: 2000,
                         status: 'success',
                     });
                     setLoading(false);
-                    Navigate('/store/list-store');
+                    Navigate('/ordermethod/list-ordermethod');
+                } else if (res.message === 'name duplicate') {
+                    toast({
+                        position: 'top-right',
+                        title: 'Tạo phương thức này đã tồn tại',
+                        duration: 2000,
+                        status: 'error',
+                    });
+                    setLoading(false);
                 } else {
                     toast({
                         position: 'top-right',
-                        title: 'Tạo cửa hàng thất bại',
+                        title: 'Tạo phương thức thất bại',
                         duration: 2000,
                         status: 'error',
                     });
@@ -59,7 +72,7 @@ const AddStore = () => {
                 setLoading(false);
                 toast({
                     position: 'top-right',
-                    title: 'Tạo cửa hàng thất bại',
+                    title: 'Tạo phương thức thất bại',
                     duration: 2000,
                     status: 'error',
                 });
@@ -73,59 +86,24 @@ const AddStore = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Thêm danh mục" parentLink="list-product" parentPage="Danh mục" />
+            <Breadcrumb
+                currentPage="Thêm phương thức thanh toán"
+                parentLink="ordermethod"
+                parentPage="Phương thức thanh toán"
+            />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">
                         <div className="card-header p-3 border-b">
-                            <h3 className="card-title">Thêm cửa hàng mới</h3>
+                            <h3 className="card-title">Thêm phương thức thanh toán</h3>
                         </div>
                         <div className="card text-base p-3">
                             <form onSubmit={handleSubmit(onSubmit)}>
                                 <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
                                     <div className="col-span-1">
-                                        <InputField name="name" label="Tên cửa hàng" control={control} error={errors} />
-                                    </div>
-                                    <div className="col-span-1">
                                         <InputField
-                                            name="time"
-                                            label="Thời gian mở cửa - đóng cửa"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    <div className="col-span-1">
-                                        <InputField
-                                            name="open_close"
-                                            label="Ngày mở cửa - đóng cửa"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                    <div className="col-span-1">
-                                        <InputField
-                                            name="phone"
-                                            label="Số điện thoại"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    <div className="col-span-1">
-                                        <InputField
-                                            name="email"
-                                            label="Email liên hệ"
-                                            control={control}
-                                            error={errors}
-                                        />
-                                    </div>
-                                    <div className="col-span-1">
-                                        <InputField
-                                            name="address"
-                                            label="Địa chỉ cửa hàng"
+                                            name="name"
+                                            label="Tên phương thức"
                                             control={control}
                                             error={errors}
                                         />
@@ -154,9 +132,9 @@ const AddStore = () => {
                                 </div>
                                 <div className="btn-action flex items-center justify-center mt-5">
                                     <Button type="submit" colorScheme="twitter" isLoading={loading} disabled={loading}>
-                                        Thêm thương hiệu
+                                        Thêm phương thức
                                     </Button>
-                                    <Button type="button" className="mx-2" onClick={() => Navigate('/store')}>
+                                    <Button type="button" className="mx-2">
                                         Quay lại
                                     </Button>
                                 </div>
@@ -169,4 +147,4 @@ const AddStore = () => {
     );
 };
 
-export default AddStore;
+export default AddOrderMethod;

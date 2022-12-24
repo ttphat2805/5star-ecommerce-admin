@@ -9,7 +9,7 @@ const GetOrder = (id: number) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + id);
 };
 
-const GetOrders = (page: number = 0, status: string = '', perPage: number = Config.PER_PAGE) => {
+const GetOrders = ({ page, status, perPage = Config.PER_PAGE }: any) => {
     return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}&status=${status}`);
 };
 

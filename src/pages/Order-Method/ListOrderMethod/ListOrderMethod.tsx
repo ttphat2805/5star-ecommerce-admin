@@ -17,20 +17,21 @@ import {
     useDisclosure,
     useToast,
 } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { AiFillEdit } from 'react-icons/ai';
 import { useForm } from 'react-hook-form';
+import { AiFillEdit } from 'react-icons/ai';
+import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoClose, IoCloseOutline } from 'react-icons/io5';
+import ReactPaginate from 'react-paginate';
 import Breadcrumb from '~/components/Breadcrumb';
+import LoadingSpin from '~/components/LoadingSpin';
+import Config from '~/config';
 import { InputField, RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
-import BrandService from '~/services/BrandService';
-import { ResponseType } from '~/utils/Types';
+import OrderMethodService from '~/services/OrdermethodService';
 import { toSlug } from '~/utils/Slug';
-import ReactPaginate from 'react-paginate';
-import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
-import { motion } from 'framer-motion';
-import LoadingSpin from '~/components/LoadingSpin';
+import { ResponseType } from '~/utils/Types';
 
 interface brandType {
     name: string;
@@ -45,27 +46,25 @@ const defaultValues = {
     status: 1,
 };
 
-const PER_PAGE = 10;
-
-const ListBrand = () => {
-    const [brand, setBrand] = useState([]);
-    const [idBrand, setIdBrand] = useState<number>(0);
+const ListOrderMethod = () => {
+    const [ordermethod, setOrdermethod] = useState([]);
+    const [idOrderMethod, setIdOrderMethod] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
-    const totalPage = Math.ceil(totalCount / PER_PAGE);
+    const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
 
     const toast = useToast();
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handlePageChange = ({ selected }: any) => {
-        getAllBrands(selected);
+        getAllMethod(selected);
         setPageNumber(selected);
     };
 
     const handleDelete = (id: string | any) => {
-        BrandService.DeleteBrand(id).then((res: ResponseType) => {
+        OrderMethodService.DeleteOrderMethod(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 toast({
                     position: 'top-right',
@@ -73,7 +72,7 @@ const ListBrand = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                getAllBrands(pageNumber);
+                getAllMethod(pageNumber);
             } else {
                 toast({
                     position: 'top-right',
@@ -85,13 +84,13 @@ const ListBrand = () => {
         });
     };
 
-    const getAllBrands = (page: number) => {
+    const getAllMethod = (page: number) => {
         setLoading(true);
-        BrandService.GetBrands(page).then(
+        OrderMethodService.GetOrderMethods(page).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setTotalCount(res.data.total);
-                    setBrand(res.data.data);
+                    setOrdermethod(res.data.data);
                 }
                 setLoading(false);
             },
@@ -102,14 +101,13 @@ const ListBrand = () => {
     };
 
     useEffect(() => {
-        getBrand();
+        getOrderMethod();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [idBrand]);
+    }, [idOrderMethod]);
 
-    const getBrand = () => {
-        if (idBrand > 0) {
-            BrandService.GetBrand(idBrand).then((res: ResponseType) => {
-                console.log(res);
+    const getOrderMethod = () => {
+        if (idOrderMethod > 0) {
+            OrderMethodService.GetOrderMethod(idOrderMethod).then((res: ResponseType) => {
                 if (res.statusCode === 200) {
                     const { name, status } = res?.data;
                     setValue('name', name);
@@ -128,7 +126,7 @@ const ListBrand = () => {
             status: Number(status),
         };
 
-        BrandService.UpdateBrand(idBrand, dataPost).then((res: ResponseType) => {
+        OrderMethodService.UpdateOrderMethod(idOrderMethod, dataPost).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 toast({
                     position: 'top-right',
@@ -136,7 +134,15 @@ const ListBrand = () => {
                     duration: 2000,
                     status: 'success',
                 });
-                getAllBrands(pageNumber);
+                getAllMethod(pageNumber);
+                onClose();
+            } else if (res.message === 'name duplicate') {
+                toast({
+                    position: 'top-right',
+                    title: 'Phương thức này đã tồn tại',
+                    duration: 2000,
+                    status: 'error',
+                });
                 onClose();
             } else {
                 toast({
@@ -159,7 +165,7 @@ const ListBrand = () => {
     } = useForm<brandType>({ defaultValues: defaultValues });
 
     useEffect(() => {
-        getAllBrands(0);
+        getAllMethod(0);
     }, []);
 
     return (
@@ -168,7 +174,11 @@ const ListBrand = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách danh mục" parentLink="category/list-category" parentPage="Danh mục" />
+            <Breadcrumb
+                currentPage="Danh sách phương thức"
+                parentLink="ordermethod"
+                parentPage="Phương thức thanh toán"
+            />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">
@@ -187,7 +197,7 @@ const ListBrand = () => {
                                             </Tr>
                                         </Thead>
                                         <Tbody>
-                                            {brand?.map((item: any, index: number) => (
+                                            {ordermethod?.map((item: any, index: number) => (
                                                 <Tr key={index}>
                                                     <Td>{index + 1}</Td>
                                                     <Td>{item.name}</Td>
@@ -206,7 +216,7 @@ const ListBrand = () => {
                                                                 className="mx-2"
                                                                 onClick={() => {
                                                                     onOpen();
-                                                                    setIdBrand(item.id);
+                                                                    setIdOrderMethod(item.id);
                                                                 }}
                                                             >
                                                                 <AiFillEdit className="text-lg" />
@@ -222,7 +232,7 @@ const ListBrand = () => {
                                             ))}
                                         </Tbody>
                                     </Table>
-                                    {brand?.length === 0 && (
+                                    {ordermethod?.length === 0 && (
                                         <p className="text-xl font-semibold text-center my-5">
                                             Không tồn tại thông tin nào
                                             <IoCloseOutline className="inline-block font-semibold text-red-500" />
@@ -299,4 +309,4 @@ const ListBrand = () => {
     );
 };
 
-export default ListBrand;
+export default ListOrderMethod;

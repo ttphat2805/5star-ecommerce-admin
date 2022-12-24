@@ -98,7 +98,7 @@ const AddBlog = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Thêm bài viết" currentLink="list-blog" parentPage="Bài viết" />
+            <Breadcrumb currentPage="Thêm bài viết" parentLink="list-blog" parentPage="Bài viết" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">

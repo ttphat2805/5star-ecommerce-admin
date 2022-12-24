@@ -1,13 +1,14 @@
 import { AiOutlineBgColors } from 'react-icons/ai';
-import { BsCart4 } from 'react-icons/bs';
+import { BsCart4, BsCreditCard2Back } from 'react-icons/bs';
 import { GiClothes } from 'react-icons/gi';
 import { HiUserGroup } from 'react-icons/hi';
 import { IoIosAdd } from 'react-icons/io';
 import { IoNewspaperOutline } from 'react-icons/io5';
-import { MdOutlineCategory, MdOutlinePermMedia } from 'react-icons/md';
+import { MdOutlineCategory, MdOutlinePermMedia, MdOutlineStarHalf } from 'react-icons/md';
 import { TbBuildingStore, TbDiscount2, TbLayoutDashboard } from 'react-icons/tb';
 import { VscTasklist } from 'react-icons/vsc';
 import { FcComboChart } from 'react-icons/fc';
+import { BiCommentDots } from 'react-icons/bi';
 export const RouteSidebarMenu = [
     {
         name: 'Main',
@@ -90,6 +91,39 @@ export const RouteSidebarMenu = [
         ],
     },
     {
+        name: 'Đánh giá',
+        path: '/feedback',
+        icon: <MdOutlineStarHalf />,
+        color: 'text-[#EAB543]',
+        isParent: true,
+        children: [
+            {
+                path: '/feedback/list-feedback',
+                name: 'Danh sách đánh giá',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Phương thức thanh toán',
+        color: 'text-[#182C61]',
+        icon: <BsCreditCard2Back />,
+        path: '/ordermethod',
+        isParent: true,
+        children: [
+            {
+                path: '/ordermethod/add-ordermethod',
+                name: 'Thêm phương thức',
+                icon: <IoIosAdd />,
+            },
+            {
+                path: '/ordermethod/list-ordermethod',
+                name: 'Danh sách phương thức',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
         name: 'Đa phương tiện',
         color: 'text-[#FF6A88]',
         icon: <MdOutlinePermMedia />,
@@ -161,6 +195,20 @@ export const RouteSidebarMenu = [
             {
                 path: '/blog/list-blog',
                 name: 'Danh sách bài viết',
+                icon: <VscTasklist />,
+            },
+        ],
+    },
+    {
+        name: 'Bình luận bài viết',
+        path: '/comment',
+        icon: <BiCommentDots />,
+        color: 'text-[#546de5]',
+        isParent: true,
+        children: [
+            {
+                path: '/comment/list-comment',
+                name: 'Danh sách bình luận',
                 icon: <VscTasklist />,
             },
         ],

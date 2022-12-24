@@ -24,29 +24,28 @@ import { useForm } from 'react-hook-form';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoIosEye } from 'react-icons/io';
-import { IoClose } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import LoadingSpin from '~/components/LoadingSpin';
 import Config from '~/config';
 import { RadioField } from '~/layouts/components/CustomField';
-import ModalConfirm from '~/layouts/components/ModalConfirm';
-import UserService from '~/services/UserSerivce';
+import CommentService from '~/services/CommentService';
+import { subString } from '~/utils/MinString';
 import { ResponseType } from '~/utils/Types';
 
 type updateRole = {
-    roles: string;
+    status: number;
 };
 
 const initValues = {
-    roles: 'user',
+    status: 2,
 };
 
-const ListUser = () => {
-    const [users, setUsers] = useState([]);
-    const [user, setUser] = useState<any>([]);
-    const [idUser, setIdUser] = useState<number>(0);
+const ListFeedback = () => {
+    const [comments, setComments] = useState([]);
+    const [comment, setComment] = useState<any>([]);
+    const [idComment, setIdComment] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingModal, setLoadingModal] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
@@ -60,7 +59,7 @@ const ListUser = () => {
     const Navigate = useNavigate();
 
     const handlePageChange = ({ selected }: any) => {
-        GetAllUsers(selected);
+        getAllComment(selected);
         setPageNumber(selected);
     };
 
@@ -72,16 +71,11 @@ const ListUser = () => {
         formState: { errors },
     } = useForm<updateRole>({ defaultValues: initValues });
 
-    const handleDeleteUser = (id: number) => {
-        console.log('delete', id);
-    };
-
-    const GetAllUsers = (page: number) => {
+    const getAllComment = (page: number) => {
         setLoading(true);
-        UserService.GetUsers(page).then((res: any) => {
+        CommentService.GetComments(page).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setUsers(res.data.data);
-
+                setComments(res.data);
                 setTotalCount(res.data.total);
                 setLoading(false);
             } else {
@@ -90,13 +84,12 @@ const ListUser = () => {
         });
     };
 
-    const GetOneUser = (id: number) => {
+    const getOneComment = (id: number) => {
         setLoadingModal(true);
-        UserService.GetUser(id).then((res: any) => {
+        CommentService.GetComment(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setUser(res.data);
-                let role = res.data.roles[1] === 'admin' ? 'admin' : 'user';
-                setValue('roles', role);
+                setComment(res.data);
+                setValue('status', 1);
                 setLoadingModal(false);
             } else {
                 setLoadingModal(false);
@@ -105,47 +98,26 @@ const ListUser = () => {
     };
 
     useEffect(() => {
-        GetAllUsers(0);
+        getAllComment(0);
     }, []);
 
     const onOpenUpdate = (id: number) => {
-        setIdUser(id);
-        GetOneUser(id);
+        setIdComment(id);
+        getOneComment(id);
         onOpen();
     };
 
     const openModalView = (id: number) => {
         onOpenView();
-        setIdUser(id);
-        GetOneUser(id);
+        setIdComment(id);
+        getOneComment(id);
     };
 
-    const onSubmitUpdateRole = (values: updateRole) => {
-        let dataPost = [];
-        if (values.roles === 'admin') {
-            dataPost = ['admin', 'user'];
-        } else {
-            dataPost = ['user'];
-        }
-        UserService.updateRole({ role: dataPost }, idUser).then((res: ResponseType) => {
-            if (res.statusCode === 200) {
-                toast({
-                    position: 'top-right',
-                    title: 'Cập nhật vai trò thành công',
-                    duration: 2000,
-                    status: 'success',
-                });
-                GetAllUsers(pageNumber);
-                onClose();
-            } else {
-                toast({
-                    position: 'top-right',
-                    title: 'Cập nhật vai trò thất bại',
-                    duration: 2000,
-                    status: 'error',
-                });
-                onClose();
-            }
+    const onSubmitUpdate = (values: updateRole) => {
+        console.log(values);
+
+        CommentService.UpdateComment(idComment, values).then((res: ResponseType) => {
+            console.log(res);
         });
     };
 
@@ -155,7 +127,7 @@ const ListUser = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách danh mục" parentLink="category/list-category" parentPage="Danh mục" />
+            <Breadcrumb currentPage="Danh sách đánh giá" parentLink="feedback" parentPage="Đánh giá" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     {loading ? (
@@ -167,28 +139,22 @@ const ListUser = () => {
                                     <Thead>
                                         <Tr>
                                             <Th>#</Th>
-                                            <Th>Họ tên</Th>
-                                            <Th>Email</Th>
-                                            <Th>Vai trò</Th>
+                                            <Th>Người đánh giá</Th>
+                                            <Th>Nội dung</Th>
+                                            <Th>Bài viết</Th>
                                             <Th>Trạng thái</Th>
                                             <Th>Hành động</Th>
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {users?.map((item: any, index: number) => (
+                                        {comments?.map((item: any, index: number) => (
                                             <Tr key={index}>
                                                 <Td>{index + 1}</Td>
                                                 <Td>
                                                     {item.first_name} {item.last_name}
                                                 </Td>
-                                                <Td>{item.email}</Td>
-                                                <Td>
-                                                    {item?.roles[1] === 'admin' ? (
-                                                        <Badge colorScheme="green">Quản trị</Badge>
-                                                    ) : (
-                                                        <Badge>Người dùng</Badge>
-                                                    )}
-                                                </Td>
+                                                <Td>{subString(item?.body, 70)}</Td>
+                                                <Td></Td>
                                                 <Td>
                                                     {item.is_active ? (
                                                         <span className="badge-status">Hoạt động</span>
@@ -214,11 +180,6 @@ const ListUser = () => {
                                                         >
                                                             <AiFillEdit className="text-lg" />
                                                         </Button>
-                                                        {/* <ModalConfirm handleConfirm={() => handleDeleteUser(item.id)}>
-                                                            <Button p={1} colorScheme="red">
-                                                                <IoClose className="text-lg" />
-                                                            </Button>
-                                                        </ModalConfirm> */}
                                                     </div>
                                                 </Td>
                                             </Tr>
@@ -250,29 +211,29 @@ const ListUser = () => {
             <Modal isOpen={isOpen} onClose={onClose} size="xl">
                 <ModalOverlay />
                 <ModalContent>
-                    <ModalHeader>Cập nhật thành viên</ModalHeader>
+                    <ModalHeader>Cập nhật trạng thái</ModalHeader>
                     <ModalCloseButton />
                     <ModalBody>
                         {loadingModal ? (
                             <LoadingSpin />
                         ) : (
-                            <form onSubmit={handleSubmit(onSubmitUpdateRole)}>
+                            <form onSubmit={handleSubmit(onSubmitUpdate)}>
                                 <div className="form-group mt-3">
-                                    <FormLabel>Vai trò</FormLabel>
+                                    <FormLabel>Trạng thái</FormLabel>
                                     <div className="flex gap-2">
                                         <RadioField
-                                            label="Admin"
-                                            name="roles"
-                                            value="admin"
-                                            id="role-1"
+                                            label="Hiện"
+                                            name="status"
+                                            value="1"
+                                            id="status-1"
                                             control={control}
                                             error={errors}
                                         />
                                         <RadioField
-                                            label="Người dùng"
-                                            name="roles"
-                                            value="user"
-                                            id="role-2"
+                                            label="Ẩn"
+                                            name="status"
+                                            value="2"
+                                            id="status-2"
                                             control={control}
                                             error={errors}
                                         />
@@ -292,48 +253,39 @@ const ListUser = () => {
                 </ModalContent>
             </Modal>
             {/* MODAL VIEW DETAIL */}
-            <Modal isOpen={isOpenView} onClose={onCloseView}>
+            <Modal isOpen={isOpenView} onClose={onCloseView} size="xl">
                 <ModalOverlay />
                 <ModalContent>
                     {loadingModal ? (
                         <LoadingSpin />
                     ) : (
                         <>
-                            <ModalHeader>
-                                Thành viên:
-                                <b>
-                                    {user?.last_name} {user?.first_name}
-                                </b>
-                            </ModalHeader>
                             <ModalCloseButton />
+                            <ModalHeader>Chi tiết đánh giá</ModalHeader>
                             <ModalBody>
                                 <Table>
                                     <Tbody>
                                         <Tr>
                                             <Th>Họ tên:</Th>
                                             <Td>
-                                                {user?.last_name} {user?.first_name}
+                                                {comment?.profile?.frist_name} {comment?.profile?.last_name}
                                             </Td>
                                         </Tr>
                                         <Tr>
                                             <Th>Email:</Th>
-                                            <Td>{user?.email}</Td>
+                                            <Td>{comment?.profile?.email}</Td>
                                         </Tr>
                                         <Tr>
-                                            <Th>Ngày sinh:</Th>
-                                            <Td>{user?.birth_day ? user?.birth_day : <Badge>Không có</Badge>}</Td>
+                                            <Th>Nội dung:</Th>
+                                            <Td>{comment?.body}</Td>
                                         </Tr>
                                         <Tr>
-                                            <Th>Số điện thoại:</Th>
-                                            <Td>{user?.phone ? user?.phone : <Badge>Không có</Badge>}</Td>
+                                            <Th>Bài viết:</Th>
+                                            <Td>{comment?.blog?.title}</Td>
                                         </Tr>
                                         <Tr>
-                                            <Th>Vai trò:</Th>
-                                            <Td>
-                                                {user?.roles?.length > 0 && user?.roles[1] === 'admin'
-                                                    ? 'Quản trị'
-                                                    : 'Người dùng'}
-                                            </Td>
+                                            <Th>Số đánh giá trả lời:</Th>
+                                            <Td>{comment?.childComment?.length}</Td>
                                         </Tr>
                                     </Tbody>
                                 </Table>
@@ -352,4 +304,4 @@ const ListUser = () => {
     );
 };
 
-export default ListUser;
+export default ListFeedback;

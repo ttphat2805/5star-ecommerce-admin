@@ -1,16 +1,5 @@
-import { Button, Select, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
-import {
-    ArcElement,
-    BarElement,
-    CategoryScale,
-    Chart as ChartJS,
-    Legend,
-    LinearScale,
-    LineElement,
-    PointElement,
-    Title,
-    Tooltip,
-} from 'chart.js';
+import { Select, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
@@ -28,17 +17,13 @@ import './Dashboard.scss';
 import ModalOrder from './ModalOrder';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
-
 export const data = {
     labels: ['Chưa xử lý', 'Đang xử lý', 'Đang giao hàng', 'Thành công', 'Hủy'],
     datasets: [
         {
             label: '# of Votes',
             data: [15, 12, 7, 20, 8],
-            backgroundColor: ['#FF6A88', 'rgb(79, 203, 141)', '#7028e4', '#C850C0', 'rgb(23, 101, 253)'],
+            backgroundColor: ['#eb4d4b', '#f9ca24', '#3742fa', '#2ed573', 'red'],
         },
     ],
 };
@@ -56,79 +41,10 @@ export const options = {
     },
 };
 
-const labels2 = ['Áo Polo', 'Áo Sơ mi', 'Quần Tây', 'Quần thể thao', 'Áo khoác'];
-export const data2 = {
-    labels: labels2,
-    datasets: [
-        {
-            label: '',
-            data: [101, 22, 87, 40, 57],
-            backgroundColor: '#6c5ce7',
-            borderWidth: 1,
-            borderRadius: 10,
-            borderSkipped: false,
-        },
-    ],
-};
-
-export const options2 = {
-    responsive: true,
-
-    interaction: {
-        mode: 'index' as const,
-        intersect: false,
-    },
-    stacked: false,
-    plugins: {
-        title: {
-            display: true,
-            text: 'Chart.js Line Chart - Multi Axis',
-        },
-    },
-    scales: {
-        y: {
-            type: 'linear' as const,
-            display: true,
-            position: 'left' as const,
-        },
-        y1: {
-            type: 'linear' as const,
-            display: true,
-            position: 'right' as const,
-            grid: {
-                drawOnChartArea: false,
-            },
-        },
-    },
-};
-const labels = ['January', 'February', 'March', 'test', 'ok', '312312'];
-
-export const data3 = {
-    labels,
-    datasets: [
-        {
-            label: 'Dataset 1',
-            data: [200, 300, 500, 200, 10, 151],
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            yAxisID: 'y',
-            borderWidth: 2,
-            borderRadius: 10,
-            borderSkipped: false,
-        },
-        {
-            label: 'Dataset 2',
-            data: [512, 302, 200, 492, 20, 302],
-            borderWith: 5,
-            borderColor: '#44bd32',
-            backgroundColor: '#273c75',
-            yAxisID: 'y1',
-        },
-    ],
-};
-
 const Dashboard = () => {
     const [order, setOrder] = useState<any>([]);
+    const [orderProcess, setOrderProcess] = useState<any>([]);
+    const [loadingModal, setLoadingModal] = useState<boolean>(false);
 
     const infoUser: any = useAppSelector(getUser);
 
@@ -145,8 +61,24 @@ const Dashboard = () => {
         );
     };
 
+    const getOrderProcess = (page: number | string) => {
+        setLoadingModal(true);
+        OrderService.GetOrders({ page, status: 1 }).then(
+            (res: ResponseType) => {
+                if (res.statusCode === 200) {
+                    setOrderProcess(res.data);
+                }
+                setLoadingModal(false);
+            },
+            (err) => {
+                console.log(err);
+            },
+        );
+    };
+
     useEffect(() => {
         getOrder(10);
+        getOrderProcess('');
     }, []);
 
     return (
@@ -295,7 +227,11 @@ const Dashboard = () => {
                                     </div>
                                     <Doughnut data={data} className="!w-[300px] !h-auto m-auto" />
                                     <div className="m-auto mt-3">
-                                        <ModalOrder />
+                                        <ModalOrder
+                                            getOrderProcess={getOrderProcess}
+                                            orderProcess={orderProcess}
+                                            loadingModal={loadingModal}
+                                        />
                                     </div>
                                 </div>
                             </div>

@@ -146,7 +146,7 @@ const EditCoupon = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Cập nhật mã giảm giá" currentLink="list-coupon" parentPage="Mã giảm giá" />
+            <Breadcrumb currentPage="Cập nhật mã giảm giá" parentLink="list-coupon" parentPage="Mã giảm giá" />
             {loading ? (
                 <LoadingSpin />
             ) : (

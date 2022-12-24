@@ -12,6 +12,7 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { Button, FormLabel, Input } from '@chakra-ui/react';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -45,37 +46,18 @@ export const options = {
     },
 };
 
-const labels = [
-    'Tháng 1',
-    'Tháng 2',
-    'Tháng 3',
-    'Tháng 4',
-    'Tháng 5',
-    'Tháng 6',
-    'Tháng 7',
-    'Tháng 8',
-    'Tháng 9',
-    'Tháng 10',
-    'Tháng 11',
-    'Tháng 12',
-];
+const labels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 10', 'Tháng 12'];
 
 export const data = {
     labels,
     datasets: [
         {
+            fill: true,
             label: 'Dataset 1',
-            data: [230, 22, 87, 40, 22, 87, 40, 221, 87, 40, 100],
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            data: [230, 22, 87, 40, 22, 87, 40, 221, 87, 40, 100, 12],
+            borderColor: 'red',
+            backgroundColor: 'red',
             yAxisID: 'y',
-        },
-        {
-            label: 'Dataset 2',
-            data: [40, 22, 87, 4, 40, 22, 87, 152, 22, 22, 40, 33],
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-            yAxisID: 'y1',
         },
     ],
 };
@@ -91,8 +73,19 @@ const Statistical = () => {
         >
             <div className="chart">
                 <div className="chart-1 card rounded-lg shadow-md p-10">
-                    <div className="w-[80%] m-auto">
-                        <Line options={options} data={data} className="!w-full !h-auto" />
+                    <div className="filter-date flex flex-wrap gap-3 items-center">
+                        <div className="form-group">
+                            <FormLabel>Từ ngày</FormLabel>
+                            <Input type="date" />
+                        </div>
+                        <div className="form-group">
+                            <FormLabel>Đến ngày</FormLabel>
+                            <Input type="date" />
+                        </div>
+                        <Button className="!mt-7">Lọc</Button>
+                    </div>
+                    <div className="w-full m-auto">
+                        <Line options={options} data={data} className="!w-[80%] !h-auto m-auto" />
                     </div>
                 </div>
             </div>
