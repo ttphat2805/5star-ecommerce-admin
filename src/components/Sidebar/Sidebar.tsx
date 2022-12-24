@@ -63,7 +63,7 @@ const Sidebar = () => {
                     </motion.div>
                     <div className="side-main">
                         <div className="side-menu">
-                            <ul className="menu-list w-full px-0 lg:px-[10px] py-[10px] overflow-y-scroll h-screen pb-[50px]">
+                            <ul className="menu-list w-full px-0 lg:px-[10px] py-[10px] overflow-y-scroll h-screen pb-[80px]">
                                 {RouteSidebarMenu.map((menu: any, index: string | number) => (
                                     <div key={index}>
                                         {/* This is Title. ex: Main */}

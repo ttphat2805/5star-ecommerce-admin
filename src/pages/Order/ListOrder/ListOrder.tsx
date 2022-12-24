@@ -63,7 +63,7 @@ const ListOrder = () => {
 
     const getAllOrder = (page: number, status: string = '') => {
         setLoading(true);
-        OrderService.GetOrders(page, status).then(
+        OrderService.GetOrders({ page, status }).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
                     setTotalCount(res.data.total);
@@ -160,6 +160,7 @@ const ListOrder = () => {
                                         <option value="3">Đang giao hàng</option>
                                         <option value="4">Thành công</option>
                                         <option value="5">Hủy</option>
+                                        <option value=" ">Tất cả</option>
                                     </Select>
                                 </div>
                             </div>
@@ -219,7 +220,7 @@ const ListOrder = () => {
                                                                 >
                                                                     <IoMdInformationCircleOutline className="text-lg" />
                                                                 </Button>
-                                                                {item?.status === 5 && (
+                                                                {/* {item?.status === 5 && (
                                                                     <ModalConfirm
                                                                         handleConfirm={() => handleDelete(item.id)}
                                                                     >
@@ -227,7 +228,7 @@ const ListOrder = () => {
                                                                             <IoClose className="text-lg" />
                                                                         </Button>
                                                                     </ModalConfirm>
-                                                                )}
+                                                                )} */}
                                                             </div>
                                                         </Td>
                                                     </Tr>

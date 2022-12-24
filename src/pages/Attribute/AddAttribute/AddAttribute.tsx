@@ -13,7 +13,7 @@ const AddAttribute = () => {
 
     return (
         <div>
-            <Breadcrumb currentPage="Thêm danh mục" currentLink="list-product" parentPage="Danh mục" />
+            <Breadcrumb currentPage="Thêm danh mục" parentLink="list-product" parentPage="Danh mục" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">

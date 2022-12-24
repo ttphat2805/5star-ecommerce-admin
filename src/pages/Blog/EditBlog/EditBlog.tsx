@@ -56,6 +56,7 @@ const AddBlog = () => {
         BlogService.GetBlog(String(slug)).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 const { title, status, content, id, image } = res.data;
+                console.log('status: ', status);
                 setIdBlog(id);
                 setValue('title', title);
                 setValue('status', status);
@@ -101,7 +102,6 @@ const AddBlog = () => {
             status: Number(status),
         };
         BlogService.UpdateBlog(idBlog, dataPost).then((res: ResponseType) => {
-            console.log(res);
             if (res.statusCode === 200) {
                 toast({
                     position: 'top-right',
@@ -120,7 +120,7 @@ const AddBlog = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Cập nhật bài viết" currentLink="list-blog" parentPage="Bài viết" />
+            <Breadcrumb currentPage="Cập nhật bài viết" parentLink="list-blog" parentPage="Bài viết" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">
@@ -169,7 +169,7 @@ const AddBlog = () => {
                                         <RadioField
                                             label="Hiện"
                                             name="status"
-                                            value={1}
+                                            value="1"
                                             id="status-1"
                                             control={control}
                                             error={errors}
@@ -177,7 +177,7 @@ const AddBlog = () => {
                                         <RadioField
                                             label="Ẩn"
                                             name="status"
-                                            value={2}
+                                            value="2"
                                             id="status-2"
                                             control={control}
                                             error={errors}

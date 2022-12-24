@@ -82,7 +82,7 @@ const ListProduct = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
+            <Breadcrumb currentPage="Danh sách sản phẩm" parentLink="list-product" parentPage="Sản phẩm" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">

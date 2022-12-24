@@ -169,7 +169,7 @@ const EditProduct = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Cập nhật danh mục" currentLink="list-product" parentPage="Danh mục" />
+            <Breadcrumb currentPage="Cập nhật danh mục" parentLink="list-product" parentPage="Danh mục" />
             <div className="edit-category">
                 <div className="card rounded-md p-2">
                     <div className="form">

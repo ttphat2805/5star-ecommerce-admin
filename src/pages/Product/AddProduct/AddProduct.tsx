@@ -209,7 +209,7 @@ const AddProduct = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Thêm sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
+            <Breadcrumb currentPage="Thêm sản phẩm" parentLink="list-product" parentPage="Sản phẩm" />
             <div className="add-product m-auto shadow-md rounded-md">
                 <div className="card rounded-md md:p-12 p-3">
                     <div className="form">

@@ -125,7 +125,7 @@ const ListCoupon = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách danh mục" currentLink="category/list-category" parentPage="Danh mục" />
+            <Breadcrumb currentPage="Danh sách danh mục" parentLink="category/list-category" parentPage="Danh mục" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     <div className="w-full grid grid-cols-1">

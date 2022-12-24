@@ -15,7 +15,7 @@ import { subString } from '~/utils/MinString';
 import { ResponseType } from '~/utils/Types';
 import './OrderDetail.scss';
 const OrderDetail = () => {
-    const [status, setStatus] = useState<number>(1);
+    const [status, setStatus] = useState<number | string>(1);
     const [loading, setLoading] = useState<boolean>(false);
     const [order, setOrder] = useState<any>();
     // END STATE
@@ -38,6 +38,7 @@ const OrderDetail = () => {
                     duration: 2000,
                     status: 'success',
                 });
+                setStatus(Number(value));
             } else {
                 toast({
                     position: 'top-right',

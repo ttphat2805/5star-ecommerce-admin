@@ -86,7 +86,7 @@ const ListProduct = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách sản phẩm" currentLink="list-product" parentPage="Sản phẩm" />
+            <Breadcrumb currentPage="Danh sách sản phẩm" parentLink="list-product" parentPage="Sản phẩm" />
             <div className="list-product">
                 <img src={`${Config.apiUrl}upload/3c2c50eed3ee67a441844e217934b126`} alt="" />
                 <div className="card rounded-md p-2">

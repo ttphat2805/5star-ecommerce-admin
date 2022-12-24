@@ -91,7 +91,7 @@ const AddCoupon = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Thêm mã giảm giá" currentLink="list-coupon" parentPage="Mã giảm giá" />
+            <Breadcrumb currentPage="Thêm mã giảm giá" parentLink="list-coupon" parentPage="Mã giảm giá" />
             <div className="add-product">
                 <div className="card rounded-md p-2">
                     <div className="form">
