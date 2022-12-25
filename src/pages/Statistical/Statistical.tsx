@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import LoadingSpin from '~/components/LoadingSpin';
 import {
@@ -12,7 +12,10 @@ import {
     Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { Button, FormLabel, Input } from '@chakra-ui/react';
+import { Button, FormLabel, Input, useToast } from '@chakra-ui/react';
+import moment from 'moment';
+import StatisticalService from '~/services/StatisticalService';
+import { ResponseType } from '~/utils/Types';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
@@ -26,7 +29,7 @@ export const options = {
     plugins: {
         title: {
             display: true,
-            text: 'Chart.js Line Chart - Multi Axis',
+            text: 'Biểu đồ thống kê tổng tiền đơn hàng theo ngày',
         },
     },
     scales: {
@@ -35,45 +38,102 @@ export const options = {
             display: true,
             position: 'left' as const,
         },
-        y1: {
-            type: 'linear' as const,
-            display: true,
-            position: 'right' as const,
-            grid: {
-                drawOnChartArea: false,
-            },
-        },
     },
 };
 
-const labels = [
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-    '20/12/2022',
-];
-
-export const data = {
-    labels,
-    datasets: [
-        {
-            fill: true,
-            label: 'Dataset 1',
-            data: [230, 22, 87, 40, 22, 87, 40, 221, 87, 40, 100, 12],
-            borderColor: 'red',
-            backgroundColor: 'red',
-            yAxisID: 'y',
-        },
-    ],
-};
+let fromToChart: any = {};
 
 const Statistical = () => {
     const [loading, setLoading] = useState<boolean>(false);
+    const [labelChart, setLabelChart] = useState<any>([]);
+    const [dataChart, setDataChart] = useState<any>([]);
+    const toast = useToast();
+    const labels = labelChart;
+
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: 'Tổng tiền',
+                data: dataChart,
+                borderColor: 'red',
+                backgroundColor: 'red',
+                yAxisID: 'y',
+            },
+        ],
+    };
+
+    const initChartOrder = () => {
+        let dateObj = new Date();
+        let month = dateObj.getUTCMonth() + 1; //months from 1-12
+        let day = dateObj.getUTCDate();
+        let year = dateObj.getUTCFullYear();
+
+        let fromDate = month + '/' + (day - 10) + '/' + year;
+        let toDate = month + '/' + day + '/' + year;
+        let dataPost = {
+            from: fromDate,
+            to: toDate,
+        };
+        StatisticalService.StatisOrderTotalPrice(dataPost).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                let newDataChart: any = [];
+                let newLabelChart: any = [];
+                res?.data.forEach((item: any) => {
+                    newLabelChart.push(item?.date);
+                    newDataChart.push(item?.total);
+                });
+
+                setLabelChart(newLabelChart);
+                setDataChart(newDataChart);
+            }
+        });
+    };
+
+    const handleChartOrder = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = e.target;
+
+        if (name === 'from') {
+            fromToChart.from = moment(value).format('MM/DD/YYYY');
+        } else {
+            fromToChart.to = moment(value).format('MM/DD/YYYY');
+        }
+
+        if (fromToChart.from && fromToChart.to) {
+            const fromLimit = moment().diff(fromToChart.from, 'day');
+            const toLimit: number = moment().diff(fromToChart.to, 'day');
+            if (fromLimit + Math.abs(toLimit) > 30) {
+                toast({
+                    position: 'top-right',
+                    title: 'Vui lòng chọn giới hạn dưới 30 ngày',
+                    duration: 2000,
+                    status: 'warning',
+                });
+                return;
+            } else {
+                let dataPost = {
+                    from: fromToChart.from,
+                    to: fromToChart.to,
+                };
+                StatisticalService.StatisOrderTotalPrice(dataPost).then((res: ResponseType) => {
+                    if (res.statusCode === 200) {
+                        let newDataChart: any = [];
+                        let newLabelChart: any = [];
+                        res?.data.forEach((item: any) => {
+                            newLabelChart.push(item?.date);
+                            newDataChart.push(item?.total);
+                        });
+                        setLabelChart(newLabelChart);
+                        setDataChart(newDataChart);
+                    }
+                });
+            }
+        }
+    };
+
+    useEffect(() => {
+        initChartOrder();
+    }, []);
 
     return (
         <motion.div
@@ -86,13 +146,12 @@ const Statistical = () => {
                     <div className="filter-date flex flex-wrap gap-3 items-center">
                         <div className="form-group">
                             <FormLabel>Từ ngày</FormLabel>
-                            <Input type="date" />
+                            <Input type="date" name="from" onChange={(e) => handleChartOrder(e)} />
                         </div>
                         <div className="form-group">
                             <FormLabel>Đến ngày</FormLabel>
-                            <Input type="date" />
+                            <Input type="date" name="to" onChange={(e) => handleChartOrder(e)} />
                         </div>
-                        <Button className="!mt-7">Lọc</Button>
                     </div>
                     <div className="w-full m-auto">
                         <Line options={options} data={data} className="!w-[80%] !h-auto m-auto" />
