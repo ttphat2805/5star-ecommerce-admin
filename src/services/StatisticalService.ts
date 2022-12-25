@@ -15,11 +15,16 @@ const Revenue = () => {
     return AxiosInstance.get(Config.apiUrl + 'order/sum?status=4');
 };
 
+const StatisOrder = ({ from, to }: any) => {
+    return AxiosInstance.get(Config.apiUrl + `order/count-statistic?created_from=${from}&created_to=${to}`);
+};
+
 const StatisticalService = {
     CountProduct,
     CountRating,
     Revenue,
     countOrder,
+    StatisOrder,
 };
 
 export default StatisticalService;
