@@ -24,6 +24,7 @@ import { useForm } from 'react-hook-form';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoIosEye } from 'react-icons/io';
+import { IoCloseOutline } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
@@ -59,8 +60,8 @@ const ListComment = () => {
     const Navigate = useNavigate();
 
     const handlePageChange = ({ selected }: any) => {
-        getAllComment(selected);
         setPageNumber(selected);
+        getAllComment(selected);
     };
 
     // INIT FORM
@@ -75,7 +76,7 @@ const ListComment = () => {
         setLoading(true);
         CommentService.GetComments(page).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setComments(res.data);
+                setComments(res.data.data);
                 setTotalCount(res.data.total);
                 setLoading(false);
             } else {
@@ -89,7 +90,7 @@ const ListComment = () => {
         CommentService.GetComment(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 setComment(res.data);
-                setValue('status', 1);
+                setValue('status', res?.data?.status);
                 setLoadingModal(false);
             } else {
                 setLoadingModal(false);
@@ -114,10 +115,28 @@ const ListComment = () => {
     };
 
     const onSubmitUpdate = (values: updateRole) => {
-        console.log(values);
-
-        CommentService.UpdateComment(idComment, values).then((res: ResponseType) => {
-            console.log(res);
+        const dataPost = {
+            status: +values.status,
+        };
+        CommentService.UpdateComment(idComment, dataPost).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật thành công',
+                    status: 'success',
+                    duration: 2000,
+                });
+                getAllComment(pageNumber);
+                onClose();
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật thất bại',
+                    status: 'error',
+                    duration: 2000,
+                });
+                onClose();
+            }
         });
     };
 
@@ -151,13 +170,13 @@ const ListComment = () => {
                                             <Tr key={index}>
                                                 <Td>{index + 1}</Td>
                                                 <Td>
-                                                    {item.first_name} {item.last_name}
+                                                    {item?.profile?.first_name} {item?.profile?.last_name}
                                                 </Td>
                                                 <Td>{subString(item?.body, 70)}</Td>
-                                                <Td></Td>
+                                                <Td>{subString(item?.blog?.title, 70)}</Td>
                                                 <Td>
-                                                    {item.is_active ? (
-                                                        <span className="badge-status">Hoạt động</span>
+                                                    {item.status === 1 ? (
+                                                        <span className="badge-status">Hiện</span>
                                                     ) : (
                                                         <span className="badge-status !bg-red-500">Ẩn</span>
                                                     )}
@@ -186,6 +205,12 @@ const ListComment = () => {
                                         ))}
                                     </Tbody>
                                 </Table>
+                                {comments?.length === 0 && (
+                                    <p className="text-xl font-semibold text-center my-5">
+                                        Không tồn tại thông tin nào
+                                        <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                    </p>
+                                )}
                             </div>
                             {totalPage > 0 && (
                                 <div className="pagination-feature flex">
@@ -253,7 +278,7 @@ const ListComment = () => {
                 </ModalContent>
             </Modal>
             {/* MODAL VIEW DETAIL */}
-            <Modal isOpen={isOpenView} onClose={onCloseView} size="xl">
+            <Modal isOpen={isOpenView} onClose={onCloseView} size="2xl">
                 <ModalOverlay />
                 <ModalContent>
                     {loadingModal ? (
@@ -268,7 +293,7 @@ const ListComment = () => {
                                         <Tr>
                                             <Th>Họ tên:</Th>
                                             <Td>
-                                                {comment?.profile?.frist_name} {comment?.profile?.last_name}
+                                                {comment?.profile?.first_name} {comment?.profile?.last_name}
                                             </Td>
                                         </Tr>
                                         <Tr>

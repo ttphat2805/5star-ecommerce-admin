@@ -46,7 +46,17 @@ export const options = {
     },
 };
 
-const labels = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 10', 'Tháng 12'];
+const labels = [
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+    '20/12/2022',
+];
 
 export const data = {
     labels,

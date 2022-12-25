@@ -1,5 +1,6 @@
 import { Button, useToast } from '@chakra-ui/react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { E } from 'chart.js/dist/chunks/helpers.core';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { FiUserCheck } from 'react-icons/fi';
@@ -46,17 +47,29 @@ const Login = () => {
         AuthService.signIn(values).then(
             (res: ResponseType) => {
                 if (res.statusCode === 200) {
-                    let accessToken = res?.data?.accessToken;
-                    dispatch(addUser(res?.data?.user_info.profile));
-                    if (accessToken) {
-                        localStorage.setItem('access_token', accessToken);
-                        Navigate('/');
-                        setLoading(false);
+                    if (
+                        res?.data.user_info?.profile?.roles[1] === 'admin' ||
+                        res?.data.user_info?.profile?.roles[2] === 'super_admin'
+                    ) {
+                        let accessToken = res?.data?.accessToken;
+                        dispatch(addUser(res?.data?.user_info.profile));
+                        if (accessToken) {
+                            localStorage.setItem('access_token', accessToken);
+                            Navigate('/');
+                            setLoading(false);
+                            toast({
+                                position: 'top-right',
+                                title: 'Đăng nhập thành công',
+                                duration: 2000,
+                                status: 'success',
+                            });
+                        }
+                    } else {
                         toast({
                             position: 'top-right',
-                            title: 'Đăng nhập thành công',
+                            title: 'Chỉ có người quản trị mới có thể đăng nhập',
                             duration: 2000,
-                            status: 'success',
+                            status: 'error',
                         });
                     }
                 } else {

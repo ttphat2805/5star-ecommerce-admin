@@ -1,4 +1,4 @@
-import { Select, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
+import { Button, FormLabel, Input, Select, Table, Tbody, Td, Th, Thead, Tr } from '@chakra-ui/react';
 import { ArcElement, Chart as ChartJS, Legend, Tooltip } from 'chart.js';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -10,23 +10,13 @@ import Image from '~/components/Image';
 import Config from '~/config';
 import { getUser } from '~/features/user/userSlice';
 import OrderService from '~/services/OrderService';
-import { FormatPriceVND } from '~/utils/FormatPriceVND';
+import ProductService from '~/services/ProductService';
+import StatisticalService from '~/services/StatisticalService';
 import { subString } from '~/utils/MinString';
 import { ResponseType } from '~/utils/Types';
 import './Dashboard.scss';
 import ModalOrder from './ModalOrder';
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-export const data = {
-    labels: ['Chưa xử lý', 'Đang xử lý', 'Đang giao hàng', 'Thành công', 'Hủy'],
-    datasets: [
-        {
-            label: '# of Votes',
-            data: [15, 12, 7, 20, 8],
-            backgroundColor: ['#eb4d4b', '#f9ca24', '#3742fa', '#2ed573', 'red'],
-        },
-    ],
-};
 
 export const options = {
     responsive: true,
@@ -42,23 +32,61 @@ export const options = {
 };
 
 const Dashboard = () => {
-    const [order, setOrder] = useState<any>([]);
     const [orderProcess, setOrderProcess] = useState<any>([]);
     const [loadingModal, setLoadingModal] = useState<boolean>(false);
-
+    const [loading, setLoading] = useState<boolean>(false);
+    const [valueChart, setValueChart] = useState<any>([55, 75, 88, 59, 44]);
+    const [productSell, setProductSell] = useState<any>([]);
+    const [countInfo, setCountInfo] = useState<any>({});
     const infoUser: any = useAppSelector(getUser);
 
-    const getOrder = (id: number) => {
-        OrderService.GetOrder(id).then(
-            (res: ResponseType) => {
-                if (res.statusCode === 200) {
-                    setOrder(res.data);
-                }
+    let dataChartDoughnut = {
+        labels: ['Chưa xử lý', 'Đang xử lý', 'Đang giao hàng', 'Thành công', 'Hủy'],
+        datasets: [
+            {
+                label: '# of Votes',
+                data: valueChart,
+                backgroundColor: ['#eb4d4b', '#f9ca24', '#3742fa', '#2ed573', 'red'],
             },
-            (err) => {
-                console.log(err);
-            },
-        );
+        ],
+    };
+
+    const getCountInfo = async () => {
+        let objCount: any = {};
+        setLoading(true);
+        const countProduct: ResponseType = await StatisticalService.CountProduct();
+        const countRate: ResponseType = await StatisticalService.CountRating();
+        const countOrder: ResponseType = await StatisticalService.countOrder();
+        const revenue: ResponseType = await StatisticalService.Revenue();
+        if (
+            countProduct.statusCode === 200 &&
+            countRate.statusCode === 200 &&
+            countOrder.statusCode === 200 &&
+            revenue.statusCode === 200
+        ) {
+            objCount.countProduct = countProduct.data.total;
+            objCount.countRate = countRate.data.total;
+            objCount.countOrder = countOrder.data.total;
+            objCount.revenue = revenue.data.sum;
+        }
+
+        setCountInfo(objCount);
+        setLoading(false);
+    };
+
+    const handleChartOrder = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = e.target;
+        setValueChart([200, 32, 355, 23, 55]);
+    };
+
+    const getTop5ProductSell = () => {
+        ProductService.getProductOrderBy({ orderBy: 'sold' }).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                setProductSell(res.data.data);
+            } else {
+                console.log(res);
+            }
+        });
     };
 
     const getOrderProcess = (page: number | string) => {
@@ -77,8 +105,9 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        getOrder(10);
         getOrderProcess('');
+        getTop5ProductSell();
+        getCountInfo();
     }, []);
 
     return (
@@ -108,7 +137,7 @@ const Dashboard = () => {
                                     <div>
                                         <p className="text-tbase text-lg font-semibold capitalize">sản phẩm</p>
                                         <p className="text-2xl text-gray-600 font-bold">
-                                            <CountUp start={0} end={158} duration={2.75} decimals={2} decimal="," />
+                                            <CountUp start={0} end={countInfo.countProduct} duration={1} />
                                         </p>
                                     </div>
                                     <div className="icon text-center ">
@@ -123,7 +152,7 @@ const Dashboard = () => {
                                     <div>
                                         <p className="text-tbase text-lg font-semibold capitalize">đánh giá</p>
                                         <p className="text-2xl text-gray-600 font-bold">
-                                            <CountUp start={0} end={158} duration={2.75} decimals={2} decimal="," />
+                                            <CountUp start={0} end={countInfo.countRate} duration={1} />
                                         </p>
                                     </div>
                                     <div className="icon text-center ">
@@ -138,14 +167,7 @@ const Dashboard = () => {
                                     <div>
                                         <p className="text-tbase text-lg font-semibold capitalize">đơn hàng</p>
                                         <p className="text-2xl text-gray-600 font-bold">
-                                            <CountUp
-                                                start={0}
-                                                end={200}
-                                                duration={2.75}
-                                                suffix=" VND"
-                                                decimals={2}
-                                                decimal=","
-                                            />
+                                            <CountUp start={0} end={countInfo.countOrder} />
                                         </p>
                                     </div>
                                     <div className="icon text-center ">
@@ -160,7 +182,14 @@ const Dashboard = () => {
                                     <div>
                                         <p className="text-tbase text-lg font-semibold capitalize">doanh thu</p>
                                         <p className="text-2xl text-gray-600 font-bold">
-                                            <CountUp start={0} end={2500000} duration={2.75} decimals={2} decimal="," />
+                                            <CountUp
+                                                start={0}
+                                                end={countInfo.revenue}
+                                                duration={2.75}
+                                                separator=" "
+                                                decimal=","
+                                                suffix=" VND"
+                                            />
                                         </p>
                                     </div>
                                     <div className="icon text-center ">
@@ -192,20 +221,19 @@ const Dashboard = () => {
                                                 </Tr>
                                             </Thead>
                                             <Tbody>
-                                                {order?.details?.map((item: any, index: number) => (
+                                                {productSell?.map((item: any, index: number) => (
                                                     <Tr key={index}>
                                                         <Td>{index + 1}</Td>
                                                         <Td>
-                                                            {item?.product_info?.product?.images?.length > 0 && (
+                                                            {item?.images?.length > 0 && (
                                                                 <Image
                                                                     className="w-[150px] h-[120px] object-cover"
                                                                     alt="Ảnh"
-                                                                    src={`${Config.apiUrl}upload/${item?.product_info?.product?.images[0].file_name}`}
+                                                                    src={`${Config.apiUrl}upload/${item?.images[0].file_name}`}
                                                                 />
                                                             )}
                                                         </Td>
-                                                        <Td>{subString(item?.product_info?.product?.name, 40)}</Td>
-                                                        <Td>{FormatPriceVND(item?.price * item?.quantity || 0)}</Td>
+                                                        <Td>{subString(item?.name)}</Td>
                                                     </Tr>
                                                 ))}
                                             </Tbody>
@@ -217,15 +245,18 @@ const Dashboard = () => {
                                 <div className="card chart-pie m-auto p-5 rounded-2xl shadow-md">
                                     <div className="w-full px-4 py-2 text-center">
                                         <p className="text-bold text-xl text-tbase font-semibold">Thống kê đơn hàng</p>
-                                        <div className="!flex !justify-center">
-                                            <Select width="150px" my={2}>
-                                                <option>Tháng 1</option>
-                                                <option>Tháng 1</option>
-                                                <option>Tháng 1</option>
-                                            </Select>
+                                        <div className="filter-date flex flex-wrap gap-2 justify-center items-center my-4">
+                                            <div className="form-group !lg:w-[150px]">
+                                                <FormLabel>Từ ngày</FormLabel>
+                                                <Input type="date" name="from" onChange={(e) => handleChartOrder(e)} />
+                                            </div>
+                                            <div className="form-group !lg:w-[150px]">
+                                                <FormLabel>Đến ngày</FormLabel>
+                                                <Input type="date" name="to" onChange={(e) => handleChartOrder(e)} />
+                                            </div>
                                         </div>
                                     </div>
-                                    <Doughnut data={data} className="!w-[300px] !h-auto m-auto" />
+                                    <Doughnut data={dataChartDoughnut} className="!w-[400px] !h-auto m-auto" />
                                     <div className="m-auto mt-3">
                                         <ModalOrder
                                             getOrderProcess={getOrderProcess}

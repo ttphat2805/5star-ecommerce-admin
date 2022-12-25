@@ -98,6 +98,7 @@ const ListProduct = () => {
                                                 <Th>Tiêu đề</Th>
                                                 <Th>Tiêu đề phụ</Th>
                                                 <Th>Ảnh</Th>
+                                                <Th>Trạng thái</Th>
                                                 <Th>Hành động</Th>
                                             </Tr>
                                         </Thead>
@@ -113,6 +114,13 @@ const ListProduct = () => {
                                                             alt=""
                                                             className="w-full h-full object-contain"
                                                         />
+                                                    </Td>
+                                                    <Td>
+                                                        {item.status === 1 ? (
+                                                            <span className="badge-status">Hiện</span>
+                                                        ) : (
+                                                            <span className="badge-status !bg-red-500">Ẩn</span>
+                                                        )}
                                                     </Td>
                                                     <Td>
                                                         <div className="flex">

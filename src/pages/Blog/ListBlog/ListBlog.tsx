@@ -33,6 +33,7 @@ const ListBlog = () => {
         getAllBlog(selected);
         setPageNumber(selected);
     };
+
     const handleDelete = (id: string | any) => {
         BlogService.DeleteBlog(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
