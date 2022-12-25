@@ -8,6 +8,7 @@ import { useAppSelector } from '~/app/hooks';
 import { ClothesIcon, OrderIcon, RevenuneIcon, StarIcon } from '~/components/Icons';
 import Image from '~/components/Image';
 import LoadingSpin from '~/components/LoadingSpin';
+import moment from 'moment';
 import Config from '~/config';
 import { getUser } from '~/features/user/userSlice';
 import OrderService from '~/services/OrderService';
@@ -83,8 +84,8 @@ const Dashboard = () => {
         let day = dateObj.getUTCDate();
         let year = dateObj.getUTCFullYear();
 
-        let fromDate = day - 10 + '/' + month + '/' + year;
-        let toDate = day + '/' + month + '/' + year;
+        let fromDate = month + '/' + (day - 10) + '/' + year;
+        let toDate = month + '/' + day + '/' + year;
         let dataPost = {
             from: fromDate,
             to: toDate,
@@ -106,9 +107,9 @@ const Dashboard = () => {
         const { value, name } = e.target;
 
         if (name === 'from') {
-            fromToChart.from = value;
+            fromToChart.from = moment(value).format('MM/DD/YYYY');
         } else {
-            fromToChart.to = value;
+            fromToChart.to = moment(value).format('MM/DD/YYYY');
         }
 
         if (fromToChart.from && fromToChart.to) {
@@ -331,7 +332,7 @@ const Dashboard = () => {
                                                 </div>
                                             </div>
                                         </div>
-                                        <Doughnut data={dataChartDoughnut} className="!w-[400px] !h-auto m-auto" />
+                                        <Doughnut data={dataChartDoughnut} className="!w-[320px] !h-auto m-auto" />
                                         <div className="m-auto mt-3">
                                             <ModalOrder
                                                 getOrderProcess={getOrderProcess}
