@@ -1,5 +1,4 @@
 import {
-    Badge,
     Button,
     FormLabel,
     Modal,
@@ -24,16 +23,17 @@ import { useForm } from 'react-hook-form';
 import { AiFillEdit } from 'react-icons/ai';
 import { BiChevronLeft, BiChevronRight } from 'react-icons/bi';
 import { IoIosEye } from 'react-icons/io';
+import { IoCloseOutline } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumb from '~/components/Breadcrumb';
 import LoadingSpin from '~/components/LoadingSpin';
+import Rate from '~/components/Rate';
 import Config from '~/config';
 import { RadioField } from '~/layouts/components/CustomField';
-import CommentService from '~/services/CommentService';
+import RatingService from '~/services/FeedbackService';
 import { subString } from '~/utils/MinString';
 import { ResponseType } from '~/utils/Types';
-
 type updateRole = {
     status: number;
 };
@@ -43,25 +43,19 @@ const initValues = {
 };
 
 const ListFeedback = () => {
-    const [comments, setComments] = useState([]);
-    const [comment, setComment] = useState<any>([]);
-    const [idComment, setIdComment] = useState<number>(0);
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [feedback, setFeedback] = useState<any>([]);
+    const [idFeedback, setIdFeedback] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [loadingModal, setLoadingModal] = useState<boolean>(false);
     const [totalCount, setTotalCount] = useState<number>(0);
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
     const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
-
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isOpenView, onOpen: onOpenView, onClose: onCloseView } = useDisclosure();
     const toast = useToast();
     const Navigate = useNavigate();
-
-    const handlePageChange = ({ selected }: any) => {
-        getAllComment(selected);
-        setPageNumber(selected);
-    };
 
     // INIT FORM
     const {
@@ -71,11 +65,16 @@ const ListFeedback = () => {
         formState: { errors },
     } = useForm<updateRole>({ defaultValues: initValues });
 
-    const getAllComment = (page: number) => {
+    const handlePageChange = ({ selected }: any) => {
+        setPageNumber(selected);
+        getAllFeedback(selected);
+    };
+
+    const getAllFeedback = (page: number) => {
         setLoading(true);
-        CommentService.GetComments(page).then((res: ResponseType) => {
+        RatingService.GetRatings(page).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setComments(res.data);
+                setFeedbacks(res.data.data);
                 setTotalCount(res.data.total);
                 setLoading(false);
             } else {
@@ -84,12 +83,12 @@ const ListFeedback = () => {
         });
     };
 
-    const getOneComment = (id: number) => {
+    const getOneFeedback = (id: number) => {
         setLoadingModal(true);
-        CommentService.GetComment(id).then((res: ResponseType) => {
+        RatingService.GetRating(id).then((res: ResponseType) => {
             if (res.statusCode === 200) {
-                setComment(res.data);
-                setValue('status', 1);
+                setFeedback(res.data);
+                setValue('status', res.data.status);
                 setLoadingModal(false);
             } else {
                 setLoadingModal(false);
@@ -98,26 +97,44 @@ const ListFeedback = () => {
     };
 
     useEffect(() => {
-        getAllComment(0);
+        getAllFeedback(0);
     }, []);
 
     const onOpenUpdate = (id: number) => {
-        setIdComment(id);
-        getOneComment(id);
+        setIdFeedback(id);
+        getOneFeedback(id);
         onOpen();
     };
 
     const openModalView = (id: number) => {
         onOpenView();
-        setIdComment(id);
-        getOneComment(id);
+        getOneFeedback(id);
     };
 
     const onSubmitUpdate = (values: updateRole) => {
-        console.log(values);
+        const dataPost = {
+            status: +values.status,
+        };
 
-        CommentService.UpdateComment(idComment, values).then((res: ResponseType) => {
-            console.log(res);
+        RatingService.UpdateRating(idFeedback, dataPost).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật thành công',
+                    status: 'success',
+                    duration: 2000,
+                });
+                getAllFeedback(pageNumber);
+                onClose();
+            } else {
+                toast({
+                    position: 'top-right',
+                    title: 'Cập nhật thất bại',
+                    status: 'error',
+                    duration: 2000,
+                });
+                onClose();
+            }
         });
     };
 
@@ -141,23 +158,25 @@ const ListFeedback = () => {
                                             <Th>#</Th>
                                             <Th>Người đánh giá</Th>
                                             <Th>Nội dung</Th>
-                                            <Th>Bài viết</Th>
+                                            <Th>Số sao</Th>
                                             <Th>Trạng thái</Th>
                                             <Th>Hành động</Th>
                                         </Tr>
                                     </Thead>
                                     <Tbody>
-                                        {comments?.map((item: any, index: number) => (
+                                        {feedbacks?.map((item: any, index: number) => (
                                             <Tr key={index}>
                                                 <Td>{index + 1}</Td>
                                                 <Td>
-                                                    {item.first_name} {item.last_name}
+                                                    {item?.user?.first_name} {item?.user?.last_name}
                                                 </Td>
-                                                <Td>{subString(item?.body, 70)}</Td>
-                                                <Td></Td>
+                                                <Td>{subString(item?.content, 60)}</Td>
                                                 <Td>
-                                                    {item.is_active ? (
-                                                        <span className="badge-status">Hoạt động</span>
+                                                    <Rate average={item?.rating} className="flex gap-2" />
+                                                </Td>
+                                                <Td>
+                                                    {item?.status === 1 ? (
+                                                        <span className="badge-status">Hiện</span>
                                                     ) : (
                                                         <span className="badge-status !bg-red-500">Ẩn</span>
                                                     )}
@@ -186,6 +205,12 @@ const ListFeedback = () => {
                                         ))}
                                     </Tbody>
                                 </Table>
+                                {feedbacks?.length === 0 && (
+                                    <p className="text-xl font-semibold text-center my-5">
+                                        Không tồn tại thông tin nào
+                                        <IoCloseOutline className="inline-block font-semibold text-red-500" />
+                                    </p>
+                                )}
                             </div>
                             {totalPage > 0 && (
                                 <div className="pagination-feature flex">
@@ -253,7 +278,7 @@ const ListFeedback = () => {
                 </ModalContent>
             </Modal>
             {/* MODAL VIEW DETAIL */}
-            <Modal isOpen={isOpenView} onClose={onCloseView} size="xl">
+            <Modal isOpen={isOpenView} onClose={onCloseView} size="2xl">
                 <ModalOverlay />
                 <ModalContent>
                     {loadingModal ? (
@@ -266,26 +291,36 @@ const ListFeedback = () => {
                                 <Table>
                                     <Tbody>
                                         <Tr>
-                                            <Th>Họ tên:</Th>
+                                            <Th whiteSpace="nowrap">Người đánh giá:</Th>
                                             <Td>
-                                                {comment?.profile?.frist_name} {comment?.profile?.last_name}
+                                                {feedback?.user?.first_name} {feedback?.user?.last_name}
                                             </Td>
                                         </Tr>
                                         <Tr>
                                             <Th>Email:</Th>
-                                            <Td>{comment?.profile?.email}</Td>
+                                            <Td>{feedback?.user?.email}</Td>
                                         </Tr>
                                         <Tr>
                                             <Th>Nội dung:</Th>
-                                            <Td>{comment?.body}</Td>
+                                            <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                {feedback?.content}
+                                            </Td>
                                         </Tr>
                                         <Tr>
-                                            <Th>Bài viết:</Th>
-                                            <Td>{comment?.blog?.title}</Td>
+                                            <Th>Sản phẩm:</Th>
+                                            <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                {feedback?.product?.name}
+                                            </Td>
                                         </Tr>
                                         <Tr>
-                                            <Th>Số đánh giá trả lời:</Th>
-                                            <Td>{comment?.childComment?.length}</Td>
+                                            <Th>Trạng thái</Th>
+                                            <Td>
+                                                {feedback?.status === 1 ? (
+                                                    <span className="badge-status">Hiện</span>
+                                                ) : (
+                                                    <span className="badge-status !bg-red-500">Ẩn</span>
+                                                )}
+                                            </Td>
                                         </Tr>
                                     </Tbody>
                                 </Table>

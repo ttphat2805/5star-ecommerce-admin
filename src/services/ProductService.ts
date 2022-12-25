@@ -3,8 +3,12 @@ import AxiosInstance from './AxiosInstance';
 
 let url: string = 'product';
 
-const getAllProduct = (page: number = 0, name: string = '', perPage: number = Config.PER_PAGE) => {
+const getAllProduct = ({ page = '', name, perPage = Config.PER_PAGE }: any) => {
     return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}&name=${name}`);
+};
+
+const getProductOrderBy = ({ orderBy, perPage = 5 }: any) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?perPage=${perPage}&orderBy=${orderBy}&orderType=DESC`);
 };
 
 const addProduct = (data: any) => {
@@ -14,6 +18,7 @@ const addProduct = (data: any) => {
 const ProductService = {
     getAllProduct,
     addProduct,
+    getProductOrderBy,
 };
 
 export default ProductService;

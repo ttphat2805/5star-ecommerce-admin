@@ -206,14 +206,16 @@ const ListUser = () => {
                                                         >
                                                             <IoIosEye className="text-lg text-white" />
                                                         </Button>
-                                                        <Button
-                                                            p={1}
-                                                            colorScheme="twitter"
-                                                            className="mx-2"
-                                                            onClick={() => onOpenUpdate(item?.id)}
-                                                        >
-                                                            <AiFillEdit className="text-lg" />
-                                                        </Button>
+                                                        {item?.roles[2] === 'super_admin' && (
+                                                            <Button
+                                                                p={1}
+                                                                colorScheme="twitter"
+                                                                className="mx-2"
+                                                                onClick={() => onOpenUpdate(item?.id)}
+                                                            >
+                                                                <AiFillEdit className="text-lg" />
+                                                            </Button>
+                                                        )}
                                                         {/* <ModalConfirm handleConfirm={() => handleDeleteUser(item.id)}>
                                                             <Button p={1} colorScheme="red">
                                                                 <IoClose className="text-lg" />

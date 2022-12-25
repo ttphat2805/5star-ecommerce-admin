@@ -1,8 +1,6 @@
 import { Button, Popover, PopoverContent, PopoverTrigger, Tooltip } from '@chakra-ui/react';
-import { BiMessageSquareCheck } from 'react-icons/bi';
-import { BsSearch } from 'react-icons/bs';
 import { HiMenuAlt2, HiMenuAlt3 } from 'react-icons/hi';
-import { IoMdLogOut, IoMdNotificationsOutline } from 'react-icons/io';
+import { IoMdLogOut } from 'react-icons/io';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '~/app/hooks';
 import Config from '~/config';
@@ -48,7 +46,7 @@ const Header = () => {
                     </div>
                     <div className="header-right mr-[20px]">
                         <ul className="nav-list flex gap-[10px] items-center text-2xl text-tbase">
-                            {/* SEARCH */}
+                            {/* SEARCH
                             <li className="cursor-pointer rounded-full">
                                 <div className="search z-20">
                                     <Popover>
@@ -81,8 +79,8 @@ const Header = () => {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
-                            </li>
-                            {/* NOTIFICATION */}
+                            </li> */}
+                            {/* NOTIFICATION
                             <li className="cursor-pointer">
                                 <div className="notification relative z-20">
                                     <Popover>
@@ -126,7 +124,7 @@ const Header = () => {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
-                            </li>
+                            </li> */}
                             {/* AVATAR */}
                             <li className="cursor-pointer">
                                 <div className="avatar w-9 h-9 relative z-20">

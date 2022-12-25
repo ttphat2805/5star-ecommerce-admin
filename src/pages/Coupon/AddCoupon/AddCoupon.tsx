@@ -12,7 +12,6 @@ import { addCouponSchema } from '~/utils/validationSchema';
 import { useState } from 'react';
 
 const defaultValues = {
-    name: '',
     code: '',
     expirate_date: moment().format('yyyy-MM-DD'),
     start_date: moment().format('yyyy-MM-DD'),
@@ -100,11 +99,8 @@ const AddCoupon = () => {
                         </div>
                         <div className="card text-base p-3">
                             <form onSubmit={handleSubmit(onSubmit)}>
-                                <div className="form-group grid gird-cols-1 md:grid-cols-2 gap-2">
-                                    <div className="col-span-1">
-                                        <InputField name="name" label="Tiêu đề" control={control} error={errors} />
-                                    </div>
-                                    <div className="col-span-1 flex gap-2">
+                                <div className="form-group">
+                                    <div className="flex gap-2">
                                         <InputField name="code" label="Mã giảm giá" control={control} error={errors} />
                                         <Button className="mt-[32px]" onClick={handleRandomCode}>
                                             Ngẫu nhiên

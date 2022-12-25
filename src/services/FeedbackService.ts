@@ -1,38 +1,37 @@
 import Config from '~/config';
 import AxiosInstance from './AxiosInstance';
 
-let url: string = 'brand';
+let url: string = 'rating';
 
 // BANNER
 
-const GetBrand = (id: number) => {
+const GetRating = (id: number) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + id);
 };
 
-const GetBrands = (page: number = 0, perPage: number = Config.PER_PAGE) => {
-    // + `?page=${page}&perPage=${perPage}`
-    return AxiosInstance.get(Config.apiUrl + url);
+const GetRatings = (page: number = 0, perPage: number = Config.PER_PAGE) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
 };
 
-const AddBrand = (data: any) => {
+const AddRating = (data: any) => {
     return AxiosInstance.post(Config.apiUrl + url, data);
 };
-const DeleteBrand = (id: number) => {
+const DeleteRating = (id: number) => {
     return AxiosInstance.delete(Config.apiUrl + url + '/' + id);
 };
 
-const UpdateBrand = (id: number, data: any) => {
+const UpdateRating = (id: number, data: any) => {
     return AxiosInstance.put(Config.apiUrl + url + '/' + id, data);
 };
 
 // END BANNER
 
-const BrandService = {
-    AddBrand,
-    GetBrand,
-    GetBrands,
-    DeleteBrand,
-    UpdateBrand,
+const RatingService = {
+    AddRating,
+    GetRating,
+    GetRatings,
+    DeleteRating,
+    UpdateRating,
 };
 
-export default BrandService;
+export default RatingService;

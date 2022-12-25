@@ -35,7 +35,7 @@ const ListProduct = () => {
 
     const getAllProduct = (page: number = 0, name: string = '') => {
         setLoading(true);
-        ProductService.getAllProduct(page, name).then((res: ResponseType) => {
+        ProductService.getAllProduct({ page, name }).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 setTotalCount(res.data.total);
                 setProduct(res.data.data);
