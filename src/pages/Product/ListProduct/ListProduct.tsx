@@ -56,7 +56,7 @@ const ListProduct = () => {
     const debounceSearch = useCallback(Debounce(handleSearch, 1000), []);
 
     const getAllCategory = () => {
-        CategoryService.getAllCategory().then((res: ResponseType) => {
+        CategoryService.getAllCategory({}).then((res: ResponseType) => {
             if (res.statusCode === 200) {
                 setListCategory(res.data.data);
             }

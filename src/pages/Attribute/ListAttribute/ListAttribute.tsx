@@ -14,9 +14,9 @@ const ListAttribute = () => {
     };
 
     const getAllCategory = () => {
-        CategoryService.getAllCategory().then((res: any) => {
+        CategoryService.getAllCategory({}).then((res: any) => {
             if (res.statusCode === 200) {
-                setCategory(res.data[0]);
+                setCategory(res.data.data);
             }
         });
     };

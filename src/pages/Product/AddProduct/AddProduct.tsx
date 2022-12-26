@@ -115,7 +115,7 @@ const AddProduct = () => {
     const getAllCategory = () => {
         let category: OptionsSelect = [];
         let subCategory: OptionsSelect = [];
-        CategoryService.getAllCategory().then((res: any) => {
+        CategoryService.getAllCategory({}).then((res: any) => {
             if (res.statusCode === 200) {
                 res.data.data.forEach((itemCat: CategoryType) => {
                     if (!itemCat.parent_id) {
@@ -194,7 +194,7 @@ const AddProduct = () => {
             } else {
                 toast({
                     position: 'top-right',
-                    title: 'Tạo thất bại do lỗi từ server',
+                    title: 'Tạo thất bại',
                     duration: 2000,
                     status: 'error',
                 });

@@ -45,7 +45,7 @@ const defaultValues = {
     status: 1,
 };
 
-const PER_PAGE = 10;
+const PER_PAGE = 8;
 
 const ListBrand = () => {
     const [brand, setBrand] = useState([]);

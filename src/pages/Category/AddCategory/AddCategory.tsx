@@ -111,6 +111,7 @@ const AddCategory = () => {
         let dataSendRequest = {
             ...values,
             slug: toSlug(values.name),
+            priority: Number(values.priority),
             status: +values.status,
         };
         requestAddCategory(dataSendRequest, 'category');
@@ -151,6 +152,7 @@ const AddCategory = () => {
                                                 <InputField
                                                     name="priority"
                                                     label="Độ ưu tiên"
+                                                    type="number"
                                                     control={control}
                                                     error={errors}
                                                 />
