@@ -1,42 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import LoadingSpin from '~/components/LoadingSpin';
+import { FormLabel, Input, Table, Tbody, Td, Th, Thead, Tr, useToast } from '@chakra-ui/react';
 import {
-    Chart as ChartJS,
+    BarElement,
     CategoryScale,
+    Chart as ChartJS,
+    Filler,
+    Legend,
     LinearScale,
-    PointElement,
     LineElement,
+    PointElement,
     Title,
     Tooltip,
-    Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
-import { Button, FormLabel, Input, useToast } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import Image from '~/components/Image';
+import Config from '~/config';
+import ProductService from '~/services/ProductService';
 import StatisticalService from '~/services/StatisticalService';
+import { subString } from '~/utils/MinString';
 import { ResponseType } from '~/utils/Types';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Filler, Legend);
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export const options = {
     responsive: true,
-    interaction: {
-        mode: 'index' as const,
-        intersect: false,
-    },
-    stacked: false,
     plugins: {
+        legend: {
+            position: 'top' as const,
+        },
         title: {
             display: true,
             text: 'Biểu đồ thống kê tổng tiền đơn hàng theo ngày',
         },
     },
-    scales: {
-        y: {
-            type: 'linear' as const,
+};
+
+export const optionsBar = {
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'top' as const,
+        },
+        title: {
             display: true,
-            position: 'left' as const,
+            text: 'Chart.js Bar Chart',
         },
     },
 };
@@ -47,18 +58,35 @@ const Statistical = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [labelChart, setLabelChart] = useState<any>([]);
     const [dataChart, setDataChart] = useState<any>([]);
+    const [productSell, setProductSell] = useState<any>([]);
+    const [blogViews, setBlogViews] = useState<any>([]);
+
     const toast = useToast();
+
     const labels = labelChart;
 
     const data = {
         labels,
         datasets: [
             {
+                fill: true,
                 label: 'Tổng tiền',
                 data: dataChart,
-                borderColor: 'red',
-                backgroundColor: 'red',
-                yAxisID: 'y',
+                borderColor: 'rgb(130, 204, 221)',
+                backgroundColor: 'rgb(130, 204, 221,0.5)',
+            },
+        ],
+    };
+
+    const labelsBar = ['January', 'February', 'March', 'April'];
+
+    const dataBar = {
+        labelsBar,
+        datasets: [
+            {
+                label: 'Dataset 1',
+                data: [25, 55, 33, 22],
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
             },
         ],
     };
@@ -131,8 +159,30 @@ const Statistical = () => {
         }
     };
 
+    const getTop5ProductViews = () => {
+        ProductService.getProductOrderBy({ orderBy: 'views' }).then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                setProductSell(res.data.data);
+            } else {
+                console.log(res);
+            }
+        });
+    };
+
+    const getTop5BlogViews = () => {
+        StatisticalService.StatisBlogTopViews().then((res: ResponseType) => {
+            if (res.statusCode === 200) {
+                setBlogViews(res.data.data);
+            } else {
+                console.log(res);
+            }
+        });
+    };
+
     useEffect(() => {
         initChartOrder();
+        getTop5ProductViews();
+        getTop5BlogViews();
     }, []);
 
     return (
@@ -154,7 +204,91 @@ const Statistical = () => {
                         </div>
                     </div>
                     <div className="w-full m-auto">
-                        <Line options={options} data={data} className="!w-[80%] !h-auto m-auto" />
+                        <Line options={options} data={data} />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-5">
+                        <div className="col-span-1">
+                            <div className="card list-product p-5 rounded-2xl shadow-md h-full border-t border-slate-300">
+                                <div className="w-full px-4 py-2">
+                                    <p className="text-bold text-xl text-tbase font-semibold">
+                                        Top 5 sản phẩm lượt xem cao nhất
+                                    </p>
+                                </div>
+                                <div className="product px-4 mt-2 overflow-x-auto">
+                                    <Table variant="unstyled" borderBottom="1px solid #cccccc69">
+                                        <Thead>
+                                            <Tr>
+                                                <Th className="!text-base ">#</Th>
+                                                <Th className="!text-base ">Ảnh</Th>
+                                                <Th className="!text-base ">Tên sản phẩm</Th>
+                                                <Th className="!text-base ">Lượt xem</Th>
+                                            </Tr>
+                                        </Thead>
+                                        <Tbody>
+                                            {productSell?.map((item: any, index: number) => (
+                                                <Tr key={index}>
+                                                    <Td>{index + 1}</Td>
+                                                    <Td padding={1} marginY={1}>
+                                                        {item?.images?.length > 0 && (
+                                                            <Image
+                                                                className="w-[150px] h-[120px] object-cover"
+                                                                alt="Ảnh"
+                                                                src={`${Config.apiUrl}upload/${item?.images[0].file_name}`}
+                                                            />
+                                                        )}
+                                                    </Td>
+                                                    <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                        {subString(item?.name)}
+                                                    </Td>
+                                                    <Td>{item?.views}</Td>
+                                                </Tr>
+                                            ))}
+                                        </Tbody>
+                                    </Table>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-span-1">
+                            <div className="card list-product p-5 rounded-2xl shadow-md h-full border-t border-slate-300">
+                                <div className="w-full px-4 py-2">
+                                    <p className="text-bold text-xl text-tbase font-semibold">
+                                        Top 5 bài viết lượt xem cao nhất
+                                    </p>
+                                </div>
+                                <div className="product px-4 mt-2 overflow-x-auto">
+                                    <Table variant="unstyled" borderBottom="1px solid #cccccc69">
+                                        <Thead>
+                                            <Tr>
+                                                <Th className="!text-base ">#</Th>
+                                                <Th className="!text-base ">Ảnh</Th>
+                                                <Th className="!text-base ">Bài viết</Th>
+                                                <Th className="!text-base ">Lượt xem</Th>
+                                            </Tr>
+                                        </Thead>
+                                        <Tbody>
+                                            {blogViews?.map((item: any, index: number) => (
+                                                <Tr key={index}>
+                                                    <Td>{index + 1}</Td>
+                                                    <Td padding={1} marginY={1}>
+                                                        {item?.media && (
+                                                            <Image
+                                                                className="w-[150px] h-[120px] object-cover"
+                                                                alt="Ảnh"
+                                                                src={`${Config.apiUrl}upload/${item?.media.file_name}`}
+                                                            />
+                                                        )}
+                                                    </Td>
+                                                    <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                        {subString(item?.title)}
+                                                    </Td>
+                                                    <Td>{subString(item?.views)}</Td>
+                                                </Tr>
+                                            ))}
+                                        </Tbody>
+                                    </Table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

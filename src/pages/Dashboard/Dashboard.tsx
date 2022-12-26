@@ -344,21 +344,6 @@ const Dashboard = () => {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className="features-area">
-                        <div className="chart">
-                            <div className="grid grid-cols-2">
-                                <div className="col-span-1">
-                                    <Pie data={data} className="!w-[400px] !h-auto" />
-                                </div>
-                                <div className="col-span-1">
-                                    <Bar options={options} data={data2} />;
-                                </div>
-                                <div className="col-span-1">
-                                    <Line options={options2} data={data3} />
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
                     </div>
                 )}
             </div>

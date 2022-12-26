@@ -23,6 +23,10 @@ const StatisOrderTotalPrice = ({ from, to }: any) => {
     return AxiosInstance.get(Config.apiUrl + `order/statistic-from-to?date_from=${from}&date_to=${to}`);
 };
 
+const StatisBlogTopViews = () => {
+    return AxiosInstance.get(Config.apiUrl + `blog/?orderBy=views&orderType=DESC&perPage=5`);
+};
+
 const StatisticalService = {
     CountProduct,
     CountRating,
@@ -30,6 +34,6 @@ const StatisticalService = {
     countOrder,
     StatisOrder,
     StatisOrderTotalPrice,
+    StatisBlogTopViews,
 };
-
 export default StatisticalService;
