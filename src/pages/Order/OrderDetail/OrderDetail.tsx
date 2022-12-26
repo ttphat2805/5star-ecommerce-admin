@@ -93,6 +93,7 @@ const OrderDetail = () => {
                 break;
         }
     };
+    console.log('order: ', order);
 
     useEffect(() => {
         getOrder();
@@ -115,7 +116,12 @@ const OrderDetail = () => {
                                 <h3 className="title-order font-bold text-2xl flex items-center">
                                     Order: # {order?.id}
                                     <span className="flex items-center">
-                                        - {order?.payment_method_id === 1 ? 'Chưa thanh toán' : 'Đã thanh toán'}
+                                        -{' '}
+                                        {order?.payment_method_id === 3 && order?.status === 1
+                                            ? 'Đã thanh toán'
+                                            : order?.status === 4
+                                            ? 'Đã thanh toán'
+                                            : 'Chưa thanh toán'}
                                         <AiOutlineCheckCircle className="ml-2 text-primary" />
                                     </span>
                                 </h3>

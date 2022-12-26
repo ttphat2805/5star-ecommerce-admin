@@ -187,7 +187,9 @@ const ListUser = () => {
                                                 </Td>
                                                 <Td>{item.email}</Td>
                                                 <Td>
-                                                    {item?.roles[1] === 'admin' ? (
+                                                    {item?.roles[2] === 'super_admin' ? (
+                                                        <Badge colorScheme={'teal'}>Superadmin</Badge>
+                                                    ) : item?.roles[1] === 'admin' ? (
                                                         <Badge colorScheme="green">Quản trị</Badge>
                                                     ) : (
                                                         <Badge>Người dùng</Badge>

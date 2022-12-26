@@ -10,8 +10,7 @@ const GetBrand = (id: number) => {
 };
 
 const GetBrands = (page: number = 0, perPage: number = Config.PER_PAGE) => {
-    // + `?page=${page}&perPage=${perPage}`
-    return AxiosInstance.get(Config.apiUrl + url);
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
 };
 
 const AddBrand = (data: any) => {

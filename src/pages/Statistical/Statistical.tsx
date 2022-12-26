@@ -16,6 +16,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import Image from '~/components/Image';
+import LoadingSpin from '~/components/LoadingSpin';
 import Config from '~/config';
 import ProductService from '~/services/ProductService';
 import StatisticalService from '~/services/StatisticalService';
@@ -92,6 +93,7 @@ const Statistical = () => {
     };
 
     const initChartOrder = () => {
+        setLoading(true);
         let dateObj = new Date();
         let month = dateObj.getUTCMonth() + 1; //months from 1-12
         let day = dateObj.getUTCDate();
@@ -115,6 +117,7 @@ const Statistical = () => {
                 setLabelChart(newLabelChart);
                 setDataChart(newDataChart);
             }
+            setLoading(false);
         });
     };
 
@@ -192,105 +195,109 @@ const Statistical = () => {
             transition={{ duration: 0.5 }}
         >
             <div className="chart">
-                <div className="chart-1 card rounded-lg shadow-md p-10">
-                    <div className="filter-date flex flex-wrap gap-3 items-center">
-                        <div className="form-group">
-                            <FormLabel>Từ ngày</FormLabel>
-                            <Input type="date" name="from" onChange={(e) => handleChartOrder(e)} />
+                {loading ? (
+                    <LoadingSpin />
+                ) : (
+                    <div className="chart-1 card rounded-lg shadow-md p-10">
+                        <div className="filter-date flex flex-wrap gap-3 items-center">
+                            <div className="form-group">
+                                <FormLabel>Từ ngày</FormLabel>
+                                <Input type="date" name="from" onChange={(e) => handleChartOrder(e)} />
+                            </div>
+                            <div className="form-group">
+                                <FormLabel>Đến ngày</FormLabel>
+                                <Input type="date" name="to" onChange={(e) => handleChartOrder(e)} />
+                            </div>
                         </div>
-                        <div className="form-group">
-                            <FormLabel>Đến ngày</FormLabel>
-                            <Input type="date" name="to" onChange={(e) => handleChartOrder(e)} />
+                        <div className="w-full m-auto">
+                            <Line options={options} data={data} />
                         </div>
-                    </div>
-                    <div className="w-full m-auto">
-                        <Line options={options} data={data} />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-5">
-                        <div className="col-span-1">
-                            <div className="card list-product p-5 rounded-2xl shadow-md h-full border-t border-slate-300">
-                                <div className="w-full px-4 py-2">
-                                    <p className="text-bold text-xl text-tbase font-semibold">
-                                        Top 5 sản phẩm lượt xem cao nhất
-                                    </p>
-                                </div>
-                                <div className="product px-4 mt-2 overflow-x-auto">
-                                    <Table variant="unstyled" borderBottom="1px solid #cccccc69">
-                                        <Thead>
-                                            <Tr>
-                                                <Th className="!text-base ">#</Th>
-                                                <Th className="!text-base ">Ảnh</Th>
-                                                <Th className="!text-base ">Tên sản phẩm</Th>
-                                                <Th className="!text-base ">Lượt xem</Th>
-                                            </Tr>
-                                        </Thead>
-                                        <Tbody>
-                                            {productSell?.map((item: any, index: number) => (
-                                                <Tr key={index}>
-                                                    <Td>{index + 1}</Td>
-                                                    <Td padding={1} marginY={1}>
-                                                        {item?.images?.length > 0 && (
-                                                            <Image
-                                                                className="w-[150px] h-[120px] object-cover"
-                                                                alt="Ảnh"
-                                                                src={`${Config.apiUrl}upload/${item?.images[0].file_name}`}
-                                                            />
-                                                        )}
-                                                    </Td>
-                                                    <Td wordBreak={'break-all'} whiteSpace="normal">
-                                                        {subString(item?.name)}
-                                                    </Td>
-                                                    <Td>{item?.views}</Td>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 my-5">
+                            <div className="col-span-1">
+                                <div className="card list-product p-5 rounded-2xl shadow-md h-full border-t border-slate-300">
+                                    <div className="w-full px-4 py-2">
+                                        <p className="text-bold text-xl text-tbase font-semibold">
+                                            Top 5 sản phẩm lượt xem cao nhất
+                                        </p>
+                                    </div>
+                                    <div className="product px-4 mt-2 overflow-x-auto">
+                                        <Table variant="unstyled" borderBottom="1px solid #cccccc69">
+                                            <Thead>
+                                                <Tr>
+                                                    <Th className="!text-base ">#</Th>
+                                                    <Th className="!text-base ">Ảnh</Th>
+                                                    <Th className="!text-base ">Tên sản phẩm</Th>
+                                                    <Th className="!text-base ">Lượt xem</Th>
                                                 </Tr>
-                                            ))}
-                                        </Tbody>
-                                    </Table>
+                                            </Thead>
+                                            <Tbody>
+                                                {productSell?.map((item: any, index: number) => (
+                                                    <Tr key={index}>
+                                                        <Td>{index + 1}</Td>
+                                                        <Td padding={1} marginY={1}>
+                                                            {item?.images?.length > 0 && (
+                                                                <Image
+                                                                    className="w-[150px] h-[120px] object-cover"
+                                                                    alt="Ảnh"
+                                                                    src={`${Config.apiUrl}upload/${item?.images[0].file_name}`}
+                                                                />
+                                                            )}
+                                                        </Td>
+                                                        <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                            {subString(item?.name)}
+                                                        </Td>
+                                                        <Td>{item?.views}</Td>
+                                                    </Tr>
+                                                ))}
+                                            </Tbody>
+                                        </Table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="col-span-1">
+                                <div className="card list-product p-5 rounded-2xl shadow-md h-full border-t border-slate-300">
+                                    <div className="w-full px-4 py-2">
+                                        <p className="text-bold text-xl text-tbase font-semibold">
+                                            Top 5 bài viết lượt xem cao nhất
+                                        </p>
+                                    </div>
+                                    <div className="product px-4 mt-2 overflow-x-auto">
+                                        <Table variant="unstyled" borderBottom="1px solid #cccccc69">
+                                            <Thead>
+                                                <Tr>
+                                                    <Th className="!text-base ">#</Th>
+                                                    <Th className="!text-base ">Ảnh</Th>
+                                                    <Th className="!text-base ">Bài viết</Th>
+                                                    <Th className="!text-base ">Lượt xem</Th>
+                                                </Tr>
+                                            </Thead>
+                                            <Tbody>
+                                                {blogViews?.map((item: any, index: number) => (
+                                                    <Tr key={index}>
+                                                        <Td>{index + 1}</Td>
+                                                        <Td padding={1} marginY={1}>
+                                                            {item?.media && (
+                                                                <Image
+                                                                    className="w-[150px] h-[120px] object-cover"
+                                                                    alt="Ảnh"
+                                                                    src={`${Config.apiUrl}upload/${item?.media.file_name}`}
+                                                                />
+                                                            )}
+                                                        </Td>
+                                                        <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                            {subString(item?.title)}
+                                                        </Td>
+                                                        <Td>{subString(item?.views)}</Td>
+                                                    </Tr>
+                                                ))}
+                                            </Tbody>
+                                        </Table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-span-1">
-                            <div className="card list-product p-5 rounded-2xl shadow-md h-full border-t border-slate-300">
-                                <div className="w-full px-4 py-2">
-                                    <p className="text-bold text-xl text-tbase font-semibold">
-                                        Top 5 bài viết lượt xem cao nhất
-                                    </p>
-                                </div>
-                                <div className="product px-4 mt-2 overflow-x-auto">
-                                    <Table variant="unstyled" borderBottom="1px solid #cccccc69">
-                                        <Thead>
-                                            <Tr>
-                                                <Th className="!text-base ">#</Th>
-                                                <Th className="!text-base ">Ảnh</Th>
-                                                <Th className="!text-base ">Bài viết</Th>
-                                                <Th className="!text-base ">Lượt xem</Th>
-                                            </Tr>
-                                        </Thead>
-                                        <Tbody>
-                                            {blogViews?.map((item: any, index: number) => (
-                                                <Tr key={index}>
-                                                    <Td>{index + 1}</Td>
-                                                    <Td padding={1} marginY={1}>
-                                                        {item?.media && (
-                                                            <Image
-                                                                className="w-[150px] h-[120px] object-cover"
-                                                                alt="Ảnh"
-                                                                src={`${Config.apiUrl}upload/${item?.media.file_name}`}
-                                                            />
-                                                        )}
-                                                    </Td>
-                                                    <Td wordBreak={'break-all'} whiteSpace="normal">
-                                                        {subString(item?.title)}
-                                                    </Td>
-                                                    <Td>{subString(item?.views)}</Td>
-                                                </Tr>
-                                            ))}
-                                        </Tbody>
-                                    </Table>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                )}
             </div>
         </motion.div>
     );

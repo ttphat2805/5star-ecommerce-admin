@@ -143,7 +143,6 @@ const ListCoupon = () => {
                                                 <Th>Số lượng</Th>
                                                 <Th>Ngày bắt đầu</Th>
                                                 <Th>Ngày kết thúc</Th>
-                                                <Th>Đã dùng</Th>
                                                 <Th>Trạng thái</Th>
                                                 <Th>Hành động</Th>
                                             </Tr>
@@ -157,7 +156,6 @@ const ListCoupon = () => {
                                                     <Td>{item.quantity}</Td>
                                                     <Td>{item.start_date}</Td>
                                                     <Td>{item.expirate_date}</Td>
-                                                    <Td>{item.used}</Td>
                                                     <Td>
                                                         {item.status === 1 ? (
                                                             <span className="badge-status">Hiện</span>

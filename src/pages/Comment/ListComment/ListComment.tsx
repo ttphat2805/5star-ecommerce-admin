@@ -172,8 +172,8 @@ const ListComment = () => {
                                                 <Td>
                                                     {item?.profile?.first_name} {item?.profile?.last_name}
                                                 </Td>
-                                                <Td>{subString(item?.body, 70)}</Td>
-                                                <Td>{subString(item?.blog?.title, 70)}</Td>
+                                                <Td>{subString(item?.body, 60)}</Td>
+                                                <Td>{subString(item?.blog?.title, 60)}</Td>
                                                 <Td>
                                                     {item.status === 1 ? (
                                                         <span className="badge-status">Hiện</span>
@@ -212,22 +212,22 @@ const ListComment = () => {
                                     </p>
                                 )}
                             </div>
-                            {totalPage > 0 && (
-                                <div className="pagination-feature flex">
-                                    <ReactPaginate
-                                        previousLabel={<BiChevronLeft className="inline text-xl" />}
-                                        nextLabel={<BiChevronRight className="inline text-xl" />}
-                                        pageCount={totalPage}
-                                        onPageChange={handlePageChange}
-                                        activeClassName={'page-item active'}
-                                        disabledClassName={'page-item disabled'}
-                                        containerClassName={'pagination'}
-                                        previousLinkClassName={'page-link'}
-                                        nextLinkClassName={'page-link'}
-                                        pageLinkClassName={'page-link'}
-                                    />
-                                </div>
-                            )}
+                        </div>
+                    )}
+                    {totalPage > 0 && (
+                        <div className="pagination-feature flex">
+                            <ReactPaginate
+                                previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                nextLabel={<BiChevronRight className="inline text-xl" />}
+                                pageCount={totalPage}
+                                onPageChange={handlePageChange}
+                                activeClassName={'page-item active'}
+                                disabledClassName={'page-item disabled'}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'page-link'}
+                                nextLinkClassName={'page-link'}
+                                pageLinkClassName={'page-link'}
+                            />
                         </div>
                     )}
                 </div>
@@ -302,11 +302,15 @@ const ListComment = () => {
                                         </Tr>
                                         <Tr>
                                             <Th>Nội dung:</Th>
-                                            <Td>{comment?.body}</Td>
+                                            <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                {comment?.body}
+                                            </Td>
                                         </Tr>
                                         <Tr>
                                             <Th>Bài viết:</Th>
-                                            <Td>{comment?.blog?.title}</Td>
+                                            <Td wordBreak={'break-all'} whiteSpace="normal">
+                                                {comment?.blog?.title}
+                                            </Td>
                                         </Tr>
                                         <Tr>
                                             <Th>Số bình luận trả lời:</Th>

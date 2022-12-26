@@ -212,22 +212,22 @@ const ListFeedback = () => {
                                     </p>
                                 )}
                             </div>
-                            {totalPage > 0 && (
-                                <div className="pagination-feature flex">
-                                    <ReactPaginate
-                                        previousLabel={<BiChevronLeft className="inline text-xl" />}
-                                        nextLabel={<BiChevronRight className="inline text-xl" />}
-                                        pageCount={totalPage}
-                                        onPageChange={handlePageChange}
-                                        activeClassName={'page-item active'}
-                                        disabledClassName={'page-item disabled'}
-                                        containerClassName={'pagination'}
-                                        previousLinkClassName={'page-link'}
-                                        nextLinkClassName={'page-link'}
-                                        pageLinkClassName={'page-link'}
-                                    />
-                                </div>
-                            )}
+                        </div>
+                    )}
+                    {totalPage > 0 && (
+                        <div className="pagination-feature flex">
+                            <ReactPaginate
+                                previousLabel={<BiChevronLeft className="inline text-xl" />}
+                                nextLabel={<BiChevronRight className="inline text-xl" />}
+                                pageCount={totalPage}
+                                onPageChange={handlePageChange}
+                                activeClassName={'page-item active'}
+                                disabledClassName={'page-item disabled'}
+                                containerClassName={'pagination'}
+                                previousLinkClassName={'page-link'}
+                                nextLinkClassName={'page-link'}
+                                pageLinkClassName={'page-link'}
+                            />
                         </div>
                     )}
                 </div>

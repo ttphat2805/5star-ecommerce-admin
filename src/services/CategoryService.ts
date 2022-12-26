@@ -8,17 +8,17 @@ const addCategory = (data: CategoryType) => {
     return AxiosInstance.post(Config.apiUrl + url, data);
 };
 
-const getAllCategory = () => {
-    return AxiosInstance.get(Config.apiUrl + url);
+const getAllCategory = ({ page = 0, perPage = Config.PER_PAGE }: any) => {
+    return AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
 };
 
 const getOneCategory = (slug: string) => {
     return AxiosInstance.get(Config.apiUrl + url + '/' + slug);
 };
 
-const getCategoryParent = async () => {
+const getCategoryParent = async (page = 0, perPage = 100) => {
     try {
-        let resCategory: any = await AxiosInstance.get(Config.apiUrl + url);
+        let resCategory: any = await AxiosInstance.get(Config.apiUrl + url + `?page=${page}&perPage=${perPage}`);
         let dataCategory: any = [];
         if (resCategory.statusCode === 200) {
             for (let category of resCategory.data.data) {
