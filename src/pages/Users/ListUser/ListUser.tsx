@@ -27,9 +27,11 @@ import { IoIosEye } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import ReactPaginate from 'react-paginate';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '~/app/hooks';
 import Breadcrumb from '~/components/Breadcrumb';
 import LoadingSpin from '~/components/LoadingSpin';
 import Config from '~/config';
+import { getUser } from '~/features/user/userSlice';
 import { RadioField } from '~/layouts/components/CustomField';
 import ModalConfirm from '~/layouts/components/ModalConfirm';
 import UserService from '~/services/UserSerivce';
@@ -53,11 +55,13 @@ const ListUser = () => {
     const [pageNumber, setPageNumber] = useState<number>(0);
     // END STATE
     const totalPage = Math.ceil(totalCount / Config.PER_PAGE);
+    const infoUser: any = useAppSelector(getUser);
+    console.log('infoUser: ', infoUser);
+    const toast = useToast();
+    const Navigate = useNavigate();
 
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isOpenView, onOpen: onOpenView, onClose: onCloseView } = useDisclosure();
-    const toast = useToast();
-    const Navigate = useNavigate();
 
     const handlePageChange = ({ selected }: any) => {
         GetAllUsers(selected);
@@ -155,7 +159,7 @@ const ListUser = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
         >
-            <Breadcrumb currentPage="Danh sách danh mục" parentLink="category/list-category" parentPage="Danh mục" />
+            <Breadcrumb currentPage="Danh sách thành viên" parentLink="member/list-member" parentPage="Thành viên" />
             <div className="list-product">
                 <div className="card rounded-md p-2">
                     {loading ? (
@@ -206,7 +210,7 @@ const ListUser = () => {
                                                         >
                                                             <IoIosEye className="text-lg text-white" />
                                                         </Button>
-                                                        {item?.roles[2] === 'super_admin' && (
+                                                        {infoUser?.roles[2] === 'super_admin' && (
                                                             <Button
                                                                 p={1}
                                                                 colorScheme="twitter"
