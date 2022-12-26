@@ -167,7 +167,7 @@ const AddProduct = () => {
         let dataSendRequest = {
             ...values,
             images: imageUploadRes,
-            id_brand: 1,
+            id_brand: Number(values.id_brand),
             slug: toSlug(values.name),
             description: description,
             id_category: values.subCategory ? +values.subCategory : +values.category,
